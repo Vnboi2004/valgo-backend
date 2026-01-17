@@ -1,0 +1,15 @@
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\bin\Debug\net9.0\VAlgo.Bootstrapper.deps.json
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\bin\Debug\net9.0\VAlgo.Bootstrapper.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\bin\Debug\net9.0\VAlgo.Bootstrapper.pdb
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\bin\Debug\net9.0\VAlgo.SharedKernel.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\bin\Debug\net9.0\VAlgo.SharedKernel.pdb
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.csproj.AssemblyReference.cache
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.GeneratedMSBuildEditorConfig.editorconfig
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.AssemblyInfoInputs.cache
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.AssemblyInfo.cs
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.csproj.CoreCompileInputs.cache
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bo.281E9AF6.Up2Date
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\refint\VAlgo.Bootstrapper.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.pdb
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\ref\VAlgo.Bootstrapper.dll
