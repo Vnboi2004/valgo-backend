@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VAlgo.SharedKernel")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1d35e4c92bd4dd656d4dc355c9b7f108ab776572")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e1cab6a6bab9a1ef0c07c706aeabb6613d6c14de")]
 [assembly: System.Reflection.AssemblyProductAttribute("VAlgo.SharedKernel")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VAlgo.SharedKernel")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
