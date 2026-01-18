@@ -13,3 +13,4 @@ C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\refint\VAlgo.Bootstrapper.dll
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.pdb
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\ref\VAlgo.Bootstrapper.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.Bootstrapper\obj\Debug\net9.0\VAlgo.Bootstrapper.sourcelink.json

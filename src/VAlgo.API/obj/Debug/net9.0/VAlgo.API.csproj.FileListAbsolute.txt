@@ -34,3 +34,4 @@ C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\refint\VAlgo.A
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\VAlgo.API.pdb
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\VAlgo.API.genruntimeconfig.cache
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\ref\VAlgo.API.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\VAlgo.API.sourcelink.json

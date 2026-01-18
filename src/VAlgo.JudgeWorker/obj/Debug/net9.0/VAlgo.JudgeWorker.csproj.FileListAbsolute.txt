@@ -16,3 +16,4 @@ C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\refint
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\VAlgo.JudgeWorker.pdb
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\VAlgo.JudgeWorker.genruntimeconfig.cache
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\ref\VAlgo.JudgeWorker.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\VAlgo.JudgeWorker.sourcelink.json
