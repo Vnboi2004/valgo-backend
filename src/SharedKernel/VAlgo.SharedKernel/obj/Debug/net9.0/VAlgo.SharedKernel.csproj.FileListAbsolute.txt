@@ -1,0 +1,13 @@
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\bin\Debug\net9.0\VAlgo.SharedKernel.deps.json
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\bin\Debug\net9.0\VAlgo.SharedKernel.dll
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\bin\Debug\net9.0\VAlgo.SharedKernel.pdb
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\VAlgo.SharedKernel.GeneratedMSBuildEditorConfig.editorconfig
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\VAlgo.SharedKernel.AssemblyInfoInputs.cache
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\VAlgo.SharedKernel.AssemblyInfo.cs
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\VAlgo.SharedKernel.csproj.CoreCompileInputs.cache
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\VAlgo.SharedKernel.dll
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\refint\VAlgo.SharedKernel.dll
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\VAlgo.SharedKernel.pdb
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\ref\VAlgo.SharedKernel.dll
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\VAlgo.SharedKernel.sourcelink.json
+C:\Workspace\Project\VAlgo-Backend\src\SharedKernel\VAlgo.SharedKernel\obj\Debug\net9.0\VAlgo.SharedKernel.csproj.AssemblyReference.cache
