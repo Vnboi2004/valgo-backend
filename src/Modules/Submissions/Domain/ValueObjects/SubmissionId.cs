@@ -10,6 +10,8 @@ namespace VAlgo.Modules.Submissions.Domain.ValueObjects
 
         public static SubmissionId New() => new(Guid.NewGuid());
 
+        public static SubmissionId From(Guid value) => new(value);
+
         protected override IEnumerable<object?> GetEqualityComponents()
         {
             yield return Value;

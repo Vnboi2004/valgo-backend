@@ -17,3 +17,4 @@ C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\VAlgo.
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\VAlgo.JudgeWorker.genruntimeconfig.cache
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\ref\VAlgo.JudgeWorker.dll
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\obj\Debug\net9.0\VAlgo.JudgeWorker.sourcelink.json
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.JudgeWorker\bin\Debug\net9.0\MediatR.dll
