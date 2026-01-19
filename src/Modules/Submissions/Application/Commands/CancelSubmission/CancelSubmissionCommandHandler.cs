@@ -26,7 +26,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CancelSubmission
         {
             var submissionId = SubmissionId.From(request.SubmissionId);
 
-            var submission = await _submissionRepository.GetByIdAsync(submissionId);
+            var submission = await _submissionRepository.GetByIdAsync(submissionId, cancellationToken);
 
             if (submission == null)
                 throw new InvalidOperationException($"Submission {request.SubmissionId} not found");

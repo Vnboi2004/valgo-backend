@@ -5,7 +5,7 @@ namespace VAlgo.Modules.Submissions.Application.Abstractions
 {
     public interface ISubmissionRepository
     {
-        Task AddAsync(Submission submission);
-        Task<Submission?> GetByIdAsync(SubmissionId id);
+        Task AddAsync(Submission submission, CancellationToken cancellationToken = default);
+        Task<Submission?> GetByIdAsync(SubmissionId id, CancellationToken cancellationToken = default);
     }
 }

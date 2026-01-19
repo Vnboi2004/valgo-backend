@@ -50,7 +50,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
                 now
             );
 
-            await _submissionRepository.AddAsync(submission);
+            await _submissionRepository.AddAsync(submission, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return submission.Id.Value;

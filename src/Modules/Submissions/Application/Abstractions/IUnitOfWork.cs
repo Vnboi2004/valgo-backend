@@ -2,6 +2,6 @@ namespace VAlgo.Modules.Submissions.Application.Abstractions
 {
     public interface IUnitOfWork
     {
-        Task SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
