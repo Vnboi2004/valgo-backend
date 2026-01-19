@@ -29,7 +29,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission
                 throw new InvalidOperationException("Verdict cannot be None when completing submission");
 
             var submissionId = SubmissionId.From(request.SubmissionId);
-            var submission = await _submissionRepository.GetByIdAsync(submissionId);
+            var submission = await _submissionRepository.GetByIdAsync(submissionId, cancellationToken);
 
             if (submission == null)
                 throw new InvalidOperationException($"Submission {request.SubmissionId} not found");

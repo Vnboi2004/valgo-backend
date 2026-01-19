@@ -5,10 +5,12 @@ namespace VAlgo.Modules.Submissions.Domain.ValueObjects
 {
     public sealed class JudgeSummary : ValueObject
     {
-        public int TotalTestCases { get; }
-        public int PassedTestCases { get; }
-        public int MaxTimeMs { get; }
-        public int MaxMemoryKb { get; }
+        public int TotalTestCases { get; private set; }
+        public int PassedTestCases { get; private set; }
+        public int MaxTimeMs { get; private set; }
+        public int MaxMemoryKb { get; private set; }
+
+        private JudgeSummary() { }
 
         private JudgeSummary(int total, int passed, int maxTimeMs, int maxMemoryKb)
         {

@@ -26,7 +26,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.EnqueueSubmission
         {
             // 1. Load submission
             var submissionId = SubmissionId.From(request.SubmissionId);
-            var submission = await _submissionRepository.GetByIdAsync(submissionId);
+            var submission = await _submissionRepository.GetByIdAsync(submissionId, cancellationToken);
 
             // 2. Check submission
             if (submission == null)
