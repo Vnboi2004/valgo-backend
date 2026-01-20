@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "vCD10bPUwvU=",
+  "dgSpecHash": "uUQz6a2aWDc=",
   "success": true,
   "projectFilePath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\VAlgo.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\insec\\.nuget\\packages\\fluentvalidation\\9.0.1\\fluentvalidation.9.0.1.nupkg.sha512",
+    "C:\\Users\\insec\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\9.0.0-preview5\\fluentvalidation.dependencyinjectionextensions.9.0.0-preview5.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
+    "C:\\Users\\insec\\.nuget\\packages\\mediatr.extensions.microsoft.dependencyinjection\\9.0.0\\mediatr.extensions.microsoft.dependencyinjection.9.0.0.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.10\\microsoft.aspnetcore.openapi.9.0.10.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\microsoft.build.framework\\17.8.3\\microsoft.build.framework.17.8.3.nupkg.sha512",
