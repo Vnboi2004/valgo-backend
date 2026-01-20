@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "uUQz6a2aWDc=",
+  "dgSpecHash": "t4o0Vjt3tos=",
   "success": true,
   "projectFilePath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\VAlgo.API.csproj",
   "expectedPackageFiles": [
@@ -40,10 +40,13 @@
     "C:\\Users\\insec\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.0\\microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\microsoft.extensions.options\\9.0.0\\microsoft.extensions.options.9.0.0.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.0\\microsoft.extensions.primitives.9.0.0.nupkg.sha512",
-    "C:\\Users\\insec\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512",
+    "C:\\Users\\insec\\.nuget\\packages\\microsoft.openapi\\1.6.23\\microsoft.openapi.1.6.23.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\npgsql\\8.0.5\\npgsql.8.0.5.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\9.0.0-rc.2\\npgsql.entityframeworkcore.postgresql.9.0.0-rc.2.nupkg.sha512",
+    "C:\\Users\\insec\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\9.0.0\\swashbuckle.aspnetcore.swagger.9.0.0.nupkg.sha512",
+    "C:\\Users\\insec\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\9.0.0\\swashbuckle.aspnetcore.swaggergen.9.0.0.nupkg.sha512",
+    "C:\\Users\\insec\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\9.0.0\\swashbuckle.aspnetcore.swaggerui.9.0.0.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\system.codedom\\6.0.0\\system.codedom.6.0.0.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\system.collections.immutable\\7.0.0\\system.collections.immutable.7.0.0.nupkg.sha512",
     "C:\\Users\\insec\\.nuget\\packages\\system.composition\\7.0.0\\system.composition.7.0.0.nupkg.sha512",
@@ -59,6 +62,15 @@
     "C:\\Users\\insec\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512"
   ],
   "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "message": "Problem reading the cache file C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
+      "projectPath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\VAlgo.API.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\VAlgo.API.csproj",
+      "targetGraphs": []
+    },
     {
       "code": "NU1608",
       "level": "Warning",

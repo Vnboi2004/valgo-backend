@@ -10,6 +10,8 @@
         "dependencies": {
           "Microsoft.AspNetCore.OpenApi": "9.0.10",
           "Microsoft.EntityFrameworkCore.Design": "9.0.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "9.0.0",
+          "Swashbuckle.AspNetCore.SwaggerUI": "9.0.0",
           "VAlgo.Bootstrapper": "1.0.0",
           "VAlgo.Modules.Submissions": "1.0.0"
         },
@@ -22,6 +24,18 @@
           "lib/netstandard2.0/FluentValidation.dll": {
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.1.0"
+          }
+        }
+      },
+      "FluentValidation.DependencyInjectionExtensions/9.0.0-preview5": {
+        "dependencies": {
+          "FluentValidation": "9.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FluentValidation.DependencyInjectionExtensions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "9.0.0.0"
           }
         }
       },
@@ -41,9 +55,21 @@
           }
         }
       },
+      "MediatR.Extensions.Microsoft.DependencyInjection/9.0.0": {
+        "dependencies": {
+          "MediatR": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/MediatR.Extensions.Microsoft.DependencyInjection.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.0.0"
+          }
+        }
+      },
       "Microsoft.AspNetCore.OpenApi/9.0.10": {
         "dependencies": {
-          "Microsoft.OpenApi": "1.6.17"
+          "Microsoft.OpenApi": "1.6.23"
         },
         "runtime": {
           "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
@@ -496,11 +522,11 @@
         }
       },
       "Microsoft.Extensions.Primitives/9.0.0": {},
-      "Microsoft.OpenApi/1.6.17": {
+      "Microsoft.OpenApi/1.6.23": {
         "runtime": {
           "lib/netstandard2.0/Microsoft.OpenApi.dll": {
-            "assemblyVersion": "1.6.17.0",
-            "fileVersion": "1.6.17.0"
+            "assemblyVersion": "1.6.23.0",
+            "fileVersion": "1.6.23.0"
           }
         }
       },
@@ -536,6 +562,36 @@
           "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.0.0"
+          }
+        }
+      },
+      "Swashbuckle.AspNetCore.Swagger/9.0.0": {
+        "dependencies": {
+          "Microsoft.OpenApi": "1.6.23"
+        },
+        "runtime": {
+          "lib/net9.0/Swashbuckle.AspNetCore.Swagger.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.0.1533"
+          }
+        }
+      },
+      "Swashbuckle.AspNetCore.SwaggerGen/9.0.0": {
+        "dependencies": {
+          "Swashbuckle.AspNetCore.Swagger": "9.0.0"
+        },
+        "runtime": {
+          "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.0.1533"
+          }
+        }
+      },
+      "Swashbuckle.AspNetCore.SwaggerUI/9.0.0": {
+        "runtime": {
+          "lib/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.0.1533"
           }
         }
       },
@@ -631,12 +687,15 @@
       "VAlgo.Modules.Submissions/1.0.0": {
         "dependencies": {
           "FluentValidation": "9.0.1",
+          "FluentValidation.DependencyInjectionExtensions": "9.0.0-preview5",
           "MediatR": "9.0.0",
+          "MediatR.Extensions.Microsoft.DependencyInjection": "9.0.0",
           "Microsoft.EntityFrameworkCore": "9.0.0",
           "Microsoft.EntityFrameworkCore.Relational": "9.0.0",
           "Microsoft.Extensions.Configuration": "9.0.0",
           "Microsoft.Extensions.Configuration.FileExtensions": "9.0.0",
           "Microsoft.Extensions.Configuration.Json": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.0-rc.2",
           "VAlgo.SharedKernel": "1.0.0"
         },
@@ -673,6 +732,13 @@
       "path": "fluentvalidation/9.0.1",
       "hashPath": "fluentvalidation.9.0.1.nupkg.sha512"
     },
+    "FluentValidation.DependencyInjectionExtensions/9.0.0-preview5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WlCYo98NkwdQbAvCeoDAksjQay4Nce5RpM9BleG8EtdzIPnnYzCiAVN6HX6oLF46LXysE1s8Z/QcilRuRQQJzQ==",
+      "path": "fluentvalidation.dependencyinjectionextensions/9.0.0-preview5",
+      "hashPath": "fluentvalidation.dependencyinjectionextensions.9.0.0-preview5.nupkg.sha512"
+    },
     "Humanizer.Core/2.14.1": {
       "type": "package",
       "serviceable": true,
@@ -686,6 +752,13 @@
       "sha512": "sha512-8b3UYNxegHVYcJMG2zH8wn+YqxLvXG+eMfj0cMCq/jTW72p6O3PCKMkrIv0mqyxdW7bA4gblsocw7n+/9Akg5g==",
       "path": "mediatr/9.0.0",
       "hashPath": "mediatr.9.0.0.nupkg.sha512"
+    },
+    "MediatR.Extensions.Microsoft.DependencyInjection/9.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-msreY4ogiPdIRWiCQVHQDytIQpsZCLWsixWPZ+Xs86KZrvtuiV8BDHbIT0kBmogynVYWNpspb3caw+86YU8L6w==",
+      "path": "mediatr.extensions.microsoft.dependencyinjection/9.0.0",
+      "hashPath": "mediatr.extensions.microsoft.dependencyinjection.9.0.0.nupkg.sha512"
     },
     "Microsoft.AspNetCore.OpenApi/9.0.10": {
       "type": "package",
@@ -904,12 +977,12 @@
       "path": "microsoft.extensions.primitives/9.0.0",
       "hashPath": "microsoft.extensions.primitives.9.0.0.nupkg.sha512"
     },
-    "Microsoft.OpenApi/1.6.17": {
+    "Microsoft.OpenApi/1.6.23": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Le+kehlmrlQfuDFUt1zZ2dVwrhFQtKREdKBo+rexOwaCoYP0/qpgT9tLxCsZjsgR5Itk1UKPcbgO+FyaNid/bA==",
-      "path": "microsoft.openapi/1.6.17",
-      "hashPath": "microsoft.openapi.1.6.17.nupkg.sha512"
+      "sha512": "sha512-tZ1I0KXnn98CWuV8cpI247A17jaY+ILS9vvF7yhI0uPPEqF4P1d7BWL5Uwtel10w9NucllHB3nTkfYTAcHAh8g==",
+      "path": "microsoft.openapi/1.6.23",
+      "hashPath": "microsoft.openapi.1.6.23.nupkg.sha512"
     },
     "Mono.TextTemplating/3.0.0": {
       "type": "package",
@@ -931,6 +1004,27 @@
       "sha512": "sha512-25aObiOmb/nG146o7MbGbZAn+NFaCVK6XJr/t5SuHhKM85lMZ+HzjBiOGI6k0KKc3oWLIglE92iS336aQMPo6w==",
       "path": "npgsql.entityframeworkcore.postgresql/9.0.0-rc.2",
       "hashPath": "npgsql.entityframeworkcore.postgresql.9.0.0-rc.2.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.Swagger/9.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xQw4L8S//eqxAuVLn8mvGCpz2cqfuTEUtFBdaWJ/YkQd8dnCXMfAlBhbLCrZrBcl0R9KhQLtW8EU+V2RGv1pkw==",
+      "path": "swashbuckle.aspnetcore.swagger/9.0.0",
+      "hashPath": "swashbuckle.aspnetcore.swagger.9.0.0.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.SwaggerGen/9.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1HjvxZyrPlXrwbq7NONdJy6FUl6mLMTb+bECziX6JKX8Kk46olcMFLSBIUsG8bw63lF8HlyGLJgHfWHbmE1BgA==",
+      "path": "swashbuckle.aspnetcore.swaggergen/9.0.0",
+      "hashPath": "swashbuckle.aspnetcore.swaggergen.9.0.0.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.SwaggerUI/9.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-g3m4AwjzCk7HNxHJs5fXlGPw4P2uRA6qLqbu1qrSyboHvj/Efg5nUYsnWq4OwziWlRhkFKwPJ4SRGrqgYQEUWA==",
+      "path": "swashbuckle.aspnetcore.swaggerui/9.0.0",
+      "hashPath": "swashbuckle.aspnetcore.swaggerui.9.0.0.nupkg.sha512"
     },
     "System.CodeDom/6.0.0": {
       "type": "package",
