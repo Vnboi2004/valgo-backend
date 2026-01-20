@@ -5,7 +5,9 @@ namespace VAlgo.Modules.Submissions.Domain.ValueObjects
 {
     public sealed class Language : ValueObject
     {
-        public string Value { get; }
+        public string Value { get; private set; } = null!;
+
+        private Language() { }
 
         public Language(string value)
         {

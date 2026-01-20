@@ -9,67 +9,98 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Submission> builder)
         {
-            builder.ToTable("Submissions", schema: "submissions");
+            builder.ToTable("submissions", schema: "submissions");
 
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
+                .HasColumnName("id")
                 .HasConversion(id => id.Value, value => SubmissionId.From(value))
                 .ValueGeneratedNever();
 
             builder.Property(x => x.UserId)
+                .HasColumnName("user_id")
                 .IsRequired();
 
             builder.Property(x => x.ProblemId)
+                .HasColumnName("problem_id")
                 .IsRequired();
 
             builder.Property(x => x.SourceCode)
+                .HasColumnName("source_code")
                 .IsRequired();
 
             builder.Property(x => x.CreatedAt)
+                .HasColumnName("created_at")
                 .IsRequired();
 
-            builder.Property(x => x.QueuedAt);
+            builder.Property(x => x.QueuedAt)
+                .HasColumnName("queued_at")
+                .IsRequired(false);
 
-            builder.Property(x => x.StartedAt);
+            builder.Property(x => x.StartedAt)
+                .HasColumnName("started_at")
+                .IsRequired(false);
 
-            builder.Property(x => x.FinishedAt);
+            builder.Property(x => x.FinishedAt)
+                .HasColumnName("finished_at")
+                .IsRequired(false);
 
             builder.Property(x => x.Status)
+                .HasColumnName("status")
                 .HasConversion<int>()
                 .IsRequired();
 
             builder.Property(x => x.Verdict)
+                .HasColumnName("verdict")
                 .HasConversion<int>()
                 .IsRequired();
 
             builder.OwnsOne(x => x.Language, lang =>
             {
                 lang.Property(l => l.Value)
-                    .HasColumnName("Language")
+                    .HasColumnName("language")
                     .HasMaxLength(50)
+                    .IsRequired();
+            });
+
+            builder.OwnsOne(x => x.SourceCodeHash, hash =>
+            {
+                hash.Property(h => h.Value)
+                    .HasColumnName("source_code_hash")
+                    .HasMaxLength(64)
                     .IsRequired();
             });
 
             builder.OwnsOne(x => x.JudgeSummary, summary =>
             {
                 summary.Property(s => s.PassedTestCases)
-                    .HasColumnName("PassedTestcases");
+                    .HasColumnName("passed_test_cases");
 
                 summary.Property(s => s.TotalTestCases)
-                    .HasColumnName("TotalTestCases");
+                    .HasColumnName("total_test_cases");
 
                 summary.Property(s => s.MaxTimeMs)
-                    .HasColumnName("MaxTimeMs");
+                    .HasColumnName("max_time_ms");
 
                 summary.Property(s => s.MaxMemoryKb)
-                    .HasColumnName("MaxMemoryKb");
+                    .HasColumnName("max_memory_kb");
             });
 
-            builder.HasIndex(x => x.UserId);
-            builder.HasIndex(x => x.ProblemId);
-            builder.HasIndex(x => x.Status);
-            builder.HasIndex(x => x.CreatedAt);
+            builder.Navigation(x => x.JudgeSummary)
+                .IsRequired(false);
+
+            builder.HasIndex(x => x.UserId)
+                .HasDatabaseName("idx_submissions_user_id");
+
+            builder.HasIndex(x => x.ProblemId)
+                .HasDatabaseName("idx_submissions_problem_id");
+
+            builder.HasIndex(x => x.Status)
+                .HasDatabaseName("idx_submissions_status");
+
+            builder.HasIndex(x => x.CreatedAt)
+                .HasDatabaseName("idx_submissions_created_at");
         }
 
     }

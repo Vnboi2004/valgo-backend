@@ -7,7 +7,9 @@ namespace VAlgo.Modules.Submissions.Domain.ValueObjects
 {
     public sealed class SourceCodeHash : ValueObject
     {
-        public string Value { get; }
+        public string Value { get; private set; } = null!;
+
+        private SourceCodeHash() { }
 
         private SourceCodeHash(string value) => Value = value;
 
