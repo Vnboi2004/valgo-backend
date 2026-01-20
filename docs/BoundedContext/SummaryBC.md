@@ -28,7 +28,17 @@ KHÔNG chứa:
     - Score
     - Leaderboard
 
-3. Submission Context (CORE DOMAIN)
+3. Problem Classification
+
+Chịu trách nhiệm:
+    - Tag
+    - Category
+    - ProblemTag
+    - ProblemCategory
+    - Topics
+    - Campine
+
+4. Submission Context (CORE DOMAIN)
 
 Chịu trách nhiệm:
    - Submission
@@ -42,7 +52,7 @@ KHÔNG chứa:
     - Contest score
     - User profile
 
-4. Judge / Execution Context
+5. Judge / Execution Context
 
 Chịu trách nhiệm:
     - Compile
@@ -55,7 +65,7 @@ Context này:
     - Tách worker
     - Scale độc lập
 
-5. Contest Context
+6. Contest Context
 
 Chịu trách nhiệm:
     - Contest
@@ -63,7 +73,7 @@ Chịu trách nhiệm:
     - Time window
     - Rules
 
-6. Leaderboard / Ranking Context
+7. Leaderboard / Ranking Context
 
 Chịu trách nhiệm:
     - Ranking
