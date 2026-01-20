@@ -14,9 +14,12 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
         public Language Language { get; private set; } = null!;
         public string SourceCode { get; private set; } = null!;
         public SourceCodeHash SourceCodeHash { get; private set; } = null!;
+        public int TimeLimitMs { get; private set; }
+        public int MemoryLimitKb { get; private set; }
         public SubmissionStatus Status { get; private set; }
         public Verdict Verdict { get; private set; }
         public JudgeSummary? JudgeSummary { get; private set; }
+        public string? FailureReason { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? QueuedAt { get; private set; }
         public DateTime? StartedAt { get; private set; }
@@ -24,7 +27,15 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
 
         private Submission() { }
 
-        private Submission(SubmissionId id, Guid userId, Guid problemId, Language language, string sourceCode, DateTime now) : base(id)
+        private Submission(
+            SubmissionId id,
+            Guid userId,
+            Guid problemId,
+            Language language,
+            string sourceCode,
+            int timeLimitMs,
+            int memoryLimitKb,
+            DateTime now) : base(id)
         {
             Guard.AgainstNullOrEmpty(sourceCode, nameof(sourceCode));
 
@@ -32,15 +43,25 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
             ProblemId = problemId;
             Language = language;
             SourceCode = sourceCode;
+            TimeLimitMs = timeLimitMs;
+            MemoryLimitKb = memoryLimitKb;
             SourceCodeHash = SourceCodeHash.From(sourceCode);
             Status = SubmissionStatus.Created;
             Verdict = Verdict.Node;
             CreatedAt = now;
         }
 
-        public static Submission Create(Guid userId, Guid problemId, Language language, string sourceCode, DateTime now)
+        public static Submission Create(
+            Guid userId,
+            Guid problemId,
+            Language language,
+            string sourceCode,
+            int timeLimitMs,
+            int memoryLimitKb,
+            DateTime now
+        )
         {
-            var submission = new Submission(SubmissionId.New(), userId, problemId, language, sourceCode, now);
+            var submission = new Submission(SubmissionId.New(), userId, problemId, language, sourceCode, timeLimitMs, memoryLimitKb, now);
 
             submission.AddDomainEvent(new SubmissionCreatedDomainEvent(submission.Id.Value, now));
 
@@ -53,6 +74,8 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
 
             Status = SubmissionStatus.Queued;
             QueuedAt = now;
+
+            AddDomainEvent(new SubmissionEnqueuedDomainEvent(Id.Value, now));
         }
 
         public void StartRunning(DateTime now)
@@ -74,6 +97,8 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
             Verdict = verdict;
             JudgeSummary = judgeSummary;
             FinishedAt = now;
+
+            AddDomainEvent(new SubmissionCompletedDomainEvent(Id.Value, verdict, now));
         }
 
         public void Fail(string reason, DateTime now)
@@ -82,7 +107,10 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
 
             Status = SubmissionStatus.Failed;
             Verdict = Verdict.SystemError;
+            FailureReason = reason;
             FinishedAt = now;
+
+            AddDomainEvent(new SubmissionFailedDomainEvent(Id.Value, reason, now));
         }
 
         public void Cancel(DateTime now)

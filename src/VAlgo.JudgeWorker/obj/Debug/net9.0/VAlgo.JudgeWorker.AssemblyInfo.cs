@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VAlgo.JudgeWorker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4ecee7514e9812c136af8fa96aad8cbb011b237b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c091cced50b8f0e72c796d3955efbadec8fc3ef5")]
 [assembly: System.Reflection.AssemblyProductAttribute("VAlgo.JudgeWorker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VAlgo.JudgeWorker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
