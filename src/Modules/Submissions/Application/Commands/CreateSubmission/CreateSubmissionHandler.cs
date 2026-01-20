@@ -47,6 +47,8 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
                 request.ProblemId,
                 language,
                 request.SourceCode,
+                1000,
+                256000,
                 now
             );
 

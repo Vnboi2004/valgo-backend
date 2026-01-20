@@ -30,6 +30,14 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
                 .HasColumnName("source_code")
                 .IsRequired();
 
+            builder.Property(x => x.TimeLimitMs)
+                .HasColumnName("time_limit_ms")
+                .IsRequired();
+
+            builder.Property(x => x.MemoryLimitKb)
+                .HasColumnName("memory_limit_kb")
+                .IsRequired();
+
             builder.Property(x => x.CreatedAt)
                 .HasColumnName("created_at")
                 .IsRequired();
@@ -55,6 +63,10 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
                 .HasColumnName("verdict")
                 .HasConversion<int>()
                 .IsRequired();
+
+            builder.Property(x => x.FailureReason)
+                .HasMaxLength(200)
+                .IsRequired(false);
 
             builder.OwnsOne(x => x.Language, lang =>
             {
