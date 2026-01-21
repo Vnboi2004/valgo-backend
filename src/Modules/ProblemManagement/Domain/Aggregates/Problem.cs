@@ -1,9 +1,11 @@
+using VAlgo.Modules.ProblemClassification.Domain.Aggregates;
 using VAlgo.Modules.ProblemManagement.Domain.Entities;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.Modules.ProblemManagement.Domain.Events;
 using VAlgo.Modules.ProblemManagement.Domain.Exceptions;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 {
@@ -17,10 +19,18 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
         public ProblemStatus Status { get; private set; }
         public int TimeLimitMs { get; private set; }
         public int MemoryLimitKb { get; private set; }
+
+        // AllowLanguage
         private readonly List<AllowedLanguage> _allowedLanguages = new();
         public IReadOnlyCollection<AllowedLanguage> AllowedLanguages => _allowedLanguages;
+
+        // TestCases
         private readonly List<TestCase> _testCases = new();
         public IReadOnlyCollection<TestCase> TestCases => _testCases;
+
+        // Classification problem
+        private readonly List<ProblemClassificationRef> _classifications = new();
+        public IReadOnlyList<ProblemClassificationRef> Classifications => _classifications;
 
         private Problem() { }
 
@@ -78,6 +88,17 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
                 return;
 
             _allowedLanguages.Add(allowed);
+        }
+
+        public void AddClassificationRef(Classification classification)
+        {
+            if (!classification.IsActive)
+                throw new InvalidClassificationException();
+
+            if (_classifications.Any(x => x.ClassificationId == classification.Id.Value))
+                return;
+
+            _classifications.Add(ProblemClassificationRef.Create(classification.Id.Value));
         }
 
         public void Publish(DateTime now)
