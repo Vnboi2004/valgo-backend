@@ -4,7 +4,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.ValueObjects
 {
     public sealed class TestCaseId : ValueObject
     {
-        private Guid Value { get; }
+        public Guid Value { get; }
 
         private TestCaseId(Guid value) => Value = value;
 

@@ -5,7 +5,6 @@ using VAlgo.Modules.ProblemManagement.Domain.Events;
 using VAlgo.Modules.ProblemManagement.Domain.Exceptions;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
-using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 {
@@ -69,6 +68,126 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             return new Problem(ProblemId.New(), code, title, statement, shortDescription, difficulty, timeLimitMs, memoryLimitKb);
         }
 
+        public void UpdateMetadata(string title, string statement, string? shortDescription)
+        {
+            if (Status == ProblemStatus.Archived)
+                throw new InvalidProblemStateException(Id.Value, Status);
+
+            if (string.IsNullOrWhiteSpace(Title))
+                throw new InvalidProblemTitleException();
+
+            // Publised: không được sử statement
+            if (Status == ProblemStatus.Published)
+            {
+                Title = title;
+                ShortDescription = shortDescription;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(statement))
+                throw new InvalidProblemStatementException();
+
+            Title = title;
+            Statement = statement;
+            ShortDescription = shortDescription;
+        }
+
+        public void UpdateDifficulty(Difficulty difficulty)
+        {
+            if (Status == ProblemStatus.Archived)
+                throw new InvalidProblemStateException(Id.Value, Status);
+
+            Difficulty = difficulty;
+        }
+
+        public void UpdateConstraints(int timeLimitMs, int memoryLimitKb)
+        {
+            if (Status == ProblemStatus.Archived)
+                throw new InvalidProblemStateException(Id.Value, Status);
+
+            ValidateConstraints(timeLimitMs, memoryLimitKb);
+
+            TimeLimitMs = timeLimitMs;
+            MemoryLimitKb = memoryLimitKb;
+        }
+
+        public void RemoveTestCase(TestCaseId testCaseId)
+        {
+            if (Status == ProblemStatus.Archived)
+                throw new InvalidProblemStateException(Id.Value, Status);
+
+            var testCase = _testCases.FirstOrDefault(x => x.Id == testCaseId);
+
+            if (testCase == null)
+                throw new TestCaseNotFoundException(testCaseId);
+
+            if (testCase.IsSample && _testCases.Count(x => x.IsSample) == 1)
+                throw new CannotRemoveLastSampleTestCaseException(Id.Value);
+
+            _testCases.Remove(testCase);
+
+            int order = 1;
+            foreach (var tc in _testCases.OrderBy(x => x.Order))
+            {
+                tc.SetOrder(order++);
+            }
+        }
+
+        public void ReorderTestCases(IReadOnlyList<TestCaseId> orderedIds)
+        {
+            if (Status == ProblemStatus.Archived)
+                throw new InvalidProblemStateException(Id.Value, Status);
+
+            if (orderedIds.Count != _testCases.Count)
+                throw new InvalidTestCaseException("Mismatch test case count.");
+
+            var distinctIds = orderedIds.Distinct().ToList();
+            if (distinctIds.Count != orderedIds.Count)
+                throw new InvalidTestCaseException("Duplicate test case ids.");
+
+            var lookup = _testCases.ToDictionary(x => x.Id);
+
+            foreach (var id in orderedIds)
+            {
+                if (!lookup.ContainsKey(id))
+                    throw new TestCaseNotFoundException(id);
+            }
+
+            int order = 1;
+            foreach (var id in orderedIds)
+            {
+                lookup[id].SetOrder(order++);
+            }
+        }
+
+        public void RemoveAllowedLanguage(string language)
+        {
+            if (Status == ProblemStatus.Archived)
+                throw new InvalidProblemStateException(Id.Value, Status);
+
+            var target = new AllowedLanguage(language);
+
+            if (!_allowedLanguages.Contains(target))
+                throw new AllowedLanguageNotFoundException(language);
+
+            if (_allowedLanguages.Count == 1)
+                throw new CannotRemoveLastAllowedLanguageException(Id.Value);
+
+            _allowedLanguages.Remove(target);
+        }
+
+        public void UnassignClassification(Guid classificationId)
+        {
+            if (Status == ProblemStatus.Archived)
+                throw new InvalidProblemStateException(Id.Value, Status);
+
+            var target = _classifications.FirstOrDefault(x => x.ClassificationId == classificationId);
+
+            if (target == null)
+                throw new ClassificationNotFoundException(classificationId);
+
+            _classifications.Remove(target);
+        }
 
         public void AddTestCase(string input, string expectedOutput, OutputComparisonStrategy outputComparisonStrategy, bool isSample)
         {
@@ -108,7 +227,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             if (!_testCases.Any())
                 throw new ProblemWithoutTestCasesException(Id.Value);
 
-            if (_allowedLanguages.Any())
+            if (!_allowedLanguages.Any())
                 throw new ProblemWithoutAllowedLanguagesException(Id.Value);
 
             if (string.IsNullOrWhiteSpace(ShortDescription))

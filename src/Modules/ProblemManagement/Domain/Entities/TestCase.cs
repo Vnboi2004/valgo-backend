@@ -47,5 +47,10 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Entities
 
             return new TestCase(TestCaseId.New(), order, input, expectedOutput, comparisonStrategy, isSample);
         }
+
+        public void SetOrder(int order)
+        {
+            Order = order;
+        }
     }
 }
