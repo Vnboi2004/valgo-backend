@@ -2,6 +2,7 @@ using MediatR;
 using VAlgo.Modules.Submissions.Application.Abstractions;
 using VAlgo.Modules.Submissions.Domain.Aggregates;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
+using VAlgo.SharedKernel.Abstractions;
 
 namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
 {

@@ -6,10 +6,10 @@ namespace VAlgo.Modules.Submissions.Application.Queries.GetSubmissions
 {
     public sealed class GetSubmissionsQueryHandler : IRequestHandler<GetSubmissionsQuery, PagedResult<SubmissionListItemDto>>
     {
-        private readonly ISubmissionReadStore _submissionReadStore;
+        private readonly ISubmissionQueries _submissionQueries;
 
-        public GetSubmissionsQueryHandler(ISubmissionReadStore submissionReadStore)
-            => _submissionReadStore = submissionReadStore;
+        public GetSubmissionsQueryHandler(ISubmissionQueries submissionQueries)
+            => _submissionQueries = submissionQueries;
 
         public async Task<PagedResult<SubmissionListItemDto>> Handle(GetSubmissionsQuery request, CancellationToken cancellationToken)
         {
@@ -18,7 +18,7 @@ namespace VAlgo.Modules.Submissions.Application.Queries.GetSubmissions
 
             var skip = (page - 1) * pageSize;
 
-            var (items, totalCount) = await _submissionReadStore.GetSubmissionsAsync(request.UserId, request.ProblemId, skip, pageSize, cancellationToken);
+            var (items, totalCount) = await _submissionQueries.GetListAsync(request.UserId, request.ProblemId, skip, pageSize, cancellationToken);
 
             return new PagedResult<SubmissionListItemDto>(items, page, pageSize, totalCount);
         }

@@ -8,7 +8,6 @@ namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList
         string? Keyword,
         Difficulty? Difficulty,
         ProblemStatus? Status,
-        Guid? ClassificationId,
         int Page = 1,
         int PageSize = 20
     ) : IQuery<PagedResult<ProblemListItemDto>>;

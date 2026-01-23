@@ -1185,6 +1185,41 @@
           "bin/placeholder/VAlgo.Bootstrapper.dll": {}
         }
       },
+      "VAlgo.Modules.ProblemClassification/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "VAlgo.SharedKernel": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/VAlgo.Modules.ProblemClassification.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/VAlgo.Modules.ProblemClassification.dll": {}
+        }
+      },
+      "VAlgo.Modules.ProblemManagement/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "FluentValidation.DependencyInjectionExtensions": "9.0.0-preview5",
+          "MediatR.Extensions.Microsoft.DependencyInjection": "9.0.0",
+          "Microsoft.EntityFrameworkCore": "9.0.0",
+          "Microsoft.EntityFrameworkCore.Relational": "9.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "9.0.0",
+          "Microsoft.Extensions.Configuration.Json": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.0-rc.2",
+          "VAlgo.Modules.ProblemClassification": "1.0.0",
+          "VAlgo.SharedKernel": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/VAlgo.Modules.ProblemManagement.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/VAlgo.Modules.ProblemManagement.dll": {}
+        }
+      },
       "VAlgo.Modules.Submissions/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
@@ -3409,6 +3444,16 @@
       "path": "../VAlgo.Bootstrapper/VAlgo.Bootstrapper.csproj",
       "msbuildProject": "../VAlgo.Bootstrapper/VAlgo.Bootstrapper.csproj"
     },
+    "VAlgo.Modules.ProblemClassification/1.0.0": {
+      "type": "project",
+      "path": "../Modules/ProblemClassification/VAlgo.Modules.ProblemClassification.csproj",
+      "msbuildProject": "../Modules/ProblemClassification/VAlgo.Modules.ProblemClassification.csproj"
+    },
+    "VAlgo.Modules.ProblemManagement/1.0.0": {
+      "type": "project",
+      "path": "../Modules/ProblemManagement/VAlgo.Modules.ProblemManagement.csproj",
+      "msbuildProject": "../Modules/ProblemManagement/VAlgo.Modules.ProblemManagement.csproj"
+    },
     "VAlgo.Modules.Submissions/1.0.0": {
       "type": "project",
       "path": "../Modules/Submissions/VAlgo.Modules.Submissions.csproj",
@@ -3427,6 +3472,7 @@
       "Swashbuckle.AspNetCore.SwaggerGen >= 9.0.0",
       "Swashbuckle.AspNetCore.SwaggerUI >= 9.0.0",
       "VAlgo.Bootstrapper >= 1.0.0",
+      "VAlgo.Modules.ProblemManagement >= 1.0.0",
       "VAlgo.Modules.Submissions >= 1.0.0"
     ]
   },
@@ -3463,6 +3509,9 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
+            "C:\\Workspace\\Project\\VAlgo-Backend\\src\\Modules\\ProblemManagement\\VAlgo.Modules.ProblemManagement.csproj": {
+              "projectPath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\Modules\\ProblemManagement\\VAlgo.Modules.ProblemManagement.csproj"
+            },
             "C:\\Workspace\\Project\\VAlgo-Backend\\src\\Modules\\Submissions\\VAlgo.Modules.Submissions.csproj": {
               "projectPath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\Modules\\Submissions\\VAlgo.Modules.Submissions.csproj"
             },
@@ -3531,12 +3580,6 @@
     }
   },
   "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0."
-    },
     {
       "code": "NU1608",
       "level": "Warning",

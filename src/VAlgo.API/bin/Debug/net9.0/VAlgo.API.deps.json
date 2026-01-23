@@ -13,6 +13,7 @@
           "Swashbuckle.AspNetCore.SwaggerGen": "9.0.0",
           "Swashbuckle.AspNetCore.SwaggerUI": "9.0.0",
           "VAlgo.Bootstrapper": "1.0.0",
+          "VAlgo.Modules.ProblemManagement": "1.0.0",
           "VAlgo.Modules.Submissions": "1.0.0"
         },
         "runtime": {
@@ -684,6 +685,37 @@
           }
         }
       },
+      "VAlgo.Modules.ProblemClassification/1.0.0": {
+        "dependencies": {
+          "VAlgo.SharedKernel": "1.0.0"
+        },
+        "runtime": {
+          "VAlgo.Modules.ProblemClassification.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "VAlgo.Modules.ProblemManagement/1.0.0": {
+        "dependencies": {
+          "FluentValidation.DependencyInjectionExtensions": "9.0.0-preview5",
+          "MediatR.Extensions.Microsoft.DependencyInjection": "9.0.0",
+          "Microsoft.EntityFrameworkCore": "9.0.0",
+          "Microsoft.EntityFrameworkCore.Relational": "9.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "9.0.0",
+          "Microsoft.Extensions.Configuration.Json": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.0-rc.2",
+          "VAlgo.Modules.ProblemClassification": "1.0.0",
+          "VAlgo.SharedKernel": "1.0.0"
+        },
+        "runtime": {
+          "VAlgo.Modules.ProblemManagement.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "VAlgo.Modules.Submissions/1.0.0": {
         "dependencies": {
           "FluentValidation": "9.0.1",
@@ -1118,6 +1150,16 @@
       "hashPath": "system.threading.channels.7.0.0.nupkg.sha512"
     },
     "VAlgo.Bootstrapper/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "VAlgo.Modules.ProblemClassification/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "VAlgo.Modules.ProblemManagement/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -4,15 +4,15 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
 
 namespace VAlgo.Modules.ProblemManagement.Application.Abstractions
 {
-    public interface IProblemReadStore
+    public interface IProblemManagementQueries
     {
-        Task<(IReadOnlyList<ProblemListItemDto> Items, int TotalCount)> GetProblemsAsync(
+        Task<(IReadOnlyList<ProblemListItemDto> Items, int TotalCount)> GetListAsync(
             GetProblemListQuery filter,
             int skip,
             int take,
             CancellationToken cancellationToken = default
         );
-        Task<ProblemDetailDto?> GetProblemDetailAsync(Guid problemId, CancellationToken cancellationToken = default);
-        Task<ProblemEditorDto?> GetAsync(Guid problemId, CancellationToken cancellationToken = default);
+        Task<ProblemDetailDto?> GetDetailAsync(Guid problemId, CancellationToken cancellationToken = default);
+        Task<ProblemEditorDto?> GetEditorAsync(Guid problemId, CancellationToken cancellationToken = default);
     }
 }

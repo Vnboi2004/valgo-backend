@@ -6,6 +6,5 @@ namespace VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail
         public bool Passed { get; init; }
         public int TimeMs { get; init; }
         public int MemoryKb { get; init; }
-        public string? Error { get; init; }
     }
 }

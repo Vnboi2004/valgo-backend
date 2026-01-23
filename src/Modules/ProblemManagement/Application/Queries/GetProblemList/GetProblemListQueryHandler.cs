@@ -6,10 +6,10 @@ namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList
 {
     public sealed class GetProblemListQueryHandler : IRequestHandler<GetProblemListQuery, PagedResult<ProblemListItemDto>>
     {
-        private readonly IProblemReadStore _problemReadStore;
+        private readonly IProblemManagementQueries _problemManagementQueries;
 
-        public GetProblemListQueryHandler(IProblemReadStore problemReadStore)
-            => _problemReadStore = problemReadStore;
+        public GetProblemListQueryHandler(IProblemManagementQueries problemManagementQueries)
+            => _problemManagementQueries = problemManagementQueries;
 
         public async Task<PagedResult<ProblemListItemDto>> Handle(GetProblemListQuery request, CancellationToken cancellationToken)
         {
@@ -18,7 +18,7 @@ namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList
 
             var skip = (page - 1) * pageSize;
 
-            var (items, totalCount) = await _problemReadStore.GetProblemsAsync(request, skip, pageSize, cancellationToken);
+            var (items, totalCount) = await _problemManagementQueries.GetListAsync(request, skip, pageSize, cancellationToken);
 
             return new PagedResult<ProblemListItemDto>(items, page, pageSize, totalCount);
         }

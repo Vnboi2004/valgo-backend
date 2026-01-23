@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "t4o0Vjt3tos=",
+  "dgSpecHash": "wQhEEqI3nFc=",
   "success": true,
   "projectFilePath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\VAlgo.API.csproj",
   "expectedPackageFiles": [
@@ -62,15 +62,6 @@
     "C:\\Users\\insec\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512"
   ],
   "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "message": "Problem reading the cache file C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
-      "projectPath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\VAlgo.API.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\VAlgo.API\\VAlgo.API.csproj",
-      "targetGraphs": []
-    },
     {
       "code": "NU1608",
       "level": "Warning",

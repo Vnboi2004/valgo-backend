@@ -6,28 +6,19 @@ namespace VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail
 {
     public sealed class GetSubmissionDetailQueryHandler : IRequestHandler<GetSubmissionDetailQuery, SubmissionDetailDto>
     {
-        private readonly ISubmissionDetailReadStore _submissionDetailReadStore;
-        private readonly IJudgeResultReadStore _judgeResultReadStore;
-
-        public GetSubmissionDetailQueryHandler(
-            ISubmissionDetailReadStore submissionDetailReadStore,
-            IJudgeResultReadStore judgeResultReadStore
-        )
-        {
-            _submissionDetailReadStore = submissionDetailReadStore;
-            _judgeResultReadStore = judgeResultReadStore;
-        }
-
+        private readonly ISubmissionQueries _submissionQueries;
+        public GetSubmissionDetailQueryHandler(ISubmissionQueries submissionQueries)
+            => _submissionQueries = submissionQueries;
         public async Task<SubmissionDetailDto> Handle(GetSubmissionDetailQuery request, CancellationToken cancellationToken)
         {
-            var submission = await _submissionDetailReadStore.GetByIdAsync(request.SubmissionId, cancellationToken);
+            var submission = await _submissionQueries.GetDetailAsync(request.SubmissionId, cancellationToken);
 
             if (submission == null)
                 throw new InvalidOperationException($"Submission {request.SubmissionId} not found");
 
             if (submission.Status == SubmissionStatus.Completed)
             {
-                var testCases = await _judgeResultReadStore.GetTestCasesAsync(request.SubmissionId, cancellationToken);
+                var testCases = await _submissionQueries.GetTestCasesAsync(request.SubmissionId, cancellationToken);
 
                 submission = submission with
                 {

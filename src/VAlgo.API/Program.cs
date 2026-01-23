@@ -1,3 +1,4 @@
+using VAlgo.Modules.ProblemManagement;
 using VAlgo.Modules.Submissions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Modules
+
+// Submissions
 builder.Services.AddSubmissionsModule(builder.Configuration);
+
+// Problem Management
+builder.Services.AddProblemManagementModule(builder.Configuration);
 
 builder.Services.AddOpenApi();
 

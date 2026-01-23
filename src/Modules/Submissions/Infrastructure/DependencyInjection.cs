@@ -7,6 +7,7 @@ using VAlgo.Modules.Submissions.Infrastructure.Persistence;
 using VAlgo.Modules.Submissions.Infrastructure.Persistence.Repositories;
 using VAlgo.Modules.Submissions.Infrastructure.Read;
 using VAlgo.Modules.Submissions.Infrastructure.Time;
+using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.Submissions.Infrastructure
@@ -27,10 +28,7 @@ namespace VAlgo.Modules.Submissions.Infrastructure
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISubmissionRepository, SubmissionRepository>();
-            services.AddScoped<ISubmissionReadStore, SubmissionReadStore>();
-            services.AddScoped<ISubmissionDetailReadStore, SubmissionDetailReadStore>();
-            services.AddScoped<ISubmissionStatusReadStore, SubmissionStatusReadStore>();
-            services.AddScoped<IJudgeResultReadStore, JudgeResultReadStore>();
+            services.AddScoped<ISubmissionQueries, SubmissionQueries>();
 
             services.AddScoped<IJudgeQueue, JudgeQueue>();
             services.AddScoped<IUserReadService, UserReadService>();

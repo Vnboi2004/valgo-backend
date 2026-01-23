@@ -5,7 +5,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.ValueObjects
 {
     public sealed class AllowedLanguage : ValueObject
     {
-        private string Value { get; } = null!;
+        public string Value { get; set; } = null!;
 
         private AllowedLanguage() { }
 
