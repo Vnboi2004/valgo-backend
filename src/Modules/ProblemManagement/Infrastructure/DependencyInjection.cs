@@ -31,6 +31,8 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProblemRepository, ProblemRepository>();
             services.AddScoped<IProblemManagementQueries, ProblemManagementQueries>();
+            services.AddScoped<IProblemForJudgeQueries, ProblemForJudgeQueries>();
+            services.AddScoped<IClassificationRepository, ClassificationRepository>();
             services.AddScoped<IClock, SystemClock>();
 
             return services;

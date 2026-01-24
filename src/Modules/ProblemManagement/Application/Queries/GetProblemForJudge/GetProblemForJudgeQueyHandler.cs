@@ -7,14 +7,14 @@ namespace VAlgo.Modules.ProblemManagement.Application.Commands.GetProblemForJudg
 {
     public sealed class GetProblemForJudgeQueryHandler : IRequestHandler<GetProblemForJudgeQuery, ProblemForJudgeDto>
     {
-        private readonly IProblemForJudgeReadStore _problemForJudgeReadStore;
+        private readonly IProblemForJudgeQueries _problemForJudgeQueries;
 
-        public GetProblemForJudgeQueryHandler(IProblemForJudgeReadStore problemForJudgeReadStore)
-            => _problemForJudgeReadStore = problemForJudgeReadStore;
+        public GetProblemForJudgeQueryHandler(IProblemForJudgeQueries problemForJudgeQueries)
+            => _problemForJudgeQueries = problemForJudgeQueries;
 
         public async Task<ProblemForJudgeDto> Handle(GetProblemForJudgeQuery request, CancellationToken cancellationToken)
         {
-            var problem = await _problemForJudgeReadStore.GetAsync(request.ProblemId, cancellationToken);
+            var problem = await _problemForJudgeQueries.GetAsync(request.ProblemId, cancellationToken);
 
             if (problem == null)
                 throw new ProblemNotFoundException(request.ProblemId);
