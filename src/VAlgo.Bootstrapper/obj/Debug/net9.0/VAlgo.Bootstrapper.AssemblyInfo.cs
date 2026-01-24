@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VAlgo.Bootstrapper")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+984a4e91396c86393b891d82ee0fe8a9dc24c453")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ccf51ee8dabd6357e16cc2521a302da1a93b8158")]
 [assembly: System.Reflection.AssemblyProductAttribute("VAlgo.Bootstrapper")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VAlgo.Bootstrapper")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

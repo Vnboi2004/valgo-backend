@@ -1,4 +1,5 @@
 using VAlgo.Modules.ProblemClassification.Domain.Enums;
+using VAlgo.Modules.ProblemClassification.Domain.Exceptions;
 using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
 
@@ -31,7 +32,29 @@ namespace VAlgo.Modules.ProblemClassification.Domain.Aggregates
 
         public void Deactivate()
         {
+            if (!IsActive)
+                return;
+
             IsActive = false;
+        }
+
+        public void Reactivate()
+        {
+            if (IsActive)
+                return;
+
+            IsActive = true;
+        }
+
+        public void Rename(string newName)
+        {
+            if (!IsActive)
+                throw new ClassificationInactiveException();
+
+            if (string.IsNullOrWhiteSpace(newName))
+                throw new ClassificationNameInvalidException();
+
+            Name = newName.Trim();
         }
 
         private static string NormalizeCode(string code)
