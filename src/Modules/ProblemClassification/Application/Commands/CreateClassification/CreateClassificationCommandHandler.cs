@@ -8,21 +8,21 @@ namespace VAlgo.Modules.ProblemClassification.Application.Commands.CreateClassif
 {
     public sealed class CreateClassificationCommandHandler : IRequestHandler<CreateClassificationCommand, Guid>
     {
-        private readonly IProblemClassificationRepository _problemClassificationRepository;
+        private readonly IClassificationRepository _classificationRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateClassificationCommandHandler(
-            IProblemClassificationRepository problemClassificationRepository,
+            IClassificationRepository classificationRepository,
             IUnitOfWork unitOfWork
         )
         {
-            _problemClassificationRepository = problemClassificationRepository;
+            _classificationRepository = classificationRepository;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Handle(CreateClassificationCommand request, CancellationToken cancellationToken)
         {
-            var exists = await _problemClassificationRepository.ExistsByCodeAsync(request.Code, cancellationToken);
+            var exists = await _classificationRepository.ExistsByCodeAsync(request.Code, cancellationToken);
             if (exists)
                 throw new ClassificationCodeAlreadyExistsException(request.Code);
 
@@ -32,7 +32,7 @@ namespace VAlgo.Modules.ProblemClassification.Application.Commands.CreateClassif
                 request.Type
             );
 
-            await _problemClassificationRepository.AddAsync(classification, cancellationToken);
+            await _classificationRepository.AddAsync(classification, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

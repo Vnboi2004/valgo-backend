@@ -3,7 +3,7 @@ using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
 
 namespace VAlgo.Modules.ProblemClassification.Application.Abstractions
 {
-    public interface IProblemClassificationRepository
+    public interface IClassificationRepository
     {
         Task AddAsync(Classification classification, CancellationToken cancellationToken = default);
         Task UpdateAsync(Classification classification, CancellationToken cancellationToken = default);

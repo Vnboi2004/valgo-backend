@@ -17,14 +17,11 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure
         {
             services.AddDbContext<ProblemManagementDbContext>(options =>
             {
-                services.AddDbContext<ProblemManagementDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("ProblemManagementDb"), npgsql =>
                 {
-                    options.UseNpgsql(configuration.GetConnectionString("ProblemManagementDb"), npgsql =>
-                    {
-                        npgsql.MigrationsAssembly(typeof(ProblemManagementDbContext).Assembly.FullName);
+                    npgsql.MigrationsAssembly(typeof(ProblemManagementDbContext).Assembly.FullName);
 
-                        npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null);
-                    });
+                    npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null);
                 });
             });
 

@@ -8,15 +8,15 @@ namespace VAlgo.Modules.ProblemClassification.Application.Commands.ReactivateCla
 {
     public sealed class ReactivateClassificationCommandHandler : IRequestHandler<ReactivateClassificationCommand, Unit>
     {
-        private readonly IProblemClassificationRepository _problemClassificationRepository;
+        private readonly IClassificationRepository _classificationRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public ReactivateClassificationCommandHandler(
-            IProblemClassificationRepository problemClassificationRepository,
+            IClassificationRepository classificationRepository,
             IUnitOfWork unitOfWork
         )
         {
-            _problemClassificationRepository = problemClassificationRepository;
+            _classificationRepository = classificationRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -24,7 +24,7 @@ namespace VAlgo.Modules.ProblemClassification.Application.Commands.ReactivateCla
         {
             var classificationId = ClassificationId.From(request.ClassificationId);
 
-            var classification = await _problemClassificationRepository.GetByIdAsync(classificationId, cancellationToken);
+            var classification = await _classificationRepository.GetByIdAsync(classificationId, cancellationToken);
 
             if (classification == null)
                 throw new ClassificationNotFoundException(classificationId);
