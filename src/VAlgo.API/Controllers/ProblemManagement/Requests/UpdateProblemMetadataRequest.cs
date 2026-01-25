@@ -1,4 +1,4 @@
-namespace VAlgo.API.Controllers.Problems.Requests
+namespace VAlgo.API.Controllers.ProblemManagement.Requests
 {
     public sealed record UpdateProblemMetadataRequest
     (

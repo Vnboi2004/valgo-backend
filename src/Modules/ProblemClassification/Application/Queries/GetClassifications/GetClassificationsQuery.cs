@@ -7,7 +7,7 @@ namespace VAlgo.Modules.ProblemClassification.Application.Queries.GetClassificat
     public sealed record GetClassificationsQuery(
         ClassificationType? Type,
         bool? IsActive,
-        int Page,
-        int PageSize
+        int Page = 1,
+        int PageSize = 20
     ) : IQuery<PagedResult<ClassificationListItemDto>>;
 }

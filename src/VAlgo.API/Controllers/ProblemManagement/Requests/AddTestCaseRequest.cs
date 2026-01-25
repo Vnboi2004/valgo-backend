@@ -1,6 +1,6 @@
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 
-namespace VAlgo.API.Controllers.Problems.Requests
+namespace VAlgo.API.Controllers.ProblemManagement.Requests
 {
     public sealed record AddTestCaseRequest(
         string Input,

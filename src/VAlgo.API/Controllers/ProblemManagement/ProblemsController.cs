@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using VAlgo.API.Controllers.Problems.Requests;
+using VAlgo.API.Controllers.ProblemManagement.Requests;
 using VAlgo.Modules.ProblemManagement.Application.Commands.AddAllowedLanguage;
 using VAlgo.Modules.ProblemManagement.Application.Commands.AddTestCase;
 using VAlgo.Modules.ProblemManagement.Application.Commands.ArchiveProblem;
@@ -20,7 +20,7 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemForJudge;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 
-namespace VAlgo.API.Controllers.Problems
+namespace VAlgo.API.Controllers.ProblemManagement
 {
     [ApiController]
     [Route("api/problems")]
@@ -219,7 +219,8 @@ namespace VAlgo.API.Controllers.Problems
             [FromQuery] string keyword,
             [FromQuery] Difficulty difficulty,
             [FromQuery] ProblemStatus status,
-            [FromQuery] int page, [FromQuery] int pageSize,
+            [FromQuery] int page,
+            [FromQuery] int pageSize,
             CancellationToken cancellationToken
         )
         {

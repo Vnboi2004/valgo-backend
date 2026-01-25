@@ -460,6 +460,9 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
+              "C:\\Workspace\\Project\\VAlgo-Backend\\src\\Modules\\ProblemClassification\\VAlgo.Modules.ProblemClassification.csproj": {
+                "projectPath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\Modules\\ProblemClassification\\VAlgo.Modules.ProblemClassification.csproj"
+              },
               "C:\\Workspace\\Project\\VAlgo-Backend\\src\\Modules\\ProblemManagement\\VAlgo.Modules.ProblemManagement.csproj": {
                 "projectPath": "C:\\Workspace\\Project\\VAlgo-Backend\\src\\Modules\\ProblemManagement\\VAlgo.Modules.ProblemManagement.csproj"
               },
