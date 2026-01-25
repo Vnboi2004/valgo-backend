@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VAlgo.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+646e31f3494f83dc90e1b115eb792740c8b6ea5a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5774350e10884964dbc55de3c2e98f7bb2627052")]
 [assembly: System.Reflection.AssemblyProductAttribute("VAlgo.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VAlgo.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
