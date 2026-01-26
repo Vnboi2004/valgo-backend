@@ -1,5 +1,6 @@
 using VAlgo.Modules.Identity.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.Identity.Domain.Entities
 {
@@ -28,7 +29,7 @@ namespace VAlgo.Modules.Identity.Domain.Entities
             IsUsed = true;
         }
 
-        public bool IsExpired()
-            => DateTimeOffset.UtcNow >= ExpiresAt;
+        public bool IsExpired(IClock clock)
+            => clock.UtcNow >= ExpiresAt;
     }
 }
