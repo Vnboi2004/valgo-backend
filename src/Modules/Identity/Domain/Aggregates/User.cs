@@ -35,12 +35,18 @@ namespace VAlgo.Modules.Identity.Domain.Aggregates
 
         public void VerifyEmail()
         {
+            if (IsEmailVerified)
+                throw new EmailAlreadyVerifiedException();
+
             IsEmailVerified = true;
             Status = UserStatus.Active;
         }
 
         public void ChangePassword(PasswordHash newPasswordHash)
         {
+            if (Status == UserStatus.Locked)
+                throw new UserLockedException();
+
             PasswordHash = newPasswordHash;
         }
 
