@@ -1,10 +1,11 @@
+using VAlgo.Modules.Identity.Domain.Exceptions;
 using VAlgo.Modules.Identity.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Time;
 
-namespace VAlgo.Modules.Identity.Domain.Entities
+namespace VAlgo.Modules.Identity.Domain.Aggregates
 {
-    public sealed class EmailVerificationToken : Entity<EmailVerificationTokenId>
+    public sealed class EmailVerificationToken : AggregateRoot<EmailVerificationTokenId>
     {
         public UserId UserId { get; private set; }
         public string Token { get; private set; }
@@ -27,6 +28,9 @@ namespace VAlgo.Modules.Identity.Domain.Entities
 
         public void MarkAsUsed()
         {
+            if (IsUsed)
+                throw new VerificationTokenAlreadyUsedException();
+
             IsUsed = true;
         }
 

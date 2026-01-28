@@ -2,7 +2,7 @@ using VAlgo.Modules.Identity.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Time;
 
-namespace VAlgo.Modules.Identity.Domain.Entities
+namespace VAlgo.Modules.Identity.Domain.Aggregates
 {
     public sealed class RefreshToken : Entity<RefreshTokenId>
     {
