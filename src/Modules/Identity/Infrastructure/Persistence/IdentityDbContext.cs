@@ -10,6 +10,7 @@ namespace VAlgo.Modules.Identity.Infrastructure.Persistence
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<EmailVerificationToken> EmailVerificationTokens => Set<EmailVerificationToken>();
         public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
+        public DbSet<LoginAttempt> LoginAttempts => Set<LoginAttempt>();
 
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
             : base(options) { }

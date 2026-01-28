@@ -136,3 +136,11 @@ C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\refint\VAlgo.A
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\VAlgo.API.pdb
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\VAlgo.API.genruntimeconfig.cache
 C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\obj\Debug\net9.0\ref\VAlgo.API.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\bin\Debug\net9.0\BCrypt.Net-Next.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\bin\Debug\net9.0\VAlgo.Modules.Identity.dll
+C:\Workspace\Project\VAlgo-Backend\src\VAlgo.API\bin\Debug\net9.0\VAlgo.Modules.Identity.pdb

@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Modules\Submissions\VAlgo.Modules.Submissions.csproj" />
     <ProjectReference Include="..\Modules\ProblemManagement\VAlgo.Modules.ProblemManagement.csproj" />
     <ProjectReference Include="..\Modules\ProblemClassification\VAlgo.Modules.ProblemClassification.csproj" />
+    <ProjectReference Include="..\Modules\Identity\VAlgo.Modules.Identity.csproj" />
   </ItemGroup>
 
 </Project>
