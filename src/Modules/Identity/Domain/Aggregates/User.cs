@@ -2,6 +2,7 @@ using VAlgo.Modules.Identity.Domain.Enums;
 using VAlgo.Modules.Identity.Domain.Exceptions;
 using VAlgo.Modules.Identity.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.Identity.Domain.Aggregates
 {
@@ -14,6 +15,7 @@ namespace VAlgo.Modules.Identity.Domain.Aggregates
         public UserStatus Status { get; private set; }
         public bool IsEmailVerified { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
+        public DateTimeOffset? LockedUntil { get; private set; }
 
         private User() { }
 
@@ -55,9 +57,25 @@ namespace VAlgo.Modules.Identity.Domain.Aggregates
             Role = UserRole.Admin;
         }
 
-        public void Lock()
+        public void Lock(DateTimeOffset until)
         {
             Status = UserStatus.Locked;
+            LockedUntil = until;
+        }
+
+        public bool IsLocked(IClock clock)
+        {
+            if (Status != UserStatus.Locked)
+                return false;
+
+            if (LockedUntil <= clock.UtcNow)
+            {
+                Status = UserStatus.Active;
+                LockedUntil = null;
+                return false;
+            }
+
+            return true;
         }
 
         public void Deactivate()

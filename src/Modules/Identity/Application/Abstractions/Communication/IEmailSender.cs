@@ -1,4 +1,4 @@
-namespace VAlgo.Modules.Identity.Application.Abstractions
+namespace VAlgo.Modules.Identity.Application.Abstractions.Communication
 {
     public interface IEmailSender
     {

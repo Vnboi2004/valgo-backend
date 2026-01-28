@@ -1,7 +1,7 @@
-using VAlgo.Modules.Identity.Domain.Entities;
+using VAlgo.Modules.Identity.Domain.Aggregates;
 using VAlgo.Modules.Identity.Domain.ValueObjects;
 
-namespace VAlgo.Modules.Identity.Application.Abstractions
+namespace VAlgo.Modules.Identity.Application.Abstractions.Persistence
 {
     public interface IRefreshTokenRepository
     {
