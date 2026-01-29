@@ -1,3 +1,5 @@
+using VAlgo.Modules.Identity;
+using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
 using VAlgo.Modules.Submissions;
 
@@ -17,6 +19,12 @@ builder.Services.AddSubmissionsModule(builder.Configuration);
 
 // Problem Management
 builder.Services.AddProblemManagementModule(builder.Configuration);
+
+// Problem Classification
+builder.Services.AddProblemClassificationModule(builder.Configuration);
+
+// Identity
+builder.Services.AddIdentityModule(builder.Configuration);
 
 builder.Services.AddOpenApi();
 

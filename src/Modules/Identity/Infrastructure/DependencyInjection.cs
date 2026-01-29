@@ -35,6 +35,7 @@ namespace VAlgo.Modules.Identity.Infrastructure
             services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+            services.AddScoped<ILoginAttemptRepository, LoginAttemptRepository>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IAccessTokenGenerator, JwtAccessTokenGenerator>();
             services.AddScoped<ISecureTokenGenerator, SecureTokenGenerator>();
