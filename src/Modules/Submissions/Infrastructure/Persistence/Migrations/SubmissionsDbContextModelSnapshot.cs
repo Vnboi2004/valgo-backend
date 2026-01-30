@@ -32,9 +32,9 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("FailureReason")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                    b.Property<int?>("FailureReason")
+                        .HasColumnType("integer")
+                        .HasColumnName("failure_reason");
 
                     b.Property<DateTime?>("FinishedAt")
                         .HasColumnType("timestamp with time zone")
@@ -51,6 +51,12 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("QueuedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("queued_at");
+
+                    b.Property<int>("RetryCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("retry_count");
 
                     b.Property<string>("SourceCode")
                         .IsRequired()
@@ -77,6 +83,11 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("verdict");
 
+                    b.Property<string>("WorkerId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("worker_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedAt")
@@ -91,54 +102,55 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("idx_submissions_user_id");
 
+                    b.HasIndex("Status", "RetryCount")
+                        .HasDatabaseName("ix_submissions_retry");
+
+                    b.HasIndex("Status", "WorkerId")
+                        .HasDatabaseName("ix_submissions_status_worker");
+
                     b.ToTable("submissions", "submissions");
                 });
 
-            modelBuilder.Entity("VAlgo.Modules.Submissions.Infrastructure.Persistence.Entities.TestCaseResult", b =>
+            modelBuilder.Entity("VAlgo.Modules.Submissions.Domain.Entities.TestCaseResult", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Error")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("error");
-
-                    b.Property<int>("Index")
-                        .HasColumnType("integer")
-                        .HasColumnName("index");
-
                     b.Property<int>("MemoryKb")
                         .HasColumnType("integer")
                         .HasColumnName("memory_kb");
 
-                    b.Property<bool>("Passed")
-                        .HasColumnType("boolean")
-                        .HasColumnName("passed");
+                    b.Property<string>("Output")
+                        .HasColumnType("text")
+                        .HasColumnName("output");
 
                     b.Property<Guid>("SubmissionId")
                         .HasColumnType("uuid")
                         .HasColumnName("submission_id");
 
+                    b.Property<int>("TestCaseIndex")
+                        .HasColumnType("integer")
+                        .HasColumnName("test_case_index");
+
                     b.Property<int>("TimeMs")
                         .HasColumnType("integer")
                         .HasColumnName("time_ms");
 
+                    b.Property<int>("Verdict")
+                        .HasColumnType("integer")
+                        .HasColumnName("verdict");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SubmissionId")
-                        .HasDatabaseName("idx_test_case_results_submission_id");
+                        .HasDatabaseName("ix_test_case_results_submission");
 
-                    b.HasIndex("SubmissionId", "Index")
+                    b.HasIndex("SubmissionId", "TestCaseIndex")
                         .IsUnique()
-                        .HasDatabaseName("uq_test_case_results_submission_id_test_case_index");
+                        .HasDatabaseName("ux_test_case_results_submission_case");
 
-                    b.ToTable("test_case_results", "test_case_results");
+                    b.ToTable("submission_test_case_results", "submissions");
                 });
 
             modelBuilder.Entity("VAlgo.Modules.Submissions.Domain.Aggregates.Submission", b =>
@@ -217,6 +229,20 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
 
                     b.Navigation("SourceCodeHash")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("VAlgo.Modules.Submissions.Domain.Entities.TestCaseResult", b =>
+                {
+                    b.HasOne("VAlgo.Modules.Submissions.Domain.Aggregates.Submission", null)
+                        .WithMany("TestCaseResults")
+                        .HasForeignKey("SubmissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VAlgo.Modules.Submissions.Domain.Aggregates.Submission", b =>
+                {
+                    b.Navigation("TestCaseResults");
                 });
 #pragma warning restore 612, 618
         }

@@ -25,7 +25,7 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
             builder.Property(x => x.ProblemId)
                 .HasColumnName("problem_id")
                 .IsRequired();
-                                                                                                    
+
             builder.Property(x => x.SourceCode)
                 .HasColumnName("source_code")
                 .IsRequired();
@@ -65,7 +65,18 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(x => x.FailureReason)
-                .HasMaxLength(200)
+                .HasColumnName("failure_reason")
+                .HasConversion<int>()
+                .IsRequired(false);
+
+            builder.Property(x => x.RetryCount)
+                .HasColumnName("retry_count")
+                .HasDefaultValue(0)
+                .IsRequired();
+
+            builder.Property(x => x.WorkerId)
+                .HasColumnName("worker_id")
+                .HasMaxLength(128)
                 .IsRequired(false);
 
             builder.OwnsOne(x => x.Language, lang =>
@@ -113,7 +124,12 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(x => x.CreatedAt)
                 .HasDatabaseName("idx_submissions_created_at");
-        }
 
+            builder.HasIndex(x => new { x.Status, x.WorkerId })
+                .HasDatabaseName("ix_submissions_status_worker");
+
+            builder.HasIndex(x => new { x.Status, x.RetryCount })
+                .HasDatabaseName("ix_submissions_retry");
+        }
     }
 }

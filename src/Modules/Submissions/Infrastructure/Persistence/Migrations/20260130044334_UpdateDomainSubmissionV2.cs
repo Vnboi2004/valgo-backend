@@ -6,16 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Submissions : Migration
+    public partial class UpdateDomainSubmissionV2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "submissions");
-
-            migrationBuilder.EnsureSchema(
-                name: "test_case_results");
 
             migrationBuilder.CreateTable(
                 name: "submissions",
@@ -28,12 +25,17 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
                     language = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     source_code = table.Column<string>(type: "text", nullable: false),
                     source_code_hash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    time_limit_ms = table.Column<int>(type: "integer", nullable: false),
+                    memory_limit_kb = table.Column<int>(type: "integer", nullable: false),
+                    retry_count = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     status = table.Column<int>(type: "integer", nullable: false),
                     verdict = table.Column<int>(type: "integer", nullable: false),
                     total_test_cases = table.Column<int>(type: "integer", nullable: true),
                     passed_test_cases = table.Column<int>(type: "integer", nullable: true),
                     max_time_ms = table.Column<int>(type: "integer", nullable: true),
                     max_memory_kb = table.Column<int>(type: "integer", nullable: true),
+                    failure_reason = table.Column<int>(type: "integer", nullable: true),
+                    worker_id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     queued_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     started_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -45,23 +47,42 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "test_case_results",
-                schema: "test_case_results",
+                name: "submission_test_case_results",
+                schema: "submissions",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     submission_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    index = table.Column<int>(type: "integer", nullable: false),
-                    passed = table.Column<bool>(type: "boolean", nullable: false),
+                    test_case_index = table.Column<int>(type: "integer", nullable: false),
+                    verdict = table.Column<int>(type: "integer", nullable: false),
                     time_ms = table.Column<int>(type: "integer", nullable: false),
                     memory_kb = table.Column<int>(type: "integer", nullable: false),
-                    error = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    output = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_test_case_results", x => x.id);
+                    table.PrimaryKey("PK_submission_test_case_results", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_submission_test_case_results_submissions_submission_id",
+                        column: x => x.submission_id,
+                        principalSchema: "submissions",
+                        principalTable: "submissions",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_test_case_results_submission",
+                schema: "submissions",
+                table: "submission_test_case_results",
+                column: "submission_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ux_test_case_results_submission_case",
+                schema: "submissions",
+                table: "submission_test_case_results",
+                columns: new[] { "submission_id", "test_case_index" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "idx_submissions_created_at",
@@ -88,29 +109,28 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "idx_test_case_results_submission_id",
-                schema: "test_case_results",
-                table: "test_case_results",
-                column: "submission_id");
+                name: "ix_submissions_retry",
+                schema: "submissions",
+                table: "submissions",
+                columns: new[] { "status", "retry_count" });
 
             migrationBuilder.CreateIndex(
-                name: "uq_test_case_results_submission_id_test_case_index",
-                schema: "test_case_results",
-                table: "test_case_results",
-                columns: new[] { "submission_id", "index" },
-                unique: true);
+                name: "ix_submissions_status_worker",
+                schema: "submissions",
+                table: "submissions",
+                columns: new[] { "status", "worker_id" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "submissions",
+                name: "submission_test_case_results",
                 schema: "submissions");
 
             migrationBuilder.DropTable(
-                name: "test_case_results",
-                schema: "test_case_results");
+                name: "submissions",
+                schema: "submissions");
         }
     }
 }

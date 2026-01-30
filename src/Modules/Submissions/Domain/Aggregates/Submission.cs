@@ -126,10 +126,10 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
             FinishedAt = now;
         }
 
-        public void AddTestCaseResult(int index, Verdict verdict, int timeMs, int memoryKb)
+        public void AddTestCaseResult(SubmissionId submissionId, int index, Verdict verdict, int timeMs, int memoryKb, string? output)
         {
             EnsureStatus(SubmissionStatus.Running);
-            var testCaseResult = TestCaseResult.Create(index, verdict, timeMs, memoryKb);
+            var testCaseResult = TestCaseResult.Create(submissionId, index, verdict, timeMs, memoryKb, output);
             _testCaseResults.Add(testCaseResult);
         }
 
