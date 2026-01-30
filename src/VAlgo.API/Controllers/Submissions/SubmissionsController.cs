@@ -70,9 +70,9 @@ namespace VAlgo.API.Controllers.Submissions
 
         // POST api/submissions/{id}/fail
         [HttpPost("{submissionId:guid}/fail")]
-        public async Task<IActionResult> FailSubmission([FromRoute] Guid submissionId, CancellationToken cancellationToken)
+        public async Task<IActionResult> FailSubmission([FromRoute] Guid submissionId, [FromBody] FailSubmissionRequest request, CancellationToken cancellationToken)
         {
-            var command = new FailSubmissionCommand(submissionId, "");
+            var command = new FailSubmissionCommand(submissionId, request.Reason);
 
             await _mediator.Send(command, cancellationToken);
 
@@ -128,7 +128,5 @@ namespace VAlgo.API.Controllers.Submissions
 
             return Ok(submission);
         }
-
-
     }
 }

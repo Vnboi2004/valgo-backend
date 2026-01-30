@@ -1,3 +1,4 @@
+using VAlgo.Modules.Submissions.Domain.Entities;
 using VAlgo.Modules.Submissions.Domain.Enums;
 using VAlgo.Modules.Submissions.Domain.Events;
 using VAlgo.Modules.Submissions.Domain.Exceptions;
@@ -16,14 +17,18 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
         public SourceCodeHash SourceCodeHash { get; private set; } = null!;
         public int TimeLimitMs { get; private set; }
         public int MemoryLimitKb { get; private set; }
+        public int RetryCount { get; private set; } // 
         public SubmissionStatus Status { get; private set; }
         public Verdict Verdict { get; private set; }
         public JudgeSummary? JudgeSummary { get; private set; }
-        public string? FailureReason { get; private set; }
+        public SubmissionFailureReason? FailureReason { get; private set; } //
+        public string? WorkerId { get; private set; } // 
         public DateTime CreatedAt { get; private set; }
         public DateTime? QueuedAt { get; private set; }
         public DateTime? StartedAt { get; private set; }
         public DateTime? FinishedAt { get; private set; }
+        private readonly List<TestCaseResult> _testCaseResults = new();
+        public IReadOnlyCollection<TestCaseResult> TestCaseResults => _testCaseResults;
 
         private Submission() { }
 
@@ -101,7 +106,7 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
             AddDomainEvent(new SubmissionCompletedDomainEvent(Id.Value, verdict, now));
         }
 
-        public void Fail(string reason, DateTime now)
+        public void Fail(SubmissionFailureReason reason, DateTime now)
         {
             EnsureNotTerminal();
 
@@ -121,6 +126,13 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
             FinishedAt = now;
         }
 
+        public void AddTestCaseResult(int index, Verdict verdict, int timeMs, int memoryKb)
+        {
+            EnsureStatus(SubmissionStatus.Running);
+            var testCaseResult = TestCaseResult.Create(index, verdict, timeMs, memoryKb);
+            _testCaseResults.Add(testCaseResult);
+        }
+
         private void EnsureStatus(SubmissionStatus expected)
         {
             if (Status != expected)
@@ -132,6 +144,17 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
         {
             if (Status is SubmissionStatus.Completed or SubmissionStatus.Failed or SubmissionStatus.Cancelled)
                 throw new SubmissionDomainException($"Submission already in terminal state: {Status}");
+        }
+
+        public void IncrementRetry()
+        {
+            RetryCount++;
+        }
+
+        public void AssignWorker(string workerId)
+        {
+            EnsureStatus(SubmissionStatus.Queued);
+            WorkerId = workerId;
         }
     }
 }
