@@ -2,7 +2,7 @@ using VAlgo.JudgeWorker.Execution.Models;
 
 namespace VAlgo.JudgeWorker.Orchestration
 {
-    public static class JudgeResultMapper
+    public sealed class JudgeResultMapper
     {
         public static Verdict FinalVerdict(IReadOnlyList<JudgeResult> results)
         {
