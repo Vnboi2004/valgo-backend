@@ -2,13 +2,10 @@ namespace VAlgo.JudgeWorker.Clients.Models
 {
     public sealed class TestCaseDto
     {
-        public int Index { get; init; }
-
+        public int Order { get; init; }
         public string Input { get; init; } = null!;
         public string ExpectedOutput { get; init; } = null!;
-
         public OutputComparisonStrategy ComparisonStrategy { get; init; }
-
         public bool IsSample { get; init; }
     }
 
