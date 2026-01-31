@@ -1,6 +1,6 @@
 namespace VAlgo.JudgeWorker.Execution.Models
 {
-    public sealed class JudgeResult
+    public sealed class ExecutionResult
     {
         public Verdict Verdict { get; init; }
         public string Stdout { get; init; } = string.Empty;
