@@ -4,76 +4,77 @@ namespace VAlgo.JudgeWorker.Languages
 {
     public static class LanguageRegistry
     {
-        public static IReadOnlyDictionary<string, LanguageSpec> All { get; } =
+        private static readonly IReadOnlyDictionary<string, LanguageSpec> _languages =
             new Dictionary<string, LanguageSpec>(StringComparer.OrdinalIgnoreCase)
             {
-                ["cpp"] = new()
+                ["cpp"] = new LanguageSpec
                 {
+                    Key = "cpp",
                     Image = "gcc:12.2.0",
                     SourceFile = "main.cpp",
-                    CompileCommand =
-                        "g++ main.cpp -O2 -std=gnu++17 -o main 1>compile.out 2>compile.err",
-                    RunCommand =
-                        "timeout -s SIGKILL {timeSec}s ./main < input.txt 1>stdout.txt 2>stderr.txt"
+                    CompileCommand = "g++ main.cpp -O2 -std=gnu++17 -o main",
+                    RunCommand = "./main"
                 },
 
-                ["c"] = new()
+                ["c"] = new LanguageSpec
                 {
+                    Key = "c",
                     Image = "gcc:12.2.0",
                     SourceFile = "main.c",
-                    CompileCommand =
-                        "gcc main.c -O2 -std=gnu17 -o main 1>compile.out 2>compile.err",
-                    RunCommand =
-                        "timeout -s SIGKILL {timeSec}s ./main < input.txt 1>stdout.txt 2>stderr.txt"
+                    CompileCommand = "gcc main.c -O2 -std=gnu17 -o main",
+                    RunCommand = "./main"
                 },
 
-                ["python"] = new()
+                ["python"] = new LanguageSpec
                 {
+                    Key = "python",
                     Image = "python:3.11-slim",
                     SourceFile = "main.py",
-                    RunCommand =
-                        "timeout -s SIGKILL {timeSec}s python3 main.py < input.txt 1>stdout.txt 2>stderr.txt",
-                    TimeMultiplier = 2
+                    CompileCommand = "python3 -m py_compile main.py",
+                    RunCommand = "python3 main.py"
                 },
 
-                ["java"] = new()
+                ["java"] = new LanguageSpec
                 {
+                    Key = "java",
                     Image = "eclipse-temurin:17-jdk",
                     SourceFile = "Main.java",
-                    CompileCommand =
-                        "javac Main.java 1>compile.out 2>compile.err",
-                    RunCommand =
-                        "timeout -s SIGKILL {timeSec}s java -Xms64m -Xmx{memMb}m Main < input.txt 1>stdout.txt 2>stderr.txt",
-                    TimeMultiplier = 2
+                    CompileCommand = "javac Main.java",
+                    RunCommand = "java Main"
                 },
 
-                ["csharp"] = new()
+                ["csharp"] = new LanguageSpec
                 {
+                    Key = "csharp",
                     Image = "mcr.microsoft.com/dotnet/sdk:8.0",
                     SourceFile = "Program.cs",
                     CompileCommand =
-                    """
-                    dotnet new console -n App -o app -f net8.0 --force &&
-                    mv Program.cs app/Program.cs &&
-                    dotnet publish app -c Release -o out --nologo
-                    """,
-                    RunCommand =
-                        "timeout -s SIGKILL {timeSec}s dotnet out/App.dll < input.txt 1>stdout.txt 2>stderr.txt"
+                        "dotnet new console -n App -o app --force && " +
+                        "mv Program.cs app/Program.cs && " +
+                        "dotnet publish app -c Release -o out --nologo",
+                    RunCommand = "dotnet out/App.dll"
                 },
 
-                ["javascript"] = new()
+                ["javascript"] = new LanguageSpec
                 {
+                    Key = "javascript",
                     Image = "node:20-slim",
                     SourceFile = "main.js",
-                    RunCommand =
-                        "timeout -s SIGKILL {timeSec}s node main.js < input.txt 1>stdout.txt 2>stderr.txt"
+                    CompileCommand = "node --check main.js",
+                    RunCommand = "node main.js"
                 }
             };
 
         public static LanguageSpec Get(string language)
-            => All.TryGetValue(language, out var spec)
-                ? spec
-                : throw new NotSupportedException(
+        {
+            if (!_languages.TryGetValue(language, out var spec))
+                throw new NotSupportedException(
                     $"Language '{language}' is not supported");
+
+            return spec;
+        }
+
+        public static IEnumerable<string> SupportedLanguages
+            => _languages.Keys;
     }
 }

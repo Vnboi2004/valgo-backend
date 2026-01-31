@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using VAlgo.JudgeWorker.Execution.Models;
 using VAlgo.JudgeWorker.Execution.Specs;
 
@@ -6,78 +7,50 @@ namespace VAlgo.JudgeWorker.Execution.Docker
 {
     public sealed class DockerExecutor
     {
-        public ExecutionResult Execute(
+
+        public JudgeResult Execute(
             LanguageSpec spec,
             string sourceCode,
             string input,
             int timeLimitMs,
-            int memoryLimitMb)
+            int memoryLimitKb
+        )
         {
-            var workDir = CreateWorkDir(spec, sourceCode, input);
-            var stopwatch = Stopwatch.StartNew();
+            var workDir = CreateWorkDir();
 
             try
             {
-                // 1. Compile (id needed)
+                WriteSource(workDir, spec.SourceFile, sourceCode);
+
                 if (!string.IsNullOrWhiteSpace(spec.CompileCommand))
                 {
-                    var compile = RunDocker(spec.Image, workDir, spec.CompileCommand, 10_000, memoryLimitMb);
+                    var compileResult = RunDocker(spec.Image, workDir, spec.CompileCommand!, timeLimitMs, memoryLimitKb);
 
-                    if (compile.ExitCode != 0)
-                    {
-                        return new ExecutionResult
-                        {
-                            Verdict = Verdict.CompilationError,
-                            Stdout = ReadFile(workDir, "compile.out"),
-                            Stderr = ReadFile(workDir, "compile.err"),
-                            ExitCode = compile.ExitCode,
-                            TimeUsed = stopwatch.Elapsed
-                        };
-                    }
+                    if (compileResult.ExitCode != 0)
+                        return JudgeResult.Failed(Verdict.CompilationError, compileResult.Error);
                 }
 
-                // 2. Calculate time
-                var baseTimeSec = Math.Max(1, timeLimitMs / 1000);
-                var timeSec = baseTimeSec * spec.TimeMultiplier;
+                var timeSec = Math.Max(1, timeLimitMs / 1000);
+                var memMb = Math.Max(64, memoryLimitKb / 1024);
+
                 var runCommand = spec.RunCommand
                     .Replace("{timeSec}", timeSec.ToString())
                     .Replace("{timeSec2}", (timeSec * 2).ToString())
-                    .Replace("{memMb}", memoryLimitMb.ToString());
+                    .Replace("{memMb}", memMb.ToString());
 
-                // 3. Run
-                var run = RunDocker(
-                    spec.Image,
-                    workDir,
-                    runCommand,
-                    timeLimitMs,
-                    memoryLimitMb
-                );
+                var runResult = RunDocker(spec.Image, workDir, runCommand, timeLimitMs, memoryLimitKb, input);
 
-                stopwatch.Stop();
-
-                var stdout = ReadFile(workDir, "stdout.txt");
-                var stderr = ReadFile(workDir, "stderr.txt");
-
-                // 3. Map exit code -> verdict 
-                if (run.ExitCode == 124)
-                    return Result(Verdict.TimeLimitExceeded, stdout, stderr, run, stopwatch);
-
-                if (run.ExitCode == 137)
-                    return Result(Verdict.MemoryLimitExceeded, stdout, stderr, run, stopwatch);
-
-                if (run.ExitCode != 0)
-                    return Result(Verdict.RuntimeError, stdout, stderr, run, stopwatch);
-
-                return Result(Verdict.Accepted, stdout, stderr, run, stopwatch);
+                return runResult.ExitCode switch
+                {
+                    0 => JudgeResult.Accepted(runResult.Output ?? string.Empty, runResult.TimeMs, runResult.MemoryKb),
+                    124 => JudgeResult.Failed(Verdict.TimeLimitExceeded),
+                    123 => JudgeResult.Failed(Verdict.MemoryLimitExceeded),
+                    _ => JudgeResult.Failed(Verdict.RuntimeError, runResult.Error)
+                };
             }
             catch (Exception ex)
             {
-                return new ExecutionResult
-                {
-                    Verdict = Verdict.SystemError,
-                    Stderr = ex.ToString(),
-                    TimeUsed = stopwatch.Elapsed
-                };
+                return JudgeResult.Failed(Verdict.SystemError, ex.Message);
             }
             finally
             {
@@ -85,86 +58,73 @@ namespace VAlgo.JudgeWorker.Execution.Docker
             }
         }
 
-        private static string CreateWorkDir(LanguageSpec spec, string source, string input)
+        private static DockerProcessResult RunDocker(
+            string image,
+            string workDir,
+            string command,
+            int timeLimitMs,
+            int memoryLimitKb,
+            string? stdin = null
+        )
         {
-            var dir = Path.Combine(Path.GetTempPath(), "judge_" + Guid.NewGuid());
-            Directory.CreateDirectory(dir);
+            var memMb = Math.Max(1, memoryLimitKb / 1024);
+            var timeoutMs = timeLimitMs + 500;
 
-            File.WriteAllText(Path.Combine(dir, spec.SourceFile), source);
-            File.WriteAllText(Path.Combine(dir, "input.txt"), source);
+            var args =
+                $"run --rm " +
+                $"-m {memMb}m " +
+                $"--cpus=1 " +
+                $"-v \"{workDir}:/app\" " +
+                $"-w /app " +
+                $"{image} sh -c \"{command}\"";
 
-            return dir;
-        }
-
-        private static ProcessResult RunDocker(string image, string workDir, string command, int timeoutMs, int memoryLimitMb)
-        {
-            var args = $"""
-                run --rm
-                --cpus=1
-                --memory={memoryLimitMb}m
-                --pids-limit=64
-                --network=none
-                --read-only
-                --tmpfs /tmp:size=64m
-                -v "{workDir}:/work"
-                -w /work
-                {image}
-                bash -c "{command}"
-            """;
-
-            return RunProcess("docker", args, timeoutMs + 1000);
-        }
-
-        private static ProcessResult RunProcess(string file, string args, int timeoutMs)
-        {
             var psi = new ProcessStartInfo
             {
-                FileName = file,
+                FileName = "docker",
                 Arguments = args,
+                RedirectStandardInput = true,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
+                RedirectStandardError = true
             };
+
+            var sw = Stopwatch.StartNew();
 
             using var process = Process.Start(psi)!;
 
-            if (!process.WaitForExit(timeoutMs))
+            if (!string.IsNullOrEmpty(stdin))
             {
-                try
-                {
-                    process.Kill(true);
-                }
-                catch
-                {
-
-                }
-
-                return new ProcessResult
-                {
-                    ExitCode = 124
-                };
+                process.StandardInput.Write(stdin);
+                process.StandardInput.Close();
             }
 
-            return new ProcessResult
+            if (!process.WaitForExit(timeoutMs))
             {
-                ExitCode = process.ExitCode
+                TryKill(process);
+                return DockerProcessResult.Timeout();
+            }
+
+            sw.Stop();
+
+            return new DockerProcessResult
+            {
+                ExitCode = process.ExitCode,
+                Output = process.StandardOutput.ReadToEnd(),
+                Error = process.StandardError.ReadToEnd(),
+                TimeMs = sw.ElapsedMilliseconds,
+                MemoryKb = memMb * 1024
             };
         }
 
-        private static ExecutionResult Result(Verdict verdict, string stdout, string stderr, ProcessResult process, Stopwatch stopwatch) => new()
+        private static string CreateWorkDir()
         {
-            Verdict = verdict,
-            Stdout = stdout,
-            Stderr = stderr,
-            ExitCode = process.ExitCode,
-            TimeUsed = stopwatch.Elapsed
-        };
+            var dir = Path.Combine(Path.GetTempPath(), "valgo-judge", Guid.NewGuid().ToString());
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
 
-        private static string ReadFile(string dir, string file)
+        private static void WriteSource(string dir, string file, string code)
         {
-            var path = Path.Combine(dir, file);
-            return File.Exists(path) ? File.ReadAllText(path) : string.Empty;
+            File.WriteAllText(Path.Combine(dir, file), code, Encoding.UTF8);
         }
 
         private static void TryDelete(string dir)
@@ -179,9 +139,30 @@ namespace VAlgo.JudgeWorker.Execution.Docker
             }
         }
 
-        private sealed class ProcessResult
+        private static void TryKill(Process p)
+        {
+            try
+            {
+                p.Kill(true);
+            }
+            catch
+            {
+
+            }
+        }
+
+        internal sealed class DockerProcessResult
         {
             public int ExitCode { get; init; }
+            public string? Output { get; init; }
+            public string? Error { get; init; }
+            public long TimeMs { get; init; }
+            public long MemoryKb { get; init; }
+
+            public static DockerProcessResult Timeout() => new()
+            {
+                ExitCode = 124
+            };
         }
     }
 }
