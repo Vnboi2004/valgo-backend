@@ -1,0 +1,4 @@
+namespace VAlgo.JudgeWorker.Messaging
+{
+
+}

@@ -17,12 +17,12 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
         public SourceCodeHash SourceCodeHash { get; private set; } = null!;
         public int TimeLimitMs { get; private set; }
         public int MemoryLimitKb { get; private set; }
-        public int RetryCount { get; private set; } // 
+        public int RetryCount { get; private set; }
         public SubmissionStatus Status { get; private set; }
         public Verdict Verdict { get; private set; }
         public JudgeSummary? JudgeSummary { get; private set; }
-        public SubmissionFailureReason? FailureReason { get; private set; } //
-        public string? WorkerId { get; private set; } // 
+        public SubmissionFailureReason? FailureReason { get; private set; }
+        public string? WorkerId { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? QueuedAt { get; private set; }
         public DateTime? StartedAt { get; private set; }
