@@ -26,6 +26,9 @@ namespace VAlgo.JudgeWorker.Execution.Docker
                 {
                     var compileResult = RunDocker(spec.Image, workDir, spec.CompileCommand!, timeLimitMs, memoryLimitKb);
 
+                    if (compileResult.IsSystemError)
+                        return JudgeResult.Failed(Verdict.SystemError, compileResult.Error);
+
                     if (compileResult.ExitCode != 0)
                         return JudgeResult.Failed(Verdict.CompilationError, compileResult.Error);
                 }
@@ -70,13 +73,22 @@ namespace VAlgo.JudgeWorker.Execution.Docker
             var memMb = Math.Max(1, memoryLimitKb / 1024);
             var timeoutMs = timeLimitMs + 500;
 
-            var args =
-                $"run --rm " +
-                $"-m {memMb}m " +
-                $"--cpus=1 " +
-                $"-v \"{workDir}:/app\" " +
-                $"-w /app " +
-                $"{image} sh -c \"{command}\"";
+            var args = $"""
+                run --rm
+                --cpus=1
+                --memory={memMb}m
+                --pids-limit=64
+                --network=none
+                --read-only
+                --tmpfs /tmp:size=64m
+                --cap-drop=ALL
+                --security-opt no-new-privileges
+                --user 1000:1000
+                -v "{workDir}:/work"
+                -w /work
+                {image}
+                sh -c "{command}"
+            """;
 
             var psi = new ProcessStartInfo
             {
@@ -89,35 +101,42 @@ namespace VAlgo.JudgeWorker.Execution.Docker
 
             var sw = Stopwatch.StartNew();
 
-            using var process = Process.Start(psi)!;
-
-            if (!string.IsNullOrEmpty(stdin))
+            try
             {
-                process.StandardInput.Write(stdin);
-                process.StandardInput.Close();
+                using var process = Process.Start(psi)!;
+
+                if (!string.IsNullOrEmpty(stdin))
+                {
+                    process.StandardInput.Write(stdin);
+                    process.StandardInput.Close();
+                }
+
+                if (!process.WaitForExit(timeoutMs))
+                {
+                    TryKill(process);
+                    return DockerProcessResult.Timeout();
+                }
+
+                sw.Stop();
+
+                return new DockerProcessResult
+                {
+                    ExitCode = process.ExitCode,
+                    Output = process.StandardOutput.ReadToEnd(),
+                    Error = process.StandardError.ReadToEnd(),
+                    TimeMs = sw.ElapsedMilliseconds,
+                    MemoryKb = memMb * 1024
+                };
             }
-
-            if (!process.WaitForExit(timeoutMs))
+            catch (Exception ex)
             {
-                TryKill(process);
-                return DockerProcessResult.Timeout();
+                return DockerProcessResult.SystemError(ex.Message);
             }
-
-            sw.Stop();
-
-            return new DockerProcessResult
-            {
-                ExitCode = process.ExitCode,
-                Output = process.StandardOutput.ReadToEnd(),
-                Error = process.StandardError.ReadToEnd(),
-                TimeMs = sw.ElapsedMilliseconds,
-                MemoryKb = memMb * 1024
-            };
         }
 
         private static string CreateWorkDir()
         {
-            var dir = Path.Combine(Path.GetTempPath(), "valgo-judge", Guid.NewGuid().ToString());
+            var dir = Path.Combine(Path.GetTempPath(), "valgo-judge", Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dir);
             return dir;
         }
@@ -158,11 +177,13 @@ namespace VAlgo.JudgeWorker.Execution.Docker
             public string? Error { get; init; }
             public long TimeMs { get; init; }
             public long MemoryKb { get; init; }
+            public bool IsSystemError { get; init; }
 
-            public static DockerProcessResult Timeout() => new()
-            {
-                ExitCode = 124
-            };
+            public static DockerProcessResult Timeout()
+                => new() { ExitCode = 124 };
+
+            public static DockerProcessResult SystemError(string error)
+                => new() { ExitCode = -1, Error = error, IsSystemError = true };
         }
     }
 }

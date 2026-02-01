@@ -12,9 +12,9 @@ namespace VAlgo.JudgeWorker.Infrastructure.Docker
             _logger = logger;
         }
 
-        public async Task EnsureAvailableAsync()
+        public async Task EnsureAvailableAsync(CancellationToken cancellationToken = default)
         {
-            var process = new Process
+            using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -26,7 +26,8 @@ namespace VAlgo.JudgeWorker.Infrastructure.Docker
             };
 
             process.Start();
-            await process.WaitForExitAsync();
+
+            await process.WaitForExitAsync(cancellationToken);
 
             if (process.ExitCode != 0)
             {
