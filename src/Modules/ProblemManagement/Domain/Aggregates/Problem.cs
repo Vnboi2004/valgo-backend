@@ -113,8 +113,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 
         public void RemoveTestCase(TestCaseId testCaseId)
         {
-            if (Status == ProblemStatus.Archived)
-                throw new InvalidProblemStateException(Id.Value, Status);
+            EnsureDraft();
 
             var testCase = _testCases.FirstOrDefault(x => x.Id == testCaseId);
 
@@ -135,8 +134,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 
         public void ReorderTestCases(IReadOnlyList<TestCaseId> orderedIds)
         {
-            if (Status == ProblemStatus.Archived)
-                throw new InvalidProblemStateException(Id.Value, Status);
+            EnsureDraft();
 
             if (orderedIds.Count != _testCases.Count)
                 throw new InvalidTestCaseException("Mismatch test case count.");
@@ -162,8 +160,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 
         public void RemoveAllowedLanguage(string language)
         {
-            if (Status == ProblemStatus.Archived)
-                throw new InvalidProblemStateException(Id.Value, Status);
+            EnsureDraft();
 
             var target = new AllowedLanguage(language);
 
