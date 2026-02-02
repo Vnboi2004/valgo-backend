@@ -30,14 +30,6 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
                 .HasColumnName("source_code")
                 .IsRequired();
 
-            builder.Property(x => x.TimeLimitMs)
-                .HasColumnName("time_limit_ms")
-                .IsRequired();
-
-            builder.Property(x => x.MemoryLimitKb)
-                .HasColumnName("memory_limit_kb")
-                .IsRequired();
-
             builder.Property(x => x.CreatedAt)
                 .HasColumnName("created_at")
                 .IsRequired();
