@@ -1,4 +1,5 @@
-using VAlgo.SharedKernel.Abstractions;
+
+using VAlgo.Modules.ProblemManagement.Application.Abstractions;
 
 namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence
 {
@@ -6,7 +7,11 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence
     {
         private readonly ProblemManagementDbContext _dbContext;
 
-        public UnitOfWork(ProblemManagementDbContext dbContext) => _dbContext = dbContext;
+        public UnitOfWork(ProblemManagementDbContext dbContext)
+        {
+            Console.WriteLine($"[UnitOfWork] DbContext: {dbContext.GetHashCode()}");
+            _dbContext = dbContext;
+        }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

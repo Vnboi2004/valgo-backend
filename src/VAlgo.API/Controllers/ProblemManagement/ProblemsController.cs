@@ -45,10 +45,9 @@ namespace VAlgo.API.Controllers.ProblemManagement
                 request.MemoryLimitKb
             );
 
-            var submissionId = await _mediator.Send(command, cancellationToken);
+            var problemId = await _mediator.Send(command, cancellationToken);
 
-            //    return CreatedAtAction(nameof(), new { submissionId }, new { SubmissionId = submissionId });
-            return Ok(submissionId);
+            return CreatedAtAction(nameof(GetProblemDetail), new { problemId }, new { ProblemId = problemId });
         }
 
         // POST api/problems/{id}/publish

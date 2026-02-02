@@ -124,7 +124,7 @@ namespace VAlgo.JudgeWorker.Execution.Docker
                     ExitCode = process.ExitCode,
                     Output = process.StandardOutput.ReadToEnd(),
                     Error = process.StandardError.ReadToEnd(),
-                    TimeMs = sw.ElapsedMilliseconds,
+                    TimeMs = (int)sw.ElapsedMilliseconds,
                     MemoryKb = memMb * 1024
                 };
             }
@@ -175,8 +175,8 @@ namespace VAlgo.JudgeWorker.Execution.Docker
             public int ExitCode { get; init; }
             public string? Output { get; init; }
             public string? Error { get; init; }
-            public long TimeMs { get; init; }
-            public long MemoryKb { get; init; }
+            public int TimeMs { get; init; }
+            public int MemoryKb { get; init; }
             public bool IsSystemError { get; init; }
 
             public static DockerProcessResult Timeout()

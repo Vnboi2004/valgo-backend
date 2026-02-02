@@ -9,7 +9,11 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Repositorie
     {
         private readonly ProblemManagementDbContext _dbContext;
 
-        public ProblemRepository(ProblemManagementDbContext dbContext) => _dbContext = dbContext;
+        public ProblemRepository(ProblemManagementDbContext dbContext)
+        {
+            Console.WriteLine($"[ProblemRepository] DbContext: {dbContext.GetHashCode()}");
+            _dbContext = dbContext;
+        }
 
         public async Task AddAsync(Problem problem, CancellationToken cancellationToken = default)
         {

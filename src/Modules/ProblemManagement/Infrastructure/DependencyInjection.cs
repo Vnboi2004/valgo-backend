@@ -6,7 +6,6 @@ using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Repositories;
 using VAlgo.Modules.ProblemManagement.Infractructure.Read;
 using VAlgo.Modules.ProblemManagement.Infractructure.Time;
-using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.ProblemManagement.Infractructure

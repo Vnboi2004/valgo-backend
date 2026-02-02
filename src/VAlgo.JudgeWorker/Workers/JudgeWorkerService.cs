@@ -17,6 +17,7 @@ namespace VAlgo.JudgeWorker.Workers
         private readonly JudgeOrchestrator _judgeOrchestrator;
         private readonly WorkerIdentity _workerIdentity;
         private readonly JudgeWorkerOptions _judgeWorkerOptions;
+        private readonly JudgeResultMapper _judgeResultMapper;
         private readonly ILogger<JudgeWorkerService> _logger;
 
         public JudgeWorkerService(
@@ -26,6 +27,7 @@ namespace VAlgo.JudgeWorker.Workers
             JudgeOrchestrator judgeOrchestrator,
             WorkerIdentity workerIdentity,
             JudgeWorkerOptions judgeWorkerOptions,
+            JudgeResultMapper judgeResultMapper,
             ILogger<JudgeWorkerService> logger
         )
         {
@@ -35,6 +37,7 @@ namespace VAlgo.JudgeWorker.Workers
             _judgeOrchestrator = judgeOrchestrator;
             _workerIdentity = workerIdentity;
             _judgeWorkerOptions = judgeWorkerOptions;
+            _judgeResultMapper = judgeResultMapper;
             _logger = logger;
         }
 
@@ -135,7 +138,31 @@ namespace VAlgo.JudgeWorker.Workers
 
             try
             {
+                await _submissionsClient.StartAsync(submission.Id, cancellationToken);
 
+                var context = JudgeContext.Create(submission, problem);
+
+                var results = _judgeOrchestrator.Execute(context);
+
+                var summary = _judgeResultMapper.Map(results);
+
+                await _submissionsClient.CompleteAsync(
+                    submission.Id,
+                    summary.Verdict,
+                    summary.Passed,
+                    summary.Total,
+                    summary.TimeMs,
+                    summary.MemoryKb,
+                    cancellationToken
+                );
+
+                _logger.LogInformation(
+                    "Submission {SubmissionId} judge: Verdict={Verdict}, Passed={Passed}/{Total}",
+                    submission.Id,
+                    summary.Verdict,
+                    summary.Passed,
+                    summary.Total
+                );
             }
             catch (OperationCanceledException)
             {

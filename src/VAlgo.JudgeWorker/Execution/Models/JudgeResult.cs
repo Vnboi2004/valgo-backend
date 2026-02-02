@@ -5,10 +5,10 @@ namespace VAlgo.JudgeWorker.Execution.Models
         public Verdict Verdict { get; init; }
         public string? Output { get; init; }
         public string? Error { get; init; }
-        public long TimeMs { get; init; }
-        public long MemoryKb { get; init; }
+        public int TimeMs { get; init; }
+        public int MemoryKb { get; init; }
 
-        public static JudgeResult Accepted(string output, long timeMs, long memoryKb) => new()
+        public static JudgeResult Accepted(string output, int timeMs, int memoryKb) => new()
         {
             Verdict = Verdict.Accepted,
             Output = output,

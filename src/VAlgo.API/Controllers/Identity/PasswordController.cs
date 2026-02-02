@@ -8,7 +8,7 @@ using VAlgo.Modules.Identity.Application.Commands.ResetPasswordUser;
 namespace VAlgo.API.Controllers.Identity
 {
     [ApiController]
-    [Route("api/identity/password")]
+    [Route("api/password")]
     public sealed class PasswordController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -18,7 +18,7 @@ namespace VAlgo.API.Controllers.Identity
             _mediator = mediator;
         }
 
-        // POST api/identity/password/forgot
+        // POST api/password/forgot
         [HttpPost("forgot")]
         public async Task<IActionResult> ForgotPassswordUser([FromBody] ForgotPasswordUserRequest request, CancellationToken cancellationToken)
         {
@@ -27,7 +27,7 @@ namespace VAlgo.API.Controllers.Identity
             return NoContent();
         }
 
-        // POST api/identity/password/reset
+        // POST api/password/reset
         [HttpPost("reset")]
         public async Task<IActionResult> ResetPasswordUser([FromBody] ResetPasswordUserRequest request, CancellationToken cancellationToken)
         {
@@ -36,7 +36,7 @@ namespace VAlgo.API.Controllers.Identity
             return NoContent();
         }
 
-        // POST api/identity/password/change
+        // POST api/password/change
         [HttpPost("change")]
         public async Task<IActionResult> ChangePasswordUser([FromBody] ChangePasswordUserRequest request, CancellationToken cancellationToken)
         {

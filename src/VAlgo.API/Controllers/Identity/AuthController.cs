@@ -9,7 +9,7 @@ using VAlgo.Modules.Identity.Application.Commands.RegisterUser;
 namespace VAlgo.API.Controllers.Identity
 {
     [ApiController]
-    [Route("api/identity/auth")]
+    [Route("api/auth")]
     public sealed class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,7 +19,7 @@ namespace VAlgo.API.Controllers.Identity
             _mediator = mediator;
         }
 
-        // POST api/identity/auth/login
+        // POST api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginUserRequest request, CancellationToken cancellationToken)
         {
@@ -28,20 +28,7 @@ namespace VAlgo.API.Controllers.Identity
             return Ok(result);
         }
 
-        // POST api/identity/auth/register
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest request, CancellationToken cancellationToken)
-        {
-            var command = new RegisterUserCommand(
-                request.Username,
-                request.Email,
-                request.Password
-            );
-            var result = await _mediator.Send(command, cancellationToken);
-            return Ok(result);
-        }
-
-        // POST api/identity/auth/refresh-token
+        // POST api/auth/refresh-token
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshTokenUser([FromBody] RefreshTokenUserRequest request, CancellationToken cancellationToken)
         {
@@ -50,7 +37,7 @@ namespace VAlgo.API.Controllers.Identity
             return Ok(result);
         }
 
-        // POST api/identity/auth/logout
+        // POST api/auth/logout
         [HttpPost("logout")]
         public async Task<IActionResult> LogoutUser([FromBody] LogoutUserRequest request, CancellationToken cancellationToken)
         {
