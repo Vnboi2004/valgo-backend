@@ -7,7 +7,6 @@ using VAlgo.Modules.Submissions.Infrastructure.Persistence;
 using VAlgo.Modules.Submissions.Infrastructure.Persistence.Repositories;
 using VAlgo.Modules.Submissions.Infrastructure.Read;
 using VAlgo.Modules.Submissions.Infrastructure.Time;
-using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.Submissions.Infrastructure

@@ -1,4 +1,5 @@
-using VAlgo.SharedKernel.Abstractions;
+
+using VAlgo.Modules.Submissions.Application.Abstractions;
 
 namespace VAlgo.Modules.Submissions.Infrastructure.Persistence
 {
