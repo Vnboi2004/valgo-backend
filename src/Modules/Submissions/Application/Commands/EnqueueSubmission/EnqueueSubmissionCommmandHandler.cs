@@ -2,7 +2,6 @@ using MediatR;
 using VAlgo.Modules.Submissions.Application.Abstractions;
 using VAlgo.Modules.Submissions.Domain.Exceptions;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
-using VAlgo.SharedKernel.Abstractions;
 
 namespace VAlgo.Modules.Submissions.Application.Commands.EnqueueSubmission
 {

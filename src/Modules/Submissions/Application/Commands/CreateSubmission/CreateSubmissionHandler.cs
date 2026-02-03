@@ -2,7 +2,6 @@ using MediatR;
 using VAlgo.Modules.Submissions.Application.Abstractions;
 using VAlgo.Modules.Submissions.Domain.Aggregates;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
-using VAlgo.SharedKernel.Abstractions;
 
 namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
 {
@@ -29,14 +28,14 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
         public async Task<Guid> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
         {
             // 1. Check user
-            var existUser = await _userReadService.ExistsAsync(request.UserId);
-            if (!existUser)
-                throw new ApplicationException("User does not exist");
+            // var existUser = await _userReadService.ExistsAsync(request.UserId);
+            // if (!existUser)
+            //     throw new ApplicationException("User does not exist");
 
             // 2. Check problem
-            var existProblem = await _problemReadService.ExistsAsync(request.ProblemId);
-            if (!existProblem)
-                throw new ApplicationException("Problem does not exist");
+            // var existProblem = await _problemReadService.ExistsAsync(request.ProblemId);
+            // if (!existProblem)
+            //    throw new ApplicationException("Problem does not exist");
 
             // 3. Convert field
             var now = DateTime.UtcNow;
@@ -52,6 +51,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
             );
 
             await _submissionRepository.AddAsync(submission, cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return submission.Id.Value;

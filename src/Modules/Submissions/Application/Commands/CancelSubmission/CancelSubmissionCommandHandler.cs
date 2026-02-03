@@ -1,7 +1,6 @@
 using MediatR;
 using VAlgo.Modules.Submissions.Application.Abstractions;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
-using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.Submissions.Application.Commands.CancelSubmission
