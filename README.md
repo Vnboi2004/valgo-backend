@@ -1,6 +1,6 @@
 # VAlgo Backend
 
-VAlgo Backend is the core backend service for **VAlgo – a Vietnamese algorithm and online judge platform** inspired by LeetCode.  
+VAlgo Backend is the core backend service for **VAlgo – a Vietnamese algorithm and online judge platform** inspired by LeetCode - Codeforces.  
 It handles problem management, code submissions, judging orchestration, and core business logic.
 
 The system is designed with **Domain-Driven Design (DDD)** principles, using a **Modular Monolith** architecture combined with **distributed judge workers** for secure and scalable code execution.
