@@ -2,7 +2,6 @@ using MediatR;
 using VAlgo.Modules.ProblemClassification.Application.Abstractions;
 using VAlgo.Modules.ProblemClassification.Application.Exceptions;
 using VAlgo.Modules.ProblemClassification.Domain.Aggregates;
-using VAlgo.SharedKernel.Abstractions;
 
 namespace VAlgo.Modules.ProblemClassification.Application.Commands.CreateClassification
 {

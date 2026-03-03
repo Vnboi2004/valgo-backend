@@ -1,7 +1,9 @@
 using MediatR;
 using VAlgo.Modules.Submissions.Application.Abstractions;
+using VAlgo.Modules.Submissions.Application.Events;
 using VAlgo.Modules.Submissions.Domain.Aggregates;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
+using VAlgo.SharedKernel.Messaging;
 
 namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
 {
@@ -10,18 +12,21 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
         private readonly ISubmissionRepository _submissionRepository;
         private readonly IUserReadService _userReadService;
         private readonly IProblemReadService _problemReadService;
+        private readonly IRabbitMqPublisher _publisher;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateSubmissionCommandHandler(
             ISubmissionRepository submissionRepository,
             IUserReadService userReadService,
             IProblemReadService problemReadService,
+            IRabbitMqPublisher publisher,
             IUnitOfWork unitOfWork
         )
         {
             _submissionRepository = submissionRepository;
             _userReadService = userReadService;
             _problemReadService = problemReadService;
+            _publisher = publisher;
             _unitOfWork = unitOfWork;
         }
 
@@ -50,9 +55,17 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
                 now
             );
 
+            submission.Enqueue(now);
+
             await _submissionRepository.AddAsync(submission, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _publisher.PublishAsync(
+                queue: "judge.submission",
+                new SubmissionQueuedIntegrationEvent(submission.Id.Value, submission.ProblemId),
+                cancellationToken
+            );
 
             return submission.Id.Value;
         }

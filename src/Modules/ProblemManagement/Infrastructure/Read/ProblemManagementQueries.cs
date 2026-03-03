@@ -4,6 +4,7 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
+using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
 
 namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
@@ -57,7 +58,7 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
         {
             return await _dbContext.Problems
                 .AsNoTracking()
-                .Where(p => p.Id.Value == problemId && p.Status == ProblemStatus.Published)
+                .Where(p => p.Id == ProblemId.From(problemId) && p.Status == ProblemStatus.Published)
                 .Select(p => new ProblemDetailDto
                 {
                     ProblemId = p.Id.Value,

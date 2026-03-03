@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using VAlgo.Modules.ProblemManagement.Application.Abstractions;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemForJudge;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
+using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
 
 namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
@@ -16,7 +17,7 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
         public async Task<ProblemForJudgeDto?> GetAsync(Guid problemId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Problems
-                .Where(x => x.Id.Value == problemId && x.Status == ProblemStatus.Published)
+                .Where(x => x.Id == ProblemId.From(problemId) && x.Status == ProblemStatus.Published)
                 .Select(x => new ProblemForJudgeDto
                 {
                     ProblemId = x.Id.Value,

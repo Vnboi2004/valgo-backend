@@ -34,8 +34,26 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission
             if (submission == null)
                 throw new InvalidOperationException($"Submission {request.SubmissionId} not found");
 
-            var judgeSummary = JudgeSummary.Create(request.TotalTestCases, request.PassedTestCases, request.TimeMs, request.MemoryKb);
             var now = _clock.UtcNow;
+
+            foreach (var tc in request.TestCases)
+            {
+                submission.AddTestCaseResult(
+                    submissionId,
+                    tc.Index,
+                    tc.Verdict,
+                    tc.TimeMs,
+                    tc.MemoryKb,
+                    tc.Output
+                );
+            }
+
+            var judgeSummary = JudgeSummary.Create(
+                request.TotalTestCases,
+                request.PassedTestCases,
+                request.TimeMs,
+                request.MemoryKb
+            );
 
             submission.Complete(request.Verdict, judgeSummary, now);
 
@@ -43,5 +61,6 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission
 
             return Unit.Value;
         }
+
     }
 }

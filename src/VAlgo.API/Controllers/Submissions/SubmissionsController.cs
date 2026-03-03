@@ -60,7 +60,8 @@ namespace VAlgo.API.Controllers.Submissions
                 request.PassedTestCases,
                 request.TotalTestCases,
                 request.TimeMs,
-                request.MemoryKb
+                request.MemoryKb,
+                request.TestCases
             );
 
             await _mediator.Send(command, cancellationToken);

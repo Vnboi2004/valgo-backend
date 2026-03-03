@@ -73,7 +73,7 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
             Status = SubmissionStatus.Queued;
             QueuedAt = now;
 
-            AddDomainEvent(new SubmissionEnqueuedDomainEvent(Id.Value, now));
+            //AddDomainEvent(new SubmissionEnqueuedDomainEvent(Id.Value, now));
         }
 
         public void StartRunning(DateTime now)
@@ -82,6 +82,12 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
 
             Status = SubmissionStatus.Running;
             StartedAt = now;
+        }
+
+
+        public void ClearTestCases()
+        {
+            _testCaseResults.Clear();
         }
 
         public void Complete(Verdict verdict, JudgeSummary judgeSummary, DateTime now)
@@ -122,9 +128,19 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
         public void AddTestCaseResult(SubmissionId submissionId, int index, Verdict verdict, int timeMs, int memoryKb, string? output)
         {
             EnsureStatus(SubmissionStatus.Running);
-            var testCaseResult = TestCaseResult.Create(submissionId, index, verdict, timeMs, memoryKb, output);
+
+            var testCaseResult = TestCaseResult.Create(
+                submissionId,
+                index,
+                verdict,
+                timeMs,
+                memoryKb,
+                output
+            );
+
             _testCaseResults.Add(testCaseResult);
         }
+
 
         private void EnsureStatus(SubmissionStatus expected)
         {

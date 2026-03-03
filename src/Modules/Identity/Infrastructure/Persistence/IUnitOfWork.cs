@@ -1,4 +1,4 @@
-using VAlgo.SharedKernel.Abstractions;
+using VAlgo.Modules.Identity.Application.Persistence;
 
 namespace VAlgo.Modules.Identity.Infrastructure.Persistence
 {

@@ -1,11 +1,10 @@
 using MediatR;
-using VAlgo.Modules.Identity.Application.Abstractions;
 using VAlgo.Modules.Identity.Application.Abstractions.Persistence;
 using VAlgo.Modules.Identity.Application.Abstractions.Security;
 using VAlgo.Modules.Identity.Application.Exceptions;
+using VAlgo.Modules.Identity.Application.Persistence;
 using VAlgo.Modules.Identity.Domain.Exceptions;
 using VAlgo.Modules.Identity.Domain.ValueObjects;
-using VAlgo.SharedKernel.Abstractions;
 
 namespace VAlgo.Modules.Identity.Application.Commands.ChangePasswordUser
 {

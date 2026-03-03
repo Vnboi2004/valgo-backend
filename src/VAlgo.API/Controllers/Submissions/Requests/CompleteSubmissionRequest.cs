@@ -1,3 +1,4 @@
+using VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission;
 using VAlgo.Modules.Submissions.Domain.Enums;
 
 namespace VAlgo.API.Controllers.Submissions.Requests
@@ -7,6 +8,7 @@ namespace VAlgo.API.Controllers.Submissions.Requests
         int PassedTestCases,
         int TotalTestCases,
         int TimeMs,
-        int MemoryKb
+        int MemoryKb,
+        List<TestCaseResultDto> TestCases
     );
 }

@@ -1,7 +1,10 @@
+using RabbitMQ.Client;
 using VAlgo.Modules.Identity;
 using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
 using VAlgo.Modules.Submissions;
+using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +28,11 @@ builder.Services.AddProblemClassificationModule(builder.Configuration);
 
 // Identity
 builder.Services.AddIdentityModule(builder.Configuration);
+
+// SharedKernel
+builder.Services.AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>();
+builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+
 
 builder.Services.AddOpenApi();
 

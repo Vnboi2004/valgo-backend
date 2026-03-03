@@ -1,8 +1,7 @@
 using MediatR;
-using VAlgo.Modules.Identity.Application.Abstractions;
 using VAlgo.Modules.Identity.Application.Abstractions.Persistence;
 using VAlgo.Modules.Identity.Application.Exceptions;
-using VAlgo.SharedKernel.Abstractions;
+using VAlgo.Modules.Identity.Application.Persistence;
 using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.Identity.Application.Commands.VerifyEmailUser

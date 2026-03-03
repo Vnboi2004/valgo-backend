@@ -1,7 +1,6 @@
 using MediatR;
-using VAlgo.Modules.Identity.Application.Abstractions;
 using VAlgo.Modules.Identity.Application.Abstractions.Persistence;
-using VAlgo.SharedKernel.Abstractions;
+using VAlgo.Modules.Identity.Application.Persistence;
 
 namespace VAlgo.Modules.Identity.Application.Commands.LogoutUser
 {

@@ -1,4 +1,4 @@
-using VAlgo.SharedKernel.Abstractions;
+using VAlgo.Modules.ProblemClassification.Application;
 
 namespace VAlgo.Modules.ProblemClassification.Infrastructure.Persistence
 {

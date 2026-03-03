@@ -1,13 +1,12 @@
 using MediatR;
-using VAlgo.Modules.Identity.Application.Abstractions;
 using VAlgo.Modules.Identity.Application.Abstractions.Communication;
 using VAlgo.Modules.Identity.Application.Abstractions.Persistence;
 using VAlgo.Modules.Identity.Application.Abstractions.Security;
 using VAlgo.Modules.Identity.Application.Exceptions;
+using VAlgo.Modules.Identity.Application.Persistence;
 using VAlgo.Modules.Identity.Domain.Aggregates;
 using VAlgo.Modules.Identity.Domain.Exceptions;
 using VAlgo.Modules.Identity.Domain.ValueObjects;
-using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.Identity.Application.Commands.RegisterUser

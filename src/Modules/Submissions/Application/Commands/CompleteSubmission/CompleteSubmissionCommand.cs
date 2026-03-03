@@ -10,6 +10,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission
         int PassedTestCases,
         int TotalTestCases,
         int TimeMs,
-        int MemoryKb
+        int MemoryKb,
+        List<TestCaseResultDto> TestCases
     ) : ICommand<Unit>;
 }
