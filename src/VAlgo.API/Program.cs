@@ -1,41 +1,53 @@
+using RabbitMQ.Client;
+using VAlgo.Modules.Identity;
+using VAlgo.Modules.ProblemClassification;
+using VAlgo.Modules.ProblemManagement;
+using VAlgo.Modules.Submissions;
+using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.Messaging;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Core framework
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// Swagger
+builder.Services.AddSwaggerGen();
+
+// Modules
+
+// Submissions
+builder.Services.AddSubmissionsModule(builder.Configuration);
+
+// Problem Management
+builder.Services.AddProblemManagementModule(builder.Configuration);
+
+// Problem Classification
+builder.Services.AddProblemClassificationModule(builder.Configuration);
+
+// Identity
+builder.Services.AddIdentityModule(builder.Configuration);
+
+// SharedKernel
+builder.Services.AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>();
+builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
+// Middleware pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
