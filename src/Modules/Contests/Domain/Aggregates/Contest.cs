@@ -120,13 +120,17 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
 
         public void Join(Guid userId)
         {
-            if (Status != ContestStatus.Published)
+            if (Status != ContestStatus.Published && Status != ContestStatus.Running)
                 throw new InvalidOperationException("Contest is not open for joining.");
 
+            if (MaxParticipants.HasValue && _participants.Count >= MaxParticipants.Value)
+                throw new InvalidOperationException("Contest has reached maximum participants.");
+
             if (_participants.Any(x => x.UserId == userId))
-                return;
+                throw new InvalidOperationException("User already joined the contest.");
 
             var participant = ContestParticipant.Create(Id, userId, DateTime.Now);
+
             _participants.Add(participant);
         }
 
@@ -209,8 +213,10 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
 
             var participant = _participants.FirstOrDefault(x => x.UserId == userId);
 
-            if (participant != null)
-                _participants.Remove(participant);
+            if (participant == null)
+                throw new InvalidOperationException("User is not a participant of the contest.");
+
+            _participants.Remove(participant);
         }
     }
 }
