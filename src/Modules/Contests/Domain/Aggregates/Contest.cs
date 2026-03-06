@@ -41,10 +41,18 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
         public static Contest Create(string title, string description, DateTime startTime, DateTime endTime, Guid createdBy)
             => new Contest(ContestId.New(), title, description, startTime, endTime, createdBy);
 
-        public void AddProblem(Guid problemId, string code, int order, int points)
+        public void AddProblem(Guid problemId, string code, int points)
         {
             if (Status != ContestStatus.Draft)
                 throw new InvalidOperationException("Cannot modify problems after published.");
+
+            if (_problems.Any(x => x.ProblemId == problemId))
+                throw new InvalidOperationException("Problem already exists in the contest.");
+
+            if (_problems.Any(x => x.Code == code))
+                throw new InvalidOperationException("Problem code already exists.");
+
+            var order = _problems.Count + 1;
 
             var problem = ContestProblem.Create(Id, problemId, code, order, points);
             _problems.Add(problem);
@@ -56,10 +64,58 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
                 throw new InvalidOperationException("Cannot modify problems after publish.");
 
             var problem = _problems.FirstOrDefault(p => p.ProblemId == problemId);
-            if (problem != null)
+            if (problem == null)
+                throw new InvalidOperationException("Problem not found in contest.");
+
+            _problems.Remove(problem);
+            ReorderProblems();
+        }
+
+        private void ReorderProblems()
+        {
+            int order = 1;
+            foreach (var problem in _problems.OrderBy(x => x.Order))
             {
-                _problems.Remove(problem);
+                problem.UpdateOrder(order);
+                order++;
             }
+        }
+
+        public void ReorderProblems(IReadOnlyList<Guid> problemIds)
+        {
+            if (Status != ContestStatus.Draft)
+                throw new InvalidOperationException("Cannot reorder problems after contest is published.");
+
+            if (problemIds.Count != _problems.Count)
+                throw new InvalidOperationException("Problem list mismatch.");
+
+            var problemMap = _problems.ToDictionary(x => x.ProblemId);
+
+            int order = 1;
+
+            foreach (var problemId in problemIds)
+            {
+                if (!problemMap.TryGetValue(problemId, out var problem))
+                    throw new InvalidOperationException("Problem does not belong to this contest.");
+
+                problem.UpdateOrder(order);
+                order++;
+            }
+        }
+
+        public void UpdateProblemPoints(Guid problemId, int points)
+        {
+            if (Status != ContestStatus.Draft)
+                throw new InvalidOperationException("Cannot modify problems after contest is published.");
+
+            if (points <= 0)
+                throw new InvalidOperationException("Points must be greater than zero.");
+
+            var problem = _problems.FirstOrDefault(x => x.ProblemId == problemId);
+            if (problem == null)
+                throw new InvalidOperationException("Problem not found in contest.");
+
+            problem.UpdatePoints(points);
         }
 
         public void Join(Guid userId)

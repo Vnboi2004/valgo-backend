@@ -1,3 +1,4 @@
+using System.Drawing;
 using VAlgo.Modules.Contests.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
 
@@ -25,5 +26,15 @@ namespace VAlgo.Modules.Contests.Domain.Entities
 
         public static ContestProblem Create(ContestId contestId, Guid problemId, string code, int order, int points)
             => new ContestProblem(ContestProblemId.New(), contestId, problemId, code, order, points);
+
+        public void UpdateOrder(int order)
+        {
+            Order = order;
+        }
+
+        public void UpdatePoints(int points)
+        {
+            Points = points;
+        }
     }
 }
