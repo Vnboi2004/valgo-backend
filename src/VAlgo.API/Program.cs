@@ -1,4 +1,5 @@
 using RabbitMQ.Client;
+using VAlgo.Modules.Contests;
 using VAlgo.Modules.Identity;
 using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
@@ -28,6 +29,9 @@ builder.Services.AddProblemClassificationModule(builder.Configuration);
 
 // Identity
 builder.Services.AddIdentityModule(builder.Configuration);
+
+// Contests
+builder.Services.AddContestsModule(builder.Configuration);
 
 // SharedKernel
 builder.Services.AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>();
