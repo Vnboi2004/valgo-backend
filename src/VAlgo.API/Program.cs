@@ -1,9 +1,11 @@
+using Microsoft.Extensions.Options;
 using VAlgo.Modules.Contests;
 using VAlgo.Modules.Identity;
 using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
 using VAlgo.Modules.Submissions;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.Infrastructure.Redis;
 using VAlgo.SharedKernel.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +37,17 @@ builder.Services.AddContestsModule(builder.Configuration);
 // SharedKernel
 builder.Services.AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>();
 builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+
+// Register RedisConnectionFactory
+builder.Services.Configure<RedisOptions>(builder.Configuration.GetSection("Redis"));
+builder.Services.AddSingleton<RedisConnectionStringFactory>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<RedisOptions>>().Value;
+    return new RedisConnectionStringFactory(options.ConnectionString);
+});
+
+// Register RedisDatabaseProvider
+builder.Services.AddSingleton<RedisDatabaseProvider>();
 
 
 builder.Services.AddOpenApi();

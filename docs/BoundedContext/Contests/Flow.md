@@ -24,3 +24,27 @@ Khi Submission
 | Accepted lần 2+  | Ignore        |
 | WrongAnswer      | +20 penalty   |
 | Accepted         | +time penalty |
+
+                    +----------------+
+                    |  Frontend UI   |
+                    +--------+-------+
+                             |
+                          WebSocket
+                             |
+                       +-----v------+
+                       |  SignalR   |
+                       +-----+------+
+                             |
+                +------------v-----------+
+                | Leaderboard Service    |
+                +------------+-----------+
+                             |
+                       Redis Sorted Set
+                             |
+        +--------------------+--------------------+
+        |                                         |
++-------v--------+                      +---------v--------+
+| Contest module |                      | Submission module |
++-------+--------+                      +---------+--------+
+        |                                         |
+        +-------------SubmissionEvent-------------+
