@@ -22,7 +22,9 @@ namespace VAlgo.Modules.Contests.Application.Commands.CreateContest
                 request.Description,
                 request.StartTime,
                 request.EndTime,
-                request.CreatedBy
+                request.Visibility,
+                request.CreatedBy,
+                request.MaxParticipants
             );
 
             await _contestRepository.AddAsync(contest, cancellationToken);

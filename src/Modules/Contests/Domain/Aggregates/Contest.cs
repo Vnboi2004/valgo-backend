@@ -26,7 +26,7 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
 
         private Contest() { }
 
-        private Contest(ContestId id, string title, string description, DateTime startTime, DateTime endTime, Guid createdBy)
+        private Contest(ContestId id, string title, string description, DateTime startTime, DateTime endTime, ContestVisibility visibility, Guid createdBy, int? maxParticipants)
             : base(id)
         {
             Title = title;
@@ -34,12 +34,14 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
             StartTime = startTime;
             EndTime = endTime;
             Status = ContestStatus.Draft;
+            Visibility = visibility;
+            MaxParticipants = maxParticipants;
             CreatedBy = createdBy;
             CreatedAt = DateTime.UtcNow;
         }
 
-        public static Contest Create(string title, string description, DateTime startTime, DateTime endTime, Guid createdBy)
-            => new Contest(ContestId.New(), title, description, startTime, endTime, createdBy);
+        public static Contest Create(string title, string description, DateTime startTime, DateTime endTime, ContestVisibility visibility, Guid createdBy, int? maxParticipants = 0)
+            => new Contest(ContestId.New(), title, description, startTime, endTime, visibility, createdBy, maxParticipants);
 
         public void AddProblem(Guid problemId, string code, int points)
         {

@@ -1,9 +1,8 @@
-using MediatR;
 using VAlgo.Modules.Contests.Domain.Enums;
 
-namespace VAlgo.Modules.Contests.Application.Commands.CreateContest
+namespace VAlgo.API.Controllers.Contests.Requests
 {
-    public sealed record CreateContestCommand(
+    public sealed record CreateContestsRequest(
         string Title,
         string Description,
         DateTime StartTime,
@@ -11,5 +10,5 @@ namespace VAlgo.Modules.Contests.Application.Commands.CreateContest
         ContestVisibility Visibility,
         Guid CreatedBy,
         int? MaxParticipants
-    ) : IRequest<Guid>;
+    );
 }
