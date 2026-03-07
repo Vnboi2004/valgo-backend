@@ -1,4 +1,3 @@
-using RabbitMQ.Client;
 using VAlgo.Modules.Contests;
 using VAlgo.Modules.Identity;
 using VAlgo.Modules.ProblemClassification;

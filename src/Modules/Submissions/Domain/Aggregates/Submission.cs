@@ -12,6 +12,7 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
     {
         public Guid UserId { get; private set; }
         public Guid ProblemId { get; private set; }
+        public Guid? ContestId { get; private set; }
         public Language Language { get; private set; } = null!;
         public string SourceCode { get; private set; } = null!;
         public SourceCodeHash SourceCodeHash { get; private set; } = null!;
@@ -34,6 +35,7 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
             SubmissionId id,
             Guid userId,
             Guid problemId,
+            Guid? contestId,
             Language language,
             string sourceCode,
             DateTime now
@@ -43,6 +45,7 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
 
             UserId = userId;
             ProblemId = problemId;
+            ContestId = contestId;
             Language = language;
             SourceCode = sourceCode;
             SourceCodeHash = SourceCodeHash.From(sourceCode);
@@ -54,12 +57,13 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
         public static Submission Create(
             Guid userId,
             Guid problemId,
+            Guid? contestId,
             Language language,
             string sourceCode,
             DateTime now
         )
         {
-            var submission = new Submission(SubmissionId.New(), userId, problemId, language, sourceCode, now);
+            var submission = new Submission(SubmissionId.New(), userId, problemId, contestId, language, sourceCode, now);
 
             submission.AddDomainEvent(new SubmissionCreatedDomainEvent(submission.Id.Value, now));
 
@@ -102,7 +106,7 @@ namespace VAlgo.Modules.Submissions.Domain.Aggregates
             JudgeSummary = judgeSummary;
             FinishedAt = now;
 
-            AddDomainEvent(new SubmissionCompletedDomainEvent(Id.Value, verdict, now));
+            AddDomainEvent(new SubmissionCompletedDomainEvent(Id.Value, UserId, ProblemId, ContestId, verdict, now));
         }
 
         public void Fail(SubmissionFailureReason reason, DateTime now)

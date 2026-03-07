@@ -50,6 +50,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
             var submission = Submission.Create(
                 request.UserId,
                 request.ProblemId,
+                request.ContestId,
                 language,
                 request.SourceCode,
                 now

@@ -220,5 +220,33 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
 
             _participants.Remove(participant);
         }
+
+        public void ProcessSubmission(Guid userId, Guid problemId, ContestSubmissionVerdict verdict, DateTime finishedAt)
+        {
+            if (Status != ContestStatus.Running)
+                return;
+
+            var participant = _participants.FirstOrDefault(x => x.UserId == userId);
+
+            if (participant == null)
+                return;
+
+            var problem = _problems.FirstOrDefault(x => x.ProblemId == problemId);
+
+            if (problem == null)
+                return;
+
+            if (verdict != ContestSubmissionVerdict.Accepted)
+            {
+                participant.AddPenalty(20);
+                return;
+            }
+
+            participant.AddScore(problem.Points);
+
+            var minutes = (int)(finishedAt - StartTime).TotalMinutes;
+
+            participant.AddPenalty(minutes);
+        }
     }
 }
