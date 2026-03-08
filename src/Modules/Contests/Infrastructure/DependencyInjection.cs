@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VAlgo.Modules.Contests.Application.Interfaces;
+using VAlgo.Modules.Contests.Application.Leaderboard;
+using VAlgo.Modules.Contests.Infrastructure.Leaderboard;
 using VAlgo.Modules.Contests.Infrastructure.Persistence;
 using VAlgo.Modules.Contests.Infrastructure.Persistence.Repositories;
 
@@ -22,6 +24,9 @@ namespace VAlgo.Modules.Contests.Infrastructure
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IContestRepository, ContestRepository>();
+
+            // Register service
+            services.AddScoped<ILeaderboardService, RedisLeaderboardService>();
 
             return services;
         }
