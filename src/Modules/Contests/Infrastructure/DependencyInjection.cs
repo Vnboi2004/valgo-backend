@@ -27,6 +27,7 @@ namespace VAlgo.Modules.Contests.Infrastructure
 
             // Register service
             services.AddScoped<ILeaderboardService, RedisLeaderboardService>();
+            services.AddScoped<ILeaderboardCacheService, RedisLeaderboardCacheService>();
 
             return services;
         }
