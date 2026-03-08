@@ -248,5 +248,10 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
 
             participant.AddPenalty(minutes);
         }
+
+        public ContestParticipant? GetParticipant(Guid userId)
+        {
+            return _participants.FirstOrDefault(p => p.UserId == userId);
+        }
     }
 }
