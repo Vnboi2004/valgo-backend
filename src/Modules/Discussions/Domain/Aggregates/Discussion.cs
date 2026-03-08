@@ -65,5 +65,11 @@ namespace VAlgo.Modules.Discussions.Domain.Aggregates
 
             return comment;
         }
+
+        public void RemoveComment(Comment comment)
+        {
+            _comments.Remove(comment);
+            CommentCount--;
+        }
     }
 }
