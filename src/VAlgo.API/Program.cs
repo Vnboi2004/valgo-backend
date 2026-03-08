@@ -1,5 +1,8 @@
 using Microsoft.Extensions.Options;
+using VAlgo.API.Hubs;
+using VAlgo.API.Realtime;
 using VAlgo.Modules.Contests;
+using VAlgo.Modules.Contests.Application.Realtime;
 using VAlgo.Modules.Identity;
 using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
@@ -49,6 +52,11 @@ builder.Services.AddSingleton<RedisConnectionStringFactory>(sp =>
 // Register RedisDatabaseProvider
 builder.Services.AddSingleton<RedisDatabaseProvider>();
 
+// Register Hubs
+builder.Services.AddSignalR();
+
+builder.Services.AddScoped<IContestLeaderboardNotifier, SignalRContestLeaderboardNotifier>();
+
 
 builder.Services.AddOpenApi();
 
@@ -65,5 +73,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+app.MapHub<ContestLeaderboardHub>("/hubs/contest-leaderboard");
 
 app.Run();
