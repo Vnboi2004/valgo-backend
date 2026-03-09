@@ -23,7 +23,7 @@
     <ProjectReference Include="..\Modules\ProblemClassification\VAlgo.Modules.ProblemClassification.csproj" />
     <ProjectReference Include="..\Modules\Identity\VAlgo.Modules.Identity.csproj" />
     <ProjectReference Include="..\Modules\Contests\VAlgo.Modules.Contests.csproj" />
-    <ProjectReference Include="..\Modules\Dicussions\VAlgo.Modules.Dicussions.csproj" />
+    <ProjectReference Include="..\Modules\Discussions\VAlgo.Modules.Discussions.csproj" />
   </ItemGroup>
 
 </Project>
