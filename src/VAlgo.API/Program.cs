@@ -3,6 +3,7 @@ using VAlgo.API.Hubs;
 using VAlgo.API.Realtime;
 using VAlgo.Modules.Contests;
 using VAlgo.Modules.Contests.Application.Realtime;
+using VAlgo.Modules.Discussions;
 using VAlgo.Modules.Identity;
 using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
@@ -36,6 +37,9 @@ builder.Services.AddIdentityModule(builder.Configuration);
 
 // Contests
 builder.Services.AddContestsModule(builder.Configuration);
+
+// Discussions
+builder.Services.AddDiscussionsModule(builder.Configuration);
 
 // SharedKernel
 builder.Services.AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>();
