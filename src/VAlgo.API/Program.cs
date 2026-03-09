@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using VAlgo.API.Hubs;
 using VAlgo.API.Realtime;
+using VAlgo.API.Services;
 using VAlgo.Modules.Contests;
 using VAlgo.Modules.Contests.Application.Realtime;
 using VAlgo.Modules.Discussions;
@@ -8,6 +9,7 @@ using VAlgo.Modules.Identity;
 using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
 using VAlgo.Modules.Submissions;
+using VAlgo.Modules.Submissions.Application.Abstractions;
 using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Infrastructure.Redis;
 using VAlgo.SharedKernel.Messaging;
@@ -60,6 +62,10 @@ builder.Services.AddSingleton<RedisDatabaseProvider>();
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IContestLeaderboardNotifier, SignalRContestLeaderboardNotifier>();
+
+// Register services
+builder.Services.AddScoped<IUserReadService, UserReadService>();
+builder.Services.AddScoped<IProblemReadService, ProblemReadService>();
 
 
 builder.Services.AddOpenApi();

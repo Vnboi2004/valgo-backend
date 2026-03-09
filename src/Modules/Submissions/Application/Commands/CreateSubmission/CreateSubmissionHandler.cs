@@ -33,14 +33,14 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
         public async Task<Guid> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
         {
             // 1. Check user
-            // var existUser = await _userReadService.ExistsAsync(request.UserId);
-            // if (!existUser)
-            //     throw new ApplicationException("User does not exist");
+            var existUser = await _userReadService.ExistsAsync(request.UserId);
+            if (!existUser)
+                throw new ApplicationException("User does not exist");
 
-            // 2. Check problem
-            // var existProblem = await _problemReadService.ExistsAsync(request.ProblemId);
-            // if (!existProblem)
-            //    throw new ApplicationException("Problem does not exist");
+            // 2.Check problem
+            var existProblem = await _problemReadService.ExistsAsync(request.ProblemId);
+            if (!existProblem)
+                throw new ApplicationException("Problem does not exist");
 
             // 3. Convert field
             var now = DateTime.UtcNow;

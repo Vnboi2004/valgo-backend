@@ -30,8 +30,8 @@ namespace VAlgo.Modules.Submissions.Infrastructure
             services.AddScoped<ISubmissionQueries, SubmissionQueries>();
 
             services.AddScoped<IJudgeQueue, JudgeQueue>();
-            services.AddScoped<IUserReadService, UserReadService>();
-            services.AddScoped<IProblemReadService, ProblemReadService>();
+            // services.AddScoped<IUserReadService, UserReadService>();
+            // services.AddScoped<IProblemReadService, ProblemReadService>();
 
             services.AddScoped<IClock, SystemClock>();
 
