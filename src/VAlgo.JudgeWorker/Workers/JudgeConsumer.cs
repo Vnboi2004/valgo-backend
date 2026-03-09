@@ -40,9 +40,11 @@ public sealed class JudgeConsumer : BackgroundService
         var factory = new ConnectionFactory
         {
             HostName = "localhost",
-            UserName = "guest",
-            Password = "guest",
-            DispatchConsumersAsync = true
+            UserName = "valgo",
+            Password = "123456",
+            DispatchConsumersAsync = true,
+            AutomaticRecoveryEnabled = true,
+            NetworkRecoveryInterval = TimeSpan.FromSeconds(5)
         };
 
         _connection = factory.CreateConnection();
@@ -172,9 +174,6 @@ public sealed class JudgeConsumer : BackgroundService
                     run.MemoryKb,
                     run.Stdout            // 🔥 gửi output luôn
                 ));
-
-                if (caseVerdict != Verdict.Accepted)
-                    break;
             }
 
 
@@ -184,7 +183,7 @@ public sealed class JudgeConsumer : BackgroundService
             await _apiClient.CompleteSubmissionAsync(
                 submission.SubmissionId,
                 new CompleteSubmissionRequest(
-                    problem.TestCases.Count,
+                    testCaseResults.Count,
                     passed,
                     maxTime,
                     maxMemory,

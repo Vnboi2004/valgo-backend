@@ -30,6 +30,7 @@ namespace VAlgo.API.Controllers.Submissions
             var command = new CreateSubmissionCommand(
                 request.UserId,
                 request.ProblemId,
+                request.ContestId,
                 request.Language,
                 request.SourceCode
             );

@@ -3,6 +3,7 @@ using VAlgo.Modules.Submissions.Application.Abstractions;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissions;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionStatus;
+using VAlgo.Modules.Submissions.Domain.Enums;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
 using VAlgo.Modules.Submissions.Infrastructure.Persistence;
 
@@ -101,10 +102,15 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Read
 
         public async Task<IReadOnlyList<TestCaseResultDto>> GetTestCasesAsync(Guid submissionId, CancellationToken cancellationToken)
         {
-            return await _dbContext.Submissions
+            return await _dbContext.TestCaseResults
+                .Where(x => x.SubmissionId == SubmissionId.From(submissionId))
+                .OrderBy(x => x.TestCaseIndex)
                 .Select(s => new TestCaseResultDto
                 {
-
+                    Index = s.TestCaseIndex,
+                    Passed = s.Verdict == Verdict.Accepted,
+                    TimeMs = s.TimeMs,
+                    MemoryKb = s.MemoryKb
                 }).ToListAsync(cancellationToken);
         }
     }

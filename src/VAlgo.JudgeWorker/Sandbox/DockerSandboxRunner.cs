@@ -39,6 +39,11 @@ public sealed class DockerSandboxRunner
             timeoutMs: 15_000,
             cancellationToken);
 
+        if (result.ExitCode != 0)
+        {
+            _logger.LogWarning("Compile failed: {Error}", result.Stderr);
+        }
+
         return new CompileResult
         {
             Success = result.ExitCode == 0,
@@ -146,6 +151,9 @@ public sealed class DockerSandboxRunner
             };
         }
 
+        await exitTask;
+        process.WaitForExit();
+
         return new ProcessResult
         {
             ExitCode = process.ExitCode,
@@ -161,9 +169,6 @@ public sealed class DockerSandboxRunner
     {
         if (result.ExitCode == -1)
             return Verdict.TimeLimitExceeded;
-
-        if (!string.IsNullOrWhiteSpace(result.Stderr) && result.ExitCode != 0)
-            return Verdict.CompileError;
 
         if (result.ExitCode == 137)
             return Verdict.MemoryLimitExceeded;

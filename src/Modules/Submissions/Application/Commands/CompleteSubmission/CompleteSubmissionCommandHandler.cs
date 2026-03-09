@@ -61,6 +61,5 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission
 
             return Unit.Value;
         }
-
     }
 }

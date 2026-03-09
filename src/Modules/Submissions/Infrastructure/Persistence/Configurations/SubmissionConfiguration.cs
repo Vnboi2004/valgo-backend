@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using VAlgo.Modules.Submissions.Domain.Aggregates;
+using VAlgo.Modules.Submissions.Domain.Entities;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
 
 namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
@@ -104,6 +105,15 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
 
             builder.Navigation(x => x.JudgeSummary)
                 .IsRequired(false);
+
+            builder.HasMany(x => x.TestCaseResults)
+                .WithOne()
+                .HasForeignKey(x => x.SubmissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .Navigation(x => x.TestCaseResults)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder.HasIndex(x => x.UserId)
                 .HasDatabaseName("idx_submissions_user_id");
