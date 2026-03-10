@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VAlgo.API.Controllers.ProblemClassification.Requests;
 using VAlgo.Modules.ProblemClassification.Application.Commands.CreateClassification;
@@ -24,6 +25,7 @@ namespace VAlgo.API.Controllers.ProblemClassification
         }
 
         // POST api/problem-classifications
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateClassification([FromBody] CreateClassificationRequest request, CancellationToken cancellationToken)
         {
@@ -39,6 +41,7 @@ namespace VAlgo.API.Controllers.ProblemClassification
         }
 
         // PUT api/problem-classifications/{id}
+        [Authorize(Roles = "Admin")]
         [HttpPut("{classificationId:guid}")]
         public async Task<IActionResult> RenameClassification([FromRoute] Guid classificationId, [FromBody] RenameClassificationRequest request, CancellationToken cancellationToken)
         {
@@ -51,6 +54,7 @@ namespace VAlgo.API.Controllers.ProblemClassification
 
 
         // POST api/problem-classifications/{id}/deactivate
+        [Authorize(Roles = "Admin")]
         [HttpPost("{classificationId:guid}/deactivate")]
         public async Task<IActionResult> DeactivateClassification([FromRoute] Guid classificationId, CancellationToken cancellationToken)
         {
@@ -62,6 +66,7 @@ namespace VAlgo.API.Controllers.ProblemClassification
         }
 
         // POST api/problem-classifications/{id}/reactivate
+        [Authorize(Roles = "Admin")]
         [HttpPost("{classificationId:guid}/reactivate")]
         public async Task<IActionResult> ReactivateClassification([FromRoute] Guid classificationId, CancellationToken cancellationToken)
         {
@@ -73,6 +78,7 @@ namespace VAlgo.API.Controllers.ProblemClassification
         }
 
         // GET api/problem-classifications
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetClassificationList(
             [FromQuery] ClassificationType? type,
@@ -90,6 +96,7 @@ namespace VAlgo.API.Controllers.ProblemClassification
         }
 
         // GET api/problem-classifications/{id}
+        [AllowAnonymous]
         [HttpGet("{classificationId:guid}")]
         public async Task<IActionResult> GetClassificationDetail([FromRoute] Guid classificationId, CancellationToken cancellationToken)
         {
@@ -101,6 +108,7 @@ namespace VAlgo.API.Controllers.ProblemClassification
         }
 
         // GET api/problem-classifications/active
+        [AllowAnonymous]
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveClassifications(
             [FromQuery] ClassificationType? type,
