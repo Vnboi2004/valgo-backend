@@ -11,5 +11,6 @@ namespace VAlgo.Modules.Identity.Application.Abstractions.Persistence
         Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default);
         Task<bool> EmailExistsAsync(Email email, CancellationToken cancellationToken = default);
         Task<bool> UsernameExistsAsync(Username username, CancellationToken cancellationToken = default);
+        Task<(bool EmailExists, bool UsernameExists)> CheckExistsAsync(Email email, Username username, CancellationToken cancellationToken = default);
     }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using MediatR;
 using VAlgo.Modules.Identity.Application.Abstractions.Communication;
 using VAlgo.Modules.Identity.Application.Abstractions.Persistence;
@@ -46,17 +47,22 @@ namespace VAlgo.Modules.Identity.Application.Commands.RegisterUser
             var email = Email.Create(request.Email);
             var username = Username.Create(request.Username);
 
+            var sw = Stopwatch.StartNew();
+
+            var exists = await _userRepository.CheckExistsAsync(email, username, cancellationToken);
+
             // 2. Check uniqueness
-            var emailExists = await _userRepository.EmailExistsAsync(email, cancellationToken);
-            if (emailExists)
+            Console.WriteLine($"Check email: {sw.ElapsedMilliseconds}");
+            if (exists.EmailExists)
                 throw new EmailAlreadyExistsException(request.Email);
 
-            var usernameExists = await _userRepository.UsernameExistsAsync(username, cancellationToken);
-            if (usernameExists)
+            Console.WriteLine($"Check username: {sw.ElapsedMilliseconds}");
+            if (exists.UsernameExists)
                 throw new UsernameAlreadyExistsException(request.Username);
 
             // 3. Hash password
             var hashed = _passwordHasher.Hash(request.Password);
+            Console.WriteLine($"Hash password: {sw.ElapsedMilliseconds}");
             var passwordHash = PasswordHash.FromHashed(hashed);
 
             // 4. Create user aggregate
@@ -70,13 +76,17 @@ namespace VAlgo.Modules.Identity.Application.Commands.RegisterUser
 
             // 6. Persist
             await _userRepository.AddAsync(user, cancellationToken);
+            Console.WriteLine($"Add user: {sw.ElapsedMilliseconds}");
 
             await _emailVerificationTokenRepository.AddAsync(verificationToken, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            Console.WriteLine($"Save changes: {sw.ElapsedMilliseconds}");
 
             // 7. Send verification email
-            await _emailSender.SendAsync(user.Email.Value, "Verify your email", $"Your verification token: {token}", cancellationToken);
+            _ = Task.Run(() =>
+                _emailSender.SendAsync(user.Email.Value, "Verify your email", $"Your verification token: {token}", CancellationToken.None)
+            );
 
             return user.Id.Value;
         }

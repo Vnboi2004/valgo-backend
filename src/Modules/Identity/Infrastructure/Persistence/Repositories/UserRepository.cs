@@ -46,5 +46,19 @@ namespace VAlgo.Modules.Identity.Infrastructure.Persistence.Repositories
             return await _dbContext.Users
                 .AnyAsync(x => x.Username.Value == username.Value, cancellationToken);
         }
+
+        public async Task<(bool EmailExists, bool UsernameExists)> CheckExistsAsync(Email email, Username username, CancellationToken cancellationToken = default)
+        {
+            var result = await _dbContext.Users
+                .Where(x => x.Email.Value == email.Value || x.Username.Value == username.Value)
+                .Select(x => new
+                {
+                    EmailExists = x.Email.Value == email.Value,
+                    UsernameExists = x.Username.Value == username.Value
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return result == null ? (false, false) : (result.EmailExists, result.UsernameExists);
+        }
     }
 }
