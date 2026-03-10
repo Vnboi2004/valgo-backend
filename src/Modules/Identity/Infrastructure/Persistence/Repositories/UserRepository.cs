@@ -38,13 +38,13 @@ namespace VAlgo.Modules.Identity.Infrastructure.Persistence.Repositories
         public async Task<bool> EmailExistsAsync(Email email, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Users
-                .AnyAsync(x => x.Email == email, cancellationToken);
+                .AnyAsync(x => x.Email.Value == email.Value, cancellationToken);
         }
 
         public async Task<bool> UsernameExistsAsync(Username username, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Users
-                .AnyAsync(x => x.Username == username, cancellationToken);
+                .AnyAsync(x => x.Username.Value == username.Value, cancellationToken);
         }
     }
 }

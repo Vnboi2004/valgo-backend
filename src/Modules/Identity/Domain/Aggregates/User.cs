@@ -8,9 +8,9 @@ namespace VAlgo.Modules.Identity.Domain.Aggregates
 {
     public sealed class User : AggregateRoot<UserId>
     {
-        public Email Email { get; private set; }
-        public Username Username { get; private set; }
-        public PasswordHash PasswordHash { get; private set; }
+        public Email Email { get; private set; } = null!;
+        public Username Username { get; private set; } = null!;
+        public PasswordHash PasswordHash { get; private set; } = null!;
         public UserRole Role { get; private set; }
         public UserStatus Status { get; private set; }
         public bool IsEmailVerified { get; private set; }

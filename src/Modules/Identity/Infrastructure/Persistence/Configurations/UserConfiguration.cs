@@ -24,8 +24,8 @@ namespace VAlgo.Modules.Identity.Infrastructure.Persistence.Configurations
                     .HasMaxLength(255)
                     .IsRequired();
 
-                email.HasIndex(e => e.Value)
-                    .IsUnique();
+                // email.HasIndex(e => e.Value)
+                //     .IsUnique();
             });
 
             builder.OwnsOne(x => x.Username, username =>
@@ -35,8 +35,8 @@ namespace VAlgo.Modules.Identity.Infrastructure.Persistence.Configurations
                     .HasMaxLength(100)
                     .IsRequired();
 
-                username.HasIndex(u => u.Value)
-                    .IsUnique();
+                // username.HasIndex(u => u.Value)
+                //     .IsUnique();
             });
 
             builder.OwnsOne(x => x.PasswordHash, password =>

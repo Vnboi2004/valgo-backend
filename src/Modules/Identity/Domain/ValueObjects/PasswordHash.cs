@@ -4,7 +4,9 @@ namespace VAlgo.Modules.Identity.Domain.Exceptions
 {
     public sealed class PasswordHash : ValueObject
     {
-        public string Value { get; }
+        public string Value { get; } = null!;
+
+        private PasswordHash() { }
 
         private PasswordHash(string value) => Value = value;
 

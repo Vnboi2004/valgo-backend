@@ -5,7 +5,9 @@ namespace VAlgo.Modules.Identity.Domain.ValueObjects
 {
     public sealed class Username : ValueObject
     {
-        public string Value { get; }
+        public string Value { get; } = null!;
+
+        private Username() { }
 
         private Username(string value) => Value = value;
 
