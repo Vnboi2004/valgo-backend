@@ -1,10 +1,10 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VAlgo.API.Controllers.Identity.Requests;
 using VAlgo.Modules.Identity.Application.Commands.LoginUser;
 using VAlgo.Modules.Identity.Application.Commands.LogoutUser;
 using VAlgo.Modules.Identity.Application.Commands.RefreshTokenUser;
-using VAlgo.Modules.Identity.Application.Commands.RegisterUser;
 
 namespace VAlgo.API.Controllers.Identity
 {
@@ -20,6 +20,7 @@ namespace VAlgo.API.Controllers.Identity
         }
 
         // POST api/auth/login
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginUserRequest request, CancellationToken cancellationToken)
         {
@@ -29,6 +30,7 @@ namespace VAlgo.API.Controllers.Identity
         }
 
         // POST api/auth/refresh-token
+        [AllowAnonymous]
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshTokenUser([FromBody] RefreshTokenUserRequest request, CancellationToken cancellationToken)
         {
@@ -38,6 +40,7 @@ namespace VAlgo.API.Controllers.Identity
         }
 
         // POST api/auth/logout
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> LogoutUser([FromBody] LogoutUserRequest request, CancellationToken cancellationToken)
         {

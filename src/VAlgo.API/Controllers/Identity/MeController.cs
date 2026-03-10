@@ -7,7 +7,7 @@ namespace VAlgo.API.Controllers.Identity
 {
     [ApiController]
     [Route("api/me")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public sealed class MeController : ControllerBase
     {
         private readonly IMediator _mediator;

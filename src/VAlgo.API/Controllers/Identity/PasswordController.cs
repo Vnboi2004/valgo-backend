@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VAlgo.API.Controllers.Identity.Requests;
 using VAlgo.Modules.Identity.Application.Commands.ChangePasswordUser;
@@ -20,6 +21,7 @@ namespace VAlgo.API.Controllers.Identity
 
         // POST api/password/forgot
         [HttpPost("forgot")]
+        [AllowAnonymous]
         public async Task<IActionResult> ForgotPassswordUser([FromBody] ForgotPasswordUserRequest request, CancellationToken cancellationToken)
         {
             var command = new ForgotPasswordUserCommand(request.Email);
@@ -29,6 +31,7 @@ namespace VAlgo.API.Controllers.Identity
 
         // POST api/password/reset
         [HttpPost("reset")]
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPasswordUser([FromBody] ResetPasswordUserRequest request, CancellationToken cancellationToken)
         {
             var command = new ResetPasswordUserCommand(request.Token, request.NewPassword);
@@ -37,6 +40,7 @@ namespace VAlgo.API.Controllers.Identity
         }
 
         // POST api/password/change
+        [Authorize]
         [HttpPost("change")]
         public async Task<IActionResult> ChangePasswordUser([FromBody] ChangePasswordUserRequest request, CancellationToken cancellationToken)
         {

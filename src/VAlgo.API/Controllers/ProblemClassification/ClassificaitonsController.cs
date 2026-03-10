@@ -9,7 +9,6 @@ using VAlgo.Modules.ProblemClassification.Application.Queries.GetActiveClassific
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassificationDetail;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassifications;
 using VAlgo.Modules.ProblemClassification.Domain.Enums;
-using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
 
 namespace VAlgo.API.Controllers.ProblemClassification
 {
