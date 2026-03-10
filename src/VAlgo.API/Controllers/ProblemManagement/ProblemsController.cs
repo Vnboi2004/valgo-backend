@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VAlgo.API.Controllers.ProblemManagement.Requests;
 using VAlgo.Modules.ProblemManagement.Application.Commands.AddAllowedLanguage;
@@ -24,6 +25,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 {
     [ApiController]
     [Route("api/problems")]
+    [Authorize]
     public sealed class ProblemsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -32,6 +34,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
         // use-case: Problem lifecycle
         // POST api/problems/
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPost]
         public async Task<IActionResult> CreateProblem([FromBody] CreateProblemRequest request, CancellationToken cancellationToken)
         {
@@ -51,6 +54,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // POST api/problems/{id}/publish
+        [Authorize(Roles = "Admin")]
         [HttpPost("{problemId:guid}/publish")]
         public async Task<IActionResult> PublishProblem([FromRoute] Guid problemId, CancellationToken cancellationToken)
         {
@@ -62,6 +66,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // POST api/problems/{id}/archive
+        [Authorize(Roles = "Admin")]
         [HttpPost("{problemId:guid}/archive")]
         public async Task<IActionResult> ArchiveProblem([FromRoute] Guid problemId, CancellationToken cancellationToken)
         {
@@ -73,6 +78,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // PUT api/problems/{id}
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPut("{problemId:guid}")]
         public async Task<IActionResult> UpdateProblemMetadata([FromRoute] Guid problemId, [FromBody] UpdateProblemMetadataRequest request, CancellationToken cancellationToken)
         {
@@ -89,6 +95,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // PUT api/problems/{id}/constraints
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPut("{problemId:guid}/constraints")]
         public async Task<IActionResult> UpdateConstraints([FromRoute] Guid problemId, [FromBody] UpdateConstraintsRequest request, CancellationToken cancellationToken)
         {
@@ -104,6 +111,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // PUT api/problems/{id}/difficulty
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPut("{problemId:guid}/difficulty")]
         public async Task<IActionResult> UpdateProblemDifficulty([FromRoute] Guid problemId, [FromBody] UpdateProblemDifficultyRequest request, CancellationToken cancellationToken)
         {
@@ -116,6 +124,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
         // use-case: TestCase lificycle
         // POST api/problems/{id}/testcases
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPost("{problemId:guid}/testcases")]
         public async Task<IActionResult> AddTestCase([FromRoute] Guid problemId, [FromBody] AddTestCaseRequest request, CancellationToken cancellationToken)
         {
@@ -133,6 +142,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // DELETE api/problems/{id}/testcases/{testCaseId}
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpDelete("{problemId:guid}/testcases/{testCaseId:guid}")]
         public async Task<IActionResult> RemoveTestCase([FromRoute] Guid problemId, [FromRoute] Guid testCaseId, CancellationToken cancellationToken)
         {
@@ -144,6 +154,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // PUT api/problems/{id}/testcases/order
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPut("{problemId:guid}/testcases/order")]
         public async Task<IActionResult> ReorderTestCases([FromRoute] Guid problemId, [FromBody] ReorderTestCasesRequest request, CancellationToken cancellationToken)
         {
@@ -156,6 +167,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
         // use-case: AllowedLanguage
         // POST api/problems/{id}/languages
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPost("{problemId:guid}/languages")]
         public async Task<IActionResult> AddAllowedLanguage([FromRoute] Guid problemId, [FromBody] AddAllowedLanguageRequest request, CancellationToken cancellationToken)
         {
@@ -167,6 +179,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // DELETE api/problems/{id}/languages/{language}
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpDelete("{problemId:guid}/languages")]
         public async Task<IActionResult> RemoveAllowedLanguage([FromRoute] Guid problemId, [FromBody] RemoveAllowedLanguageRequest request, CancellationToken cancellationToken)
         {
@@ -179,6 +192,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
         // use-case: Classification
         // POST api/problems/{id}/classification
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPost("{problemId:guid}/classification")]
         public async Task<IActionResult> AssignClassification([FromRoute] Guid problemId, [FromBody] AssignClassificationRequest request, CancellationToken cancellationToken)
         {
@@ -190,6 +204,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // DELETE api/problems/{id}/classifications/{classificationId}
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpDelete("{problemId:guid}/classifications/{classificationId:guid}")]
         public async Task<IActionResult> UnassignClassification([FromRoute] Guid problemId, [FromRoute] Guid classificationId, CancellationToken cancellationToken)
         {
@@ -202,6 +217,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
         // Query side
         // GET api/problems/{id}
+        [AllowAnonymous]
         [HttpGet("{problemId:guid}")]
         public async Task<IActionResult> GetProblemDetail([FromRoute] Guid problemId, CancellationToken cancellationToken)
         {
@@ -213,6 +229,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // GET api/problems
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetProblemList(
             [FromQuery] string keyword,
@@ -237,6 +254,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // GET api/problems/{id}/editor
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpGet("{problemId:guid}/editor")]
         public async Task<IActionResult> GetProblemEditor([FromRoute] Guid problemId, CancellationToken cancellationToken)
         {
@@ -248,6 +266,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // GET api/problems/{id}/judge
+        [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpGet("{problemId:guid}/judge")]
         public async Task<IActionResult> GetProblemForJudge([FromRoute] Guid problemId, CancellationToken cancellationToken)
         {
