@@ -71,6 +71,9 @@ namespace VAlgo.Modules.Identity.Application.Commands.LoginUser
                 throw;
             }
 
+            if (user.PasswordHash.Value == null)
+                throw new Exception("user.PasswordHash.Value is null");
+
             var verifyPassword = _passwordHasher.Verify(request.Password, user.PasswordHash.Value);
             if (!verifyPassword)
             {

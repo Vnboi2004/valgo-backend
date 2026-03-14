@@ -232,12 +232,12 @@ namespace VAlgo.API.Controllers.ProblemManagement
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetProblemList(
-            [FromQuery] string keyword,
-            [FromQuery] Difficulty difficulty,
-            [FromQuery] ProblemStatus status,
-            [FromQuery] int page,
-            [FromQuery] int pageSize,
-            CancellationToken cancellationToken
+            [FromQuery] string? keyword,
+            [FromQuery] Difficulty? difficulty,
+            [FromQuery] ProblemStatus? status,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20,
+            CancellationToken cancellationToken = default
         )
         {
             var query = new GetProblemListQuery(

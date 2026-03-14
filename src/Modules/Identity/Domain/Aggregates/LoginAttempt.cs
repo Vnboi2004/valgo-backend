@@ -28,13 +28,13 @@ namespace VAlgo.Modules.Identity.Domain.Aggregates
             if (userId == null && email == null)
                 throw new InvalidOperationException("LoginAttempt must have either UserId or Email.");
 
-            if (userId == null && email == null)
+            if (userId != null && email != null)
                 throw new InvalidOperationException("LoginAttempt cannot have both UserId and Email.");
 
             if (result == LoginResult.Failed && failureReason == null)
                 throw new InvalidOperationException("Failed login attempt must have a failure reason.");
 
-            if (result == LoginResult.Success && failureReason == null)
+            if (result == LoginResult.Success && failureReason != null)
                 throw new InvalidOperationException("Successful login attempt cannot have a failure reason.");
 
             UserId = userId;

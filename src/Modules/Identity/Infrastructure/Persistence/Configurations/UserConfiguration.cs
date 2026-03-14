@@ -67,10 +67,6 @@ namespace VAlgo.Modules.Identity.Infrastructure.Persistence.Configurations
             builder.Property(x => x.LockedUntil)
                 .HasColumnName("locked_until")
                 .IsRequired(false);
-
-            builder.Navigation(x => x.Email).AutoInclude(false);
-            builder.Navigation(x => x.Username).AutoInclude(false);
-            builder.Navigation(x => x.PasswordHash).AutoInclude(false);
         }
     }
 }
