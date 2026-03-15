@@ -14,8 +14,16 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
         public string Title { get; private set; } = null!;
         public string Statement { get; private set; } = null!;
         public string? ShortDescription { get; private set; }
+
+        public string? Constraints { get; private set; }
+        public string? InputFormat { get; private set; }
+        public string? OutputFormat { get; private set; }
+        public string? FollowUp { get; private set; }
+        public string? Editorial { get; private set; }
+
         public Difficulty Difficulty { get; private set; }
         public ProblemStatus Status { get; private set; }
+
         public int TimeLimitMs { get; private set; }
         public int MemoryLimitKb { get; private set; }
 
@@ -26,6 +34,18 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
         // TestCases
         private readonly List<TestCase> _testCases = new();
         public IReadOnlyCollection<TestCase> TestCases => _testCases;
+
+        private readonly List<ProblemExample> _examples = new();
+        public IReadOnlyCollection<ProblemExample> Examples => _examples;
+
+        private readonly List<ProblemHint> _hints = new();
+        public IReadOnlyCollection<ProblemHint> Hints => _hints;
+
+        private readonly List<ProblemCompanyRef> _companies = new();
+        public IReadOnlyCollection<ProblemCompanyRef> Companies => _companies;
+
+        private readonly List<SimilarProblemRef> _similarProblems = new();
+        public IReadOnlyCollection<SimilarProblemRef> SimilarProblems => _similarProblems;
 
         // Classification problem
         private readonly List<ProblemClassificationRef> _classifications = new();
@@ -68,12 +88,92 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             return new Problem(ProblemId.New(), code, title, statement, shortDescription, difficulty, timeLimitMs, memoryLimitKb);
         }
 
+        public void UpdateContent(
+            string statement,
+            string? constraints,
+            string? inputFormat,
+            string? outputFormat,
+            string? followUp
+        )
+        {
+            EnsureDraft();
+
+            if (string.IsNullOrWhiteSpace(statement))
+                throw new InvalidProblemStatementException();
+
+            Statement = statement;
+            Constraints = constraints;
+            InputFormat = inputFormat;
+            OutputFormat = outputFormat;
+            FollowUp = followUp;
+        }
+
+        public void SetEditorial(string editorial)
+        {
+            if (Status != ProblemStatus.Published)
+                throw new InvalidProblemStateException(Id.Value, Status);
+
+            Editorial = editorial;
+        }
+
+        public void AddExample(string input, string output, string? explanation)
+        {
+            EnsureDraft();
+
+            if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(output))
+                throw new InvalidProblemExampleException();
+
+
+            int order = _examples.Any() ? _examples.Max(x => x.Order) + 1 : 1;
+
+            _examples.Add(
+                ProblemExample.Create(order, input, output, explanation)
+            );
+        }
+
+        public void AddHint(string content)
+        {
+            EnsureDraft();
+
+            if (string.IsNullOrWhiteSpace(content))
+                throw new InvalidProblemHintException();
+
+            int order = _hints.Any() ? _hints.Max(x => x.Order) + 1 : 1;
+
+            _hints.Add(
+                ProblemHint.Create(order, content)
+            );
+        }
+
+        public void AddCompany(Guid companyId)
+        {
+            if (_companies.Any(x => x.CompanyId == companyId))
+                return;
+
+            _companies.Add(
+                ProblemCompanyRef.Create(companyId)
+            );
+        }
+
+        public void AddSimilarProblem(ProblemId problemId)
+        {
+            if (problemId == Id)
+                throw new InvalidSimilarProblemException();
+
+            if (_similarProblems.Any(x => x.ProblemId == problemId))
+                return;
+
+            _similarProblems.Add(
+                SimilarProblemRef.Create(problemId)
+            );
+        }
+
         public void UpdateMetadata(string title, string statement, string? shortDescription)
         {
             if (Status == ProblemStatus.Archived)
                 throw new InvalidProblemStateException(Id.Value, Status);
 
-            if (string.IsNullOrWhiteSpace(Title))
+            if (string.IsNullOrWhiteSpace(title))
                 throw new InvalidProblemTitleException();
 
             // Publised: không được sử statement
