@@ -37,6 +37,31 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Configurati
                 .HasMaxLength(500)
                 .IsRequired(false);
 
+            builder.Property(x => x.Constraints)
+                .HasColumnName("constraints")
+                .HasMaxLength(200)
+                .IsRequired();
+
+            builder.Property(x => x.InputFormat)
+                .HasColumnName("input_format")
+                .HasMaxLength(200)
+                .IsRequired(false);
+
+            builder.Property(x => x.OutputFormat)
+                .HasColumnName("output_format")
+                .HasMaxLength(200)
+                .IsRequired(false);
+
+            builder.Property(x => x.FollowUp)
+                .HasColumnName("follow_up")
+                .HasMaxLength(200)
+                .IsRequired(false);
+
+            builder.Property(x => x.Editorial)
+                .HasColumnName("editorial")
+                .HasMaxLength(200)
+                .IsRequired(false);
+
             builder.Property(x => x.Difficulty)
                 .HasColumnName("difficulty")
                 .HasConversion<int>()
@@ -82,6 +107,26 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Configurati
 
                 b.HasKey("ProblemId", nameof(AllowedLanguage.Value));
             });
+
+            builder.HasMany(x => x.Examples)
+                .WithOne()
+                .HasForeignKey("problem_id")
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(x => x.Hints)
+                .WithOne()
+                .HasForeignKey("problem_id")
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(x => x.Companies)
+                .WithOne()
+                .HasForeignKey("problem_id")
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(x => x.SimilarProblems)
+                .WithOne()
+                .HasForeignKey("problem_id")
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             builder.Metadata

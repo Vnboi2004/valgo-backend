@@ -6,31 +6,30 @@ using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 
 namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Configurations
 {
-    public sealed class ProblemClassificationRefConfiguration : IEntityTypeConfiguration<ProblemClassificationRef>
+    public sealed class ProblemCompanyRefConfiguration : IEntityTypeConfiguration<ProblemCompanyRef>
     {
-        public void Configure(EntityTypeBuilder<ProblemClassificationRef> builder)
+        public void Configure(EntityTypeBuilder<ProblemCompanyRef> builder)
         {
-            builder.ToTable("problem_classifications", schema: "problems");
+            builder.ToTable("problem_companies", schema: "problems");
 
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
                 .HasColumnName("id")
-                .HasConversion(id => id.Value, value => ProblemClassificationRefId.From(value))
-                .ValueGeneratedNever();
+                .HasConversion(x => x.Value, value => ProblemCompanyRefId.From(value));
 
             builder.Property<ProblemId>("problem_id")
                 .HasColumnName("problem_id")
                 .HasConversion(x => x.Value, value => ProblemId.From(value));
 
-            builder.Property(x => x.ClassificationId)
-                .HasColumnName("classification_id")
+            builder.Property(x => x.CompanyId)
+                .HasColumnName("company_id")
                 .IsRequired();
 
-            builder.HasOne<Problem>()
-                .WithMany(p => p.Classifications)
-                .HasForeignKey("problem_id")
-                .OnDelete(DeleteBehavior.Cascade);
+            // builder.HasOne<Problem>()
+            //     .WithMany(p => p.Companies)
+            //     .HasForeignKey("problem_id")
+            //     .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex("problem_id");
         }

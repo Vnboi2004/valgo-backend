@@ -19,6 +19,10 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Configurati
                 .HasConversion(id => id.Value, value => TestCaseId.From(value))
                 .ValueGeneratedNever();
 
+            builder.Property<ProblemId>("problem_id")
+                .HasColumnName("problem_id")
+                .HasConversion(x => x.Value, value => ProblemId.From(value));
+
             builder.Property(x => x.Order)
                 .HasColumnName("order")
                 .IsRequired();
