@@ -9,5 +9,19 @@ namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList
         public string Title { get; init; } = null!;
         public Difficulty Difficulty { get; init; }
         public ProblemStatus Status { get; init; }
+        public double AcceptanceRate { get; init; }
+    }
+
+    public enum ProblemSortBy
+    {
+        Code,
+        Title,
+        Difficulty
+    }
+
+    public enum SortDirection
+    {
+        Asc,
+        Desc
     }
 }

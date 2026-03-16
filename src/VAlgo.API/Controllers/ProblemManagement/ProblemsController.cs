@@ -29,10 +29,15 @@ using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemContent;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemDifficulty;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemEditorial;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemMetadata;
+using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateTestCase;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemForJudge;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemStats;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemTags;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 
 namespace VAlgo.API.Controllers.ProblemManagement
@@ -174,6 +179,25 @@ namespace VAlgo.API.Controllers.ProblemManagement
         {
             var command = new AddTestCaseCommand(
                 problemId,
+                request.Input,
+                request.ExpectedOutput,
+                request.OutputComparisonStrategy,
+                request.IsSample
+            );
+
+            await _mediator.Send(command, cancellationToken);
+
+            return NoContent();
+        }
+
+        // PUT api/problems/{id}/testcases/{testCaseId}
+        [Authorize(Roles = "Admin,ProblemSetter")]
+        [HttpPut("{problemId:guid}/testcases/{testCaseId:guid}")]
+        public async Task<IActionResult> UpdateTestCase([FromRoute] Guid problemId, [FromRoute] Guid testCaseId, [FromBody] UpdateTestCaseRequest request, CancellationToken cancellationToken)
+        {
+            var command = new UpdateTestCaseCommand(
+                problemId,
+                testCaseId,
                 request.Input,
                 request.ExpectedOutput,
                 request.OutputComparisonStrategy,
@@ -428,6 +452,10 @@ namespace VAlgo.API.Controllers.ProblemManagement
             [FromQuery] string? keyword,
             [FromQuery] Difficulty? difficulty,
             [FromQuery] ProblemStatus? status,
+            [FromQuery] Guid? companyId,
+            [FromQuery] Guid? classificationId,
+            [FromQuery] ProblemSortBy sortBy,
+            [FromQuery] SortDirection sortDirection,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 20,
             CancellationToken cancellationToken = default
@@ -437,6 +465,10 @@ namespace VAlgo.API.Controllers.ProblemManagement
                 keyword,
                 difficulty,
                 status,
+                companyId,
+                classificationId,
+                sortBy,
+                sortDirection,
                 page,
                 pageSize
             );
@@ -469,5 +501,54 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
             return Ok(problem);
         }
+
+        // GET api/problems/{problemId}/similar
+        [AllowAnonymous]
+        [HttpGet("{problemId:guid}/similar")]
+        public async Task<IActionResult> GetSimilarProblems([FromRoute] Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = new GetSimilarProblemsQuery(problemId);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/problems/{problemId}/companies
+        [AllowAnonymous]
+        [HttpGet("{problemId:guid}/companies")]
+        public async Task<IActionResult> GetProblemCompanies([FromRoute] Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = new GetProblemCompaniesQuery(problemId);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/problems/{problemId}/tags
+        [AllowAnonymous]
+        [HttpGet("{problemId:guid}/tags")]
+        public async Task<IActionResult> GetProblemTags([FromRoute] Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = new GetProblemTagsQuery(problemId);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/problems/{problemId}/stats
+        [AllowAnonymous]
+        [HttpGet("{problemId:guid}/stats")]
+        public async Task<IActionResult> GetProblemStats([FromRoute] Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = new GetProblemStatsQuery(problemId);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
     }
 }

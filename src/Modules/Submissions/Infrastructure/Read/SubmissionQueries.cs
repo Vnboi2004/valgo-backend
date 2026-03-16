@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VAlgo.Modules.Submissions.Application.Abstractions;
+using VAlgo.Modules.Submissions.Application.DTOs;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissions;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionStatus;
@@ -112,6 +113,26 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Read
                     TimeMs = s.TimeMs,
                     MemoryKb = s.MemoryKb
                 }).ToListAsync(cancellationToken);
+        }
+
+        public async Task<ProblemStatsDto> GetProblemStatsAsync(Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = _dbContext.Submissions
+                .AsNoTracking()
+                .Where(x => x.ProblemId == problemId);
+
+            var total = await query.CountAsync(cancellationToken);
+
+            var accepted = await query
+                .Where(x => x.Verdict == Verdict.Accepted)
+                .CountAsync(cancellationToken);
+
+            return new ProblemStatsDto
+            {
+                TotalSubmissions = total,
+                AcceptedSubmissions = accepted,
+                AcceptanceRate = total == 0 ? 0 : (double)accepted / total * 100
+            };
         }
     }
 }

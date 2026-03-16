@@ -52,5 +52,19 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Entities
         {
             Order = order;
         }
+
+        public void Update(string input, string expectedOutput, OutputComparisonStrategy comparisonStrategy, bool isSample)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                throw new InvalidTestCaseException("Input is empty.");
+
+            if (expectedOutput == null)
+                throw new InvalidTestCaseException("Expected output is null.");
+
+            Input = input;
+            ExpectedOutput = expectedOutput;
+            ComparisonStrategy = comparisonStrategy;
+            IsSample = isSample;
+        }
     }
 }

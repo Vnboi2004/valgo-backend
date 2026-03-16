@@ -66,3 +66,23 @@
 - Problem Editor Detail
 - Problem Constraints Snapshot
 
+
+GetProblemList
+GetProblemDetail
+GetProblemEditor
+GetProblemForJudge
+
+GetSimilarProblems
+GetProblemCompanies
+GetProblemTags
+
+GetProblemStats
+CompanyFrequency
+
+GetUserSubmissions
+GetProblemSubmissions
+
+RandomProblem
+DailyChallenge
+
+

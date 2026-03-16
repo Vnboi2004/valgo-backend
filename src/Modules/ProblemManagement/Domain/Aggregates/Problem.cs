@@ -265,6 +265,20 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             MemoryLimitKb = memoryLimitKb;
         }
 
+        public void UpdateTestCase(TestCaseId testCaseId, string input, string expectedOutput, OutputComparisonStrategy comparisonStrategy, bool isSample)
+        {
+            EnsureDraft();
+
+            var testCase = _testCases.FirstOrDefault(x => x.Id == testCaseId)
+                ?? throw new TestCaseNotFoundException(testCaseId);
+
+            // Nếu đang unmark sample, đảm bảo vẫn còn ít nhất 1 sample khác
+            if (testCase.IsSample && !isSample && _testCases.Count(x => x.IsSample) == 1)
+                throw new CannotRemoveLastSampleTestCaseException(Id.Value);
+
+            testCase.Update(input, expectedOutput, comparisonStrategy, isSample);
+        }
+
         public void RemoveTestCase(TestCaseId testCaseId)
         {
             EnsureDraft();

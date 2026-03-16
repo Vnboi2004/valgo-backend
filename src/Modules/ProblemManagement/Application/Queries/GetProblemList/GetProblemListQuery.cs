@@ -8,6 +8,10 @@ namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList
         string? Keyword,
         Difficulty? Difficulty,
         ProblemStatus? Status,
+        Guid? CompanyId,
+        Guid? ClassificationId,
+        ProblemSortBy SortBy = ProblemSortBy.Code,
+        SortDirection SortDirection = SortDirection.Asc,
         int Page = 1,
         int PageSize = 20
     ) : IQuery<PagedResult<ProblemListItemDto>>;

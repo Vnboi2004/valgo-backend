@@ -1,3 +1,4 @@
+using VAlgo.Modules.Submissions.Application.DTOs;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissions;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionStatus;
@@ -16,5 +17,6 @@ namespace VAlgo.Modules.Submissions.Application.Abstractions
         Task<SubmissionDetailDto?> GetDetailAsync(Guid submissionId, CancellationToken cancellationToken);
         Task<SubmissionStatusDto?> GetStatusAsync(Guid submissionId, CancellationToken cancellationToken);
         Task<IReadOnlyList<TestCaseResultDto>> GetTestCasesAsync(Guid submissionId, CancellationToken cancellationToken);
+        Task<ProblemStatsDto> GetProblemStatsAsync(Guid problemId, CancellationToken cancellationToken);
     }
 }

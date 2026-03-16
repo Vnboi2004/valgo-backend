@@ -1,6 +1,9 @@
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemTags;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
 
 namespace VAlgo.Modules.ProblemManagement.Application.Abstractions
 {
@@ -14,5 +17,9 @@ namespace VAlgo.Modules.ProblemManagement.Application.Abstractions
         );
         Task<ProblemDetailDto?> GetDetailAsync(Guid problemId, CancellationToken cancellationToken = default);
         Task<ProblemEditorDto?> GetEditorAsync(Guid problemId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<SimilarProblemDto>> GetSimilarProblemsAsync(Guid problemId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<ProblemCompanyDto>> GetProblemCompaniesAsync(Guid problemId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<ProblemTagDto>> GetProblemTagsAsync(Guid problemId, CancellationToken cancellationToken = default);
+        
     }
 }

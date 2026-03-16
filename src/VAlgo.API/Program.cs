@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -21,7 +22,8 @@ using VAlgo.SharedKernel.Messaging;
 var builder = WebApplication.CreateBuilder(args);
 
 // Core framework
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
