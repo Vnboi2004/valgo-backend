@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using VAlgo.Modules.ProblemClassification.Domain.Aggregates;
 using VAlgo.Modules.ProblemManagement.Domain.Entities;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
@@ -131,6 +132,38 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             );
         }
 
+        public void UpdateExample(ProblemExampleId exampleId, string input, string output, string? explanation)
+        {
+            EnsureDraft();
+            if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(output))
+                throw new InvalidOperationException("invalid fields.");
+
+            var example = _examples.FirstOrDefault(x => x.Id == exampleId);
+
+            if (example == null)
+                throw new InvalidOperationException("Example not found.");
+
+            example.Update(input, output, explanation);
+        }
+
+        public void DeleteExample(ProblemExampleId exampleId)
+        {
+            EnsureDraft();
+
+            var example = _examples.FirstOrDefault(x => x.Id == exampleId);
+
+            if (example == null)
+                throw new InvalidOperationException("Example not found.");
+
+            _examples.Remove(example);
+
+            int order = 1;
+            foreach (var ex in _examples.OrderBy(x => x.Order))
+            {
+                ex.SetOrder(order++);
+            }
+        }
+
         public void AddHint(string content)
         {
             EnsureDraft();
@@ -143,6 +176,39 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             _hints.Add(
                 ProblemHint.Create(order, content)
             );
+        }
+
+        public void UpdateHint(ProblemHintId hintId, string content)
+        {
+            EnsureDraft();
+
+            if (string.IsNullOrWhiteSpace(content))
+                throw new InvalidProblemHintException();
+
+            var hint = _hints.FirstOrDefault(x => x.Id == hintId);
+
+            if (hint == null)
+                throw new InvalidOperationException("Hint not found.");
+
+            hint.Update(content);
+        }
+
+        public void DeleteHint(ProblemHintId hintId)
+        {
+            EnsureDraft();
+
+            var example = _hints.FirstOrDefault(x => x.Id == hintId);
+
+            if (example == null)
+                throw new InvalidOperationException("Hint not found.");
+
+            _hints.Remove(example);
+
+            int order = 1;
+            foreach (var h in _hints.OrderBy(x => x.Order))
+            {
+                h.SetOrder(order++);
+            }
         }
 
         public void AddCompany(Guid companyId)
@@ -168,7 +234,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             );
         }
 
-        public void UpdateMetadata(string title, string statement, string? shortDescription)
+        public void UpdateMetadata(string title, string? shortDescription)
         {
             if (Status == ProblemStatus.Archived)
                 throw new InvalidProblemStateException(Id.Value, Status);
@@ -176,19 +242,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             if (string.IsNullOrWhiteSpace(title))
                 throw new InvalidProblemTitleException();
 
-            // Publised: không được sử statement
-            if (Status == ProblemStatus.Published)
-            {
-                Title = title;
-                ShortDescription = shortDescription;
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(statement))
-                throw new InvalidProblemStatementException();
-
             Title = title;
-            Statement = statement;
             ShortDescription = shortDescription;
         }
 
@@ -232,6 +286,30 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             }
         }
 
+        public void DeleteSimilar(SimilarProblemRefId similarProblemId)
+        {
+            EnsureDraft();
+
+            var similar = _similarProblems.FirstOrDefault(x => x.Id == similarProblemId);
+
+            if (similar == null)
+                throw new InvalidOperationException("Similar problem not found.");
+
+            _similarProblems.Remove(similar);
+        }
+
+        public void DeleteCompany(Guid companyId)
+        {
+            EnsureDraft();
+
+            var company = _companies.FirstOrDefault(x => x.CompanyId == companyId);
+
+            if (company == null)
+                throw new InvalidOperationException("Company not found");
+
+            _companies.Remove(company);
+        }
+
         public void ReorderTestCases(IReadOnlyList<TestCaseId> orderedIds)
         {
             EnsureDraft();
@@ -253,6 +331,58 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 
             int order = 1;
             foreach (var id in orderedIds)
+            {
+                lookup[id].SetOrder(order++);
+            }
+        }
+
+        public void ReorderExamples(IReadOnlyList<ProblemExampleId> exampleIds)
+        {
+            EnsureDraft();
+
+            if (exampleIds.Count != _examples.Count)
+                throw new InvalidOperationException("Mismatch example count.");
+
+            var distinctIds = exampleIds.Distinct().ToList();
+            if (distinctIds.Count != exampleIds.Count)
+                throw new InvalidTestCaseException("Duplicate example ids.");
+
+            var lockup = _examples.ToDictionary(x => x.Id);
+
+            foreach (var id in exampleIds)
+            {
+                if (!lockup.ContainsKey(id))
+                    throw new InvalidOperationException("Example not found.");
+            }
+
+            int order = 1;
+            foreach (var id in exampleIds)
+            {
+                lockup[id].SetOrder(order++);
+            }
+        }
+
+        public void ReorderHints(IReadOnlyList<ProblemHintId> hintIds)
+        {
+            EnsureDraft();
+
+            if (hintIds.Count != _hints.Count)
+                throw new InvalidOperationException("Mismatch example count.");
+
+            var distinctIds = hintIds.Distinct().ToList();
+            if (distinctIds.Count != hintIds.Count)
+                throw new InvalidTestCaseException("Duplicate hint ids.");
+
+            var lookup = _hints.ToDictionary(x => x.Id);
+
+            foreach (var id in hintIds)
+            {
+                if (!lookup.ContainsKey(id))
+                    throw new InvalidOperationException("Example not found.");
+            }
+
+            int order = 1;
+            foreach (var id in hintIds)
             {
                 lookup[id].SetOrder(order++);
             }

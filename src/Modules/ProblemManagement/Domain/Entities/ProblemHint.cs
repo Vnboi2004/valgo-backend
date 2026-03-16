@@ -21,5 +21,15 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Entities
         {
             return new ProblemHint(ProblemHintId.New(), order, content);
         }
+
+        public void Update(string content)
+        {
+            Content = content;
+        }
+
+        public void SetOrder(int order)
+        {
+            Order = order;
+        }
     }
 }

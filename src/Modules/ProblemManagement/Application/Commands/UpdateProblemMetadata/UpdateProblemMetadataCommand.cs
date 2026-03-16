@@ -6,7 +6,6 @@ namespace VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemMeta
     public sealed record UpdateProblemMetadataCommand(
         Guid ProblemId,
         string Title,
-        string Statement,
         string? ShortDescription
     ) : ICommand<Unit>;
 }

@@ -2,20 +2,20 @@ using MediatR;
 using VAlgo.Modules.ProblemManagement.Application.Abstractions;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 
-namespace VAlgo.Modules.ProblemManagement.Application.Commands.UpdateContent
+namespace VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemContent
 {
-    public sealed class UpdateContentCommandHandler : IRequestHandler<UpdateContentCommand, Unit>
+    public sealed class UpdateProblemContentCommandHandler : IRequestHandler<UpdateProblemContentCommand, Unit>
     {
         private readonly IProblemRepository _problemRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateContentCommandHandler(IProblemRepository problemRepository, IUnitOfWork unitOfWork)
+        public UpdateProblemContentCommandHandler(IProblemRepository problemRepository, IUnitOfWork unitOfWork)
         {
             _problemRepository = problemRepository;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(UpdateContentCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateProblemContentCommand request, CancellationToken cancellationToken)
         {
             var problemId = ProblemId.From(request.ProblemId);
 

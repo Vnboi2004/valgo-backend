@@ -1,8 +1,8 @@
 using MediatR;
 
-namespace VAlgo.Modules.ProblemManagement.Application.Commands
+namespace VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemContent
 {
-    public sealed record UpdateContentCommand(
+    public sealed record UpdateProblemContentCommand(
         Guid ProblemId,
         string Statement,
         string? Constraints,

@@ -24,5 +24,17 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Entities
         {
             return new ProblemExample(ProblemExampleId.New(), order, input, output, explanation);
         }
+
+        public void Update(string input, string output, string? explanation)
+        {
+            Input = input;
+            Output = output;
+            Explanation = explanation;
+        }
+
+        public void SetOrder(int order)
+        {
+            Order = order;
+        }
     }
 }

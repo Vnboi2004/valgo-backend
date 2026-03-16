@@ -28,7 +28,7 @@ namespace VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemMeta
             if (problem == null)
                 throw new ProblemNotFoundException(request.ProblemId);
 
-            problem.UpdateMetadata(request.Title, request.Statement, request.ShortDescription);
+            problem.UpdateMetadata(request.Title, request.ShortDescription);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
