@@ -159,6 +159,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
             return NoContent();
         }
 
+        // Trên LeetCode tương đương với tab **"Solution"** — nơi admin/problem setter đăng solution chính thức, giải thích approach, complexity analysis sau khi bài đã public.
         // PUT /problems/{problemId}/editorial
         [Authorize(Roles = "Admin,ProblemSetter")]
         [HttpPut("{problemId:guid}/editorial")]

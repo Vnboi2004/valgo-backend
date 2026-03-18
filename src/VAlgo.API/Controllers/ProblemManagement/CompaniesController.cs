@@ -25,6 +25,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
         // POST api/companies
         [Authorize(Roles = "Admin")]
+        [HttpPost]
         public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyRequest request, CancellationToken cancellationToken = default)
         {
             var command = new CreateCompanyCommand(request.Name);

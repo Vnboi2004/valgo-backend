@@ -36,6 +36,10 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Repositorie
             return await _dbContext.Problems
                 .Include(x => x.TestCases)
                 .Include(x => x.Classifications)
+                .Include(x => x.Examples)
+                .Include(x => x.Hints)
+                .Include(x => x.Companies)
+                .Include(x => x.SimilarProblems)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
     }
