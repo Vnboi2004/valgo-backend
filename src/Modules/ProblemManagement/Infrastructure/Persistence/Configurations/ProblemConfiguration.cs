@@ -40,7 +40,7 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Configurati
             builder.Property(x => x.Constraints)
                 .HasColumnName("constraints")
                 .HasMaxLength(200)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.Property(x => x.InputFormat)
                 .HasColumnName("input_format")
