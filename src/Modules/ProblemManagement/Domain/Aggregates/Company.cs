@@ -18,5 +18,33 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 
         public static Company Create(string name)
             => new Company(CompanyId.New(), name);
+
+
+        public void Rename(string newName)
+        {
+            if (!IsActive)
+                throw new InvalidOperationException("Cannot is active.");
+
+            if (string.IsNullOrWhiteSpace(newName))
+                throw new InvalidOperationException("Name is valid.");
+
+            Name = newName.Trim();
+        }
+
+        public void Deactivate()
+        {
+            if (!IsActive)
+                return;
+
+            IsActive = false;
+        }
+
+        public void Reactivate()
+        {
+            if (IsActive)
+                return;
+
+            IsActive = true;
+        }
     }
 }
