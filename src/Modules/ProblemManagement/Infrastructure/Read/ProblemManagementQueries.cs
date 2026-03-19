@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using VAlgo.Modules.ProblemClassification.Infrastructure.Persistence;
 using VAlgo.Modules.ProblemManagement.Application.Abstractions;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetCompanyDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor;
@@ -8,7 +10,6 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemTags;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
 using VAlgo.Modules.ProblemManagement.Domain.Aggregates;
-using VAlgo.Modules.ProblemManagement.Domain.Entities;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
@@ -20,11 +21,13 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
     {
         private readonly ProblemManagementDbContext _dbContext;
         private readonly IMediator _mediator;
+        private readonly ClassificationDbContext _classificationDbContext;
 
-        public ProblemManagementQueries(ProblemManagementDbContext dbContext, IMediator mediator)
+        public ProblemManagementQueries(ProblemManagementDbContext dbContext, IMediator mediator, ClassificationDbContext classificationDbContext)
         {
             _dbContext = dbContext;
             _mediator = mediator;
+            _classificationDbContext = classificationDbContext;
         }
 
         public async Task<(IReadOnlyList<ProblemListItemDto> Items, int TotalCount)> GetListAsync(
@@ -85,31 +88,24 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
 
         public async Task<ProblemDetailDto?> GetDetailAsync(Guid problemId, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Problems
+            var problem = await _dbContext.Problems
                 .AsNoTracking()
                 .Where(p =>
                     p.Id == ProblemId.From(problemId) &&
                     p.Status == ProblemStatus.Published)
-                .Select(p => new ProblemDetailDto
+                .Select(p => new
                 {
-                    ProblemId = p.Id.Value,
-                    Code = p.Code,
-                    Title = p.Title,
-                    Statement = p.Statement,
-
-                    Difficulty = p.Difficulty,
-
-                    TimeLimitMs = p.TimeLimitMs,
-                    MemoryLimitKb = p.MemoryLimitKb,
-
-                    Constraints = p.Constraints,
-                    InputFormat = p.InputFormat,
-                    OutputFormat = p.OutputFormat,
-
-                    AllowedLanguages = p.AllowedLanguages
-                        .Select(x => x.Value)
-                        .ToList(),
-
+                    p.Id,
+                    p.Code,
+                    p.Title,
+                    p.Statement,
+                    p.Difficulty,
+                    p.TimeLimitMs,
+                    p.MemoryLimitKb,
+                    p.Constraints,
+                    p.InputFormat,
+                    p.OutputFormat,
+                    AllowedLanguages = p.AllowedLanguages.Select(x => x.Value).ToList(),
                     Samples = p.TestCases
                         .Where(tc => tc.IsSample)
                         .OrderBy(tc => tc.Order)
@@ -119,7 +115,6 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
                             Input = tc.Input,
                             ExpectedOutput = tc.ExpectedOutput
                         }).ToList(),
-
                     Examples = p.Examples
                         .OrderBy(x => x.Order)
                         .Select(x => new ProblemExampleDto
@@ -129,21 +124,78 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
                             Output = x.Output,
                             Explanation = x.Explanation
                         }).ToList(),
-
                     Hints = p.Hints
                         .OrderBy(x => x.Order)
                         .Select(x => x.Content)
                         .ToList(),
-
-                    ClassificationIds = p.Classifications
-                        .Select(x => x.ClassificationId)
-                        .ToList(),
-
-                    CompanyIds = p.Companies
-                        .Select(x => x.CompanyId)
-                        .ToList()
+                    ClassificationIds = p.Classifications.Select(x => x.ClassificationId).ToList(),
+                    CompanyIds = p.Companies.Select(x => x.CompanyId).ToList()
                 })
                 .FirstOrDefaultAsync(cancellationToken);
+
+            if (problem == null) return null;
+
+            // Materialize ra List<Guid> trước
+            var classificationIds = problem.ClassificationIds.ToList();
+            var companyIds = problem.CompanyIds.ToList();
+
+            // Enrich Classifications
+            var classifications = new List<ProblemClassificationDto>();
+            if (classificationIds.Any())
+            {
+                classifications = await Task.Run(() =>
+                    _classificationDbContext.Classifications
+                        .AsNoTracking()
+                        .AsEnumerable()
+                        .Where(c => classificationIds.Contains(c.Id.Value))
+                        .Select(c => new ProblemClassificationDto
+                        {
+                            ClassificationId = c.Id.Value,
+                            Code = c.Code,
+                            Name = c.Name,
+                            Type = c.Type
+                        })
+                        .ToList()
+                );
+            }
+
+            // Enrich Companies
+            var companies = new List<ProblemCompanyDto>();
+            if (companyIds.Any())
+            {
+                companies = await Task.Run(() =>
+                    _dbContext.Companies
+                        .AsNoTracking()
+                        .AsEnumerable()
+                        .Where(c => companyIds.Contains(c.Id.Value))
+                        .Select(c => new ProblemCompanyDto
+                        {
+                            CompanyId = c.Id.Value,
+                            Name = c.Name,
+                        })
+                        .ToList()
+                );
+            }
+
+            return new ProblemDetailDto
+            {
+                ProblemId = problem.Id.Value,
+                Code = problem.Code,
+                Title = problem.Title,
+                Statement = problem.Statement,
+                Difficulty = problem.Difficulty,
+                TimeLimitMs = problem.TimeLimitMs,
+                MemoryLimitKb = problem.MemoryLimitKb,
+                Constraints = problem.Constraints,
+                InputFormat = problem.InputFormat,
+                OutputFormat = problem.OutputFormat,
+                AllowedLanguages = problem.AllowedLanguages,
+                Samples = problem.Samples,
+                Examples = problem.Examples,
+                Hints = problem.Hints,
+                Classifications = classifications,
+                Companies = companies
+            };
         }
 
         public async Task<ProblemEditorDto?> GetEditorAsync(Guid problemId, CancellationToken cancellationToken = default)

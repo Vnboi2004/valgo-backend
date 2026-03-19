@@ -4,6 +4,7 @@ using VAlgo.Modules.ProblemClassification.Application.Queries.GetActiveClassific
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassificationDetail;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassifications;
 using VAlgo.Modules.ProblemClassification.Domain.Enums;
+using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
 using VAlgo.Modules.ProblemClassification.Infrastructure.Persistence;
 
 namespace VAlgo.Modules.ProblemClassification.Infrastructure.Read
@@ -48,11 +49,11 @@ namespace VAlgo.Modules.ProblemClassification.Infrastructure.Read
             return (items, totalCount);
         }
 
-        public async Task<ClassificationDetailDto?> GetDetailAsync(Guid classificationId, CancellationToken cancellationToken = default)
+        public async Task<ClassificationDetailDto?> GetDetailAsync(ClassificationId classificationId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Classifications
                 .AsNoTracking()
-                .Where(x => x.Id.Value == classificationId)
+                .Where(x => x.Id == classificationId)
                 .Select(x => new ClassificationDetailDto
                 {
                     Id = x.Id.Value,

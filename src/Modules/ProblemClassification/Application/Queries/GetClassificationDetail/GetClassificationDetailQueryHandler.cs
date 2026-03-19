@@ -14,9 +14,9 @@ namespace VAlgo.Modules.ProblemClassification.Application.Queries.GetClassificat
 
         public async Task<ClassificationDetailDto> Handle(GetClassificationDetailQuery request, CancellationToken cancellationToken)
         {
-            var classification = await _classificationQueries.GetDetailAsync(request.ClassificationId, cancellationToken);
-
             var classificationId = ClassificationId.From(request.ClassificationId);
+
+            var classification = await _classificationQueries.GetDetailAsync(classificationId, cancellationToken);
 
             if (classification == null)
                 throw new ClassificationNotFoundException(classificationId);

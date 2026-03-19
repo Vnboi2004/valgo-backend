@@ -1,3 +1,5 @@
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetCompanyDetail;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 
 namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail
@@ -23,7 +25,7 @@ namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail
         public IReadOnlyList<ProblemSampleTestCaseDto> Samples { get; init; } = [];
         public IReadOnlyList<ProblemExampleDto> Examples { get; init; } = [];
         public IReadOnlyList<string> Hints { get; init; } = [];
-        public IReadOnlyList<Guid> ClassificationIds { get; init; } = [];
-        public IReadOnlyList<Guid> CompanyIds { get; init; } = [];
+        public IReadOnlyList<ProblemClassificationDto> Classifications { get; init; } = [];
+        public IReadOnlyList<ProblemCompanyDto> Companies { get; init; } = [];
     }
 }

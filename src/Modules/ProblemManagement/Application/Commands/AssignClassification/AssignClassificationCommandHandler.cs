@@ -1,4 +1,5 @@
 using MediatR;
+using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
 using VAlgo.Modules.ProblemManagement.Application.Abstractions;
 using VAlgo.Modules.ProblemManagement.Domain.Exceptions;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
@@ -31,14 +32,14 @@ namespace VAlgo.Modules.ProblemManagement.Application.Commands.AssignClassificat
             if (problem == null)
                 throw new ProblemNotFoundException(request.ProblemId);
 
-            var classification = await _classificationRepository.GetByIdAsync(request.ClassificationId, cancellationToken);
+            var classification = await _classificationRepository.GetByIdAsync(ClassificationId.From(request.ClassificationId), cancellationToken);
 
             if (classification == null)
                 throw new ClassificationNotFoundException(request.ClassificationId);
 
             problem.AddClassificationRef(classification);
 
-            await _problemRepository.UpdateAsync(problem, cancellationToken);
+            // await _problemRepository.UpdateAsync(problem, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
