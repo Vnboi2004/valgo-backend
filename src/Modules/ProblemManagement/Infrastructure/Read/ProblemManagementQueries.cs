@@ -7,8 +7,12 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetCompanyDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditorial;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemHints;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemListWithUserStatus;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemTags;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetRandomProblem;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
 using VAlgo.Modules.ProblemManagement.Domain.Aggregates;
 using VAlgo.Modules.ProblemManagement.Domain.Entities;
@@ -16,6 +20,7 @@ using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
 using VAlgo.SharedKernel.CrossModule.Classifications;
+using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
 {
@@ -200,6 +205,71 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
             };
         }
 
+        public async Task<PagedResult<ProblemListRawDto>> GetProblemListAsync(
+            string? keyword,
+            Difficulty? difficulty,
+            ProblemStatus? status,
+            Guid? companyId,
+            Guid? classificationId,
+            ProblemSortBy sortBy,
+            SortDirection sortDirection,
+            int page,
+            int pageSize,
+            CancellationToken cancellationToken)
+        {
+            var query = _dbContext.Problems.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+                query = query.Where(p =>
+                    p.Title.Contains(keyword) ||
+                    p.Code.Contains(keyword));
+
+            if (difficulty.HasValue)
+                query = query.Where(p => p.Difficulty == difficulty.Value);
+
+            if (status.HasValue)
+                query = query.Where(p => p.Status == status.Value);
+
+            if (companyId.HasValue)
+                query = query.Where(p =>
+                    p.Companies.Any(c => c.CompanyId == companyId.Value));
+
+            if (classificationId.HasValue)
+                query = query.Where(p =>
+                    p.Classifications.Any(c => c.ClassificationId == classificationId.Value));
+
+            query = sortBy switch
+            {
+                ProblemSortBy.Difficulty => sortDirection == SortDirection.Asc
+                    ? query.OrderBy(p => p.Difficulty)
+                    : query.OrderByDescending(p => p.Difficulty),
+                ProblemSortBy.Title => sortDirection == SortDirection.Asc
+                    ? query.OrderBy(p => p.Title)
+                    : query.OrderByDescending(p => p.Title),
+                _ => query.OrderBy(p => p.Code)
+            };
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new ProblemListRawDto
+                {
+                    ProblemId = p.Id.Value,
+                    Code = p.Code,
+                    Title = p.Title,
+                    ShortDescription = p.ShortDescription,
+                    Difficulty = p.Difficulty,
+                    Status = p.Status,
+                    TotalSubmissions = 0, // TODO: join từ Submission module
+                    AcceptedSubmissions = 0
+                })
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<ProblemListRawDto>(items, totalCount, page, pageSize);
+        }
+
         public async Task<ProblemEditorDto?> GetEditorAsync(Guid problemId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Problems
@@ -368,6 +438,80 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
                 })
                 .OrderByDescending(x => x.ProblemCount)
                 .ToList();
+        }
+
+        public async Task<ProblemEditorialDto?> GetEditorialAsync(Guid problemId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Problems
+                .AsNoTracking()
+                .Where(p =>
+                    p.Id == ProblemId.From(problemId) &&
+                    p.Status == ProblemStatus.Published)
+                .Select(p => new ProblemEditorialDto
+                {
+                    ProblemId = p.Id.Value,
+                    Editorial = p.Editorial ?? string.Empty
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+
+
+        public async Task<bool> ProblemExistsAsync(Guid problemId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Problems
+                .AsNoTracking()
+                .AnyAsync(p =>
+                    p.Id == ProblemId.From(problemId) &&
+                    p.Status == ProblemStatus.Published,
+                    cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<ProblemHintDto>> GetHintsAsync(Guid problemId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Problems
+                .AsNoTracking()
+                .Where(p => p.Id == ProblemId.From(problemId))
+                .SelectMany(p => p.Hints)
+                .OrderBy(h => h.Order)
+                .Select(h => new ProblemHintDto
+                {
+                    Order = h.Order,
+                    Content = h.Content
+                })
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<RandomProblemDto?> GetRandomAsync(Difficulty? difficulty, Guid? classificationId, CancellationToken cancellationToken = default)
+        {
+            var query = _dbContext.Problems
+                .AsNoTracking()
+                .Where(p => p.Status == ProblemStatus.Published);
+
+            if (difficulty.HasValue)
+                query = query.Where(p => p.Difficulty == difficulty.Value);
+
+            if (classificationId.HasValue)
+                query = query.Where(p =>
+                    p.Classifications.Any(c => c.ClassificationId == classificationId.Value));
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            if (totalCount == 0) return null;
+
+            var randomIndex = new Random().Next(0, totalCount);
+
+            return await query
+                .OrderBy(p => p.Id)
+                .Skip(randomIndex)
+                .Select(p => new RandomProblemDto
+                {
+                    ProblemId = p.Id.Value,
+                    Code = p.Code,
+                    Title = p.Title,
+                    Difficulty = p.Difficulty
+                })
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         private static IQueryable<Problem> ApplySorting(IQueryable<Problem> query, GetProblemListQuery filter)

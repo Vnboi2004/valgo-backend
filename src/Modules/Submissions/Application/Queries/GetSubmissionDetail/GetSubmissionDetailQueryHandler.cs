@@ -1,6 +1,6 @@
 using MediatR;
 using VAlgo.Modules.Submissions.Application.Abstractions;
-using VAlgo.Modules.Submissions.Domain.Enums;
+using VAlgo.SharedKernel.CrossModule.Submissions;
 
 namespace VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail
 {

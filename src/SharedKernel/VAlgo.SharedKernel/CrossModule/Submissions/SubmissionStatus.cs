@@ -1,4 +1,4 @@
-namespace VAlgo.Modules.Submissions.Domain.Enums
+namespace VAlgo.SharedKernel.CrossModule.Submissions
 {
     public enum SubmissionStatus
     {

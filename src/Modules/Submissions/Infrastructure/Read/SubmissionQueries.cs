@@ -4,9 +4,9 @@ using VAlgo.Modules.Submissions.Application.DTOs;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissions;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionStatus;
-using VAlgo.Modules.Submissions.Domain.Enums;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
 using VAlgo.Modules.Submissions.Infrastructure.Persistence;
+using VAlgo.SharedKernel.CrossModule.Submissions;
 
 namespace VAlgo.Modules.Submissions.Infrastructure.Read
 {

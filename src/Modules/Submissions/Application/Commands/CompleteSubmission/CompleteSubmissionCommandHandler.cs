@@ -1,7 +1,7 @@
 using MediatR;
 using VAlgo.Modules.Submissions.Application.Abstractions;
-using VAlgo.Modules.Submissions.Domain.Enums;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
+using VAlgo.SharedKernel.CrossModule.Submissions;
 using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission

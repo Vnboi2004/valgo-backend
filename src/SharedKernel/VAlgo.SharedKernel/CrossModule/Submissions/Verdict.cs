@@ -1,9 +1,8 @@
-namespace VAlgo.Modules.Submissions.Domain.Enums
+namespace VAlgo.SharedKernel.CrossModule.Submissions
 {
     public enum Verdict
     {
         Node = 0,
-
         Accepted = 1,
         WrongAnswer = 2,
         TimeLimitExceeded = 3,

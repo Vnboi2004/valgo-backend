@@ -34,11 +34,16 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetClassificationStats
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditorial;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemForJudge;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemHints;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemListWithUserStatus;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemStats;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemTags;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetRandomProblem;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetUserProblemStatus;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.SharedKernel.CrossModule.Classifications;
 
@@ -565,5 +570,77 @@ namespace VAlgo.API.Controllers.ProblemManagement
             return Ok(result);
         }
 
+
+        // GET api/problems/{problemId}/my-status
+        [Authorize]
+        [HttpGet("{problemId:guid}/my-status")]
+        public async Task<IActionResult> GetUserProblemStatus([FromRoute] Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = new GetUserProblemStatusQuery(problemId);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/problems/with-status
+        [AllowAnonymous]
+        [HttpGet("with-status")]
+        public async Task<IActionResult> GetProblemListWithUserStatus(
+            [FromQuery] string? keyword,
+            [FromQuery] Difficulty? difficulty,
+            [FromQuery] ProblemStatus? status,
+            [FromQuery] Guid? companyId,
+            [FromQuery] Guid? classificationId,
+            [FromQuery] ProblemSortBy sortBy,
+            [FromQuery] SortDirection sortDirection,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var query = new GetProblemListWithUserStatusQuery(
+                keyword, difficulty, status, companyId, classificationId,
+                sortBy, sortDirection, page, pageSize
+            );
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/problems/{problemId}/editorial
+        [Authorize]
+        [HttpGet("{problemId:guid}/editorial")]
+        public async Task<IActionResult> GetProblemEditorial([FromRoute] Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = new GetProblemEditorialQuery(problemId);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/problems/{problemId}/hints
+        [Authorize]
+        [HttpGet("{problemId:guid}/hints")]
+        public async Task<IActionResult> GetProblemHints([FromRoute] Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = new GetProblemHintsQuery(problemId);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/problems/random
+        [AllowAnonymous]
+        [HttpGet("random")]
+        public async Task<IActionResult> GetRandomProblem([FromQuery] Difficulty? difficulty, [FromQuery] Guid? classificationId, CancellationToken cancellationToken)
+        {
+            var query = new GetRandomProblemQuery(difficulty, classificationId);
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
     }
 }

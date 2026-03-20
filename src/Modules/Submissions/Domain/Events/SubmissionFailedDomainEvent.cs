@@ -1,5 +1,5 @@
-using VAlgo.Modules.Submissions.Domain.Enums;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.CrossModule.Submissions;
 
 namespace VAlgo.Modules.Submissions.Domain.Events
 {

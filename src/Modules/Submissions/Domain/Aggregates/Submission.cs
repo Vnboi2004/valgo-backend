@@ -1,9 +1,10 @@
 using VAlgo.Modules.Submissions.Domain.Entities;
-using VAlgo.Modules.Submissions.Domain.Enums;
+// using VAlgo.Modules.Submissions.Domain.Enums;
 using VAlgo.Modules.Submissions.Domain.Events;
 using VAlgo.Modules.Submissions.Domain.Exceptions;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.CrossModule.Submissions;
 using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.Submissions.Domain.Aggregates

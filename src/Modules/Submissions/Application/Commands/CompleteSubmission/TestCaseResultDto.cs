@@ -1,4 +1,5 @@
-using VAlgo.Modules.Submissions.Domain.Enums;
+
+using VAlgo.SharedKernel.CrossModule.Submissions;
 
 namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission
 {
