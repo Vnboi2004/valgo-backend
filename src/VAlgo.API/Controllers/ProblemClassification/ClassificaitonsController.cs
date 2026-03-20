@@ -9,7 +9,8 @@ using VAlgo.Modules.ProblemClassification.Application.Commands.RenameClassificat
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetActiveClassifications;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassificationDetail;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassifications;
-using VAlgo.Modules.ProblemClassification.Domain.Enums;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetClassificationStats;
+using VAlgo.SharedKernel.CrossModule.Classifications;
 
 namespace VAlgo.API.Controllers.ProblemClassification
 {

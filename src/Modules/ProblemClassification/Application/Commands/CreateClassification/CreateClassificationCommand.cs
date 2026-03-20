@@ -1,5 +1,5 @@
-using VAlgo.Modules.ProblemClassification.Domain.Enums;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.CrossModule.Classifications;
 
 namespace VAlgo.Modules.ProblemClassification.Application.Commands.CreateClassification
 {

@@ -1,4 +1,4 @@
-using VAlgo.Modules.ProblemClassification.Domain.Enums;
+using VAlgo.SharedKernel.CrossModule.Classifications;
 using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.ProblemClassification.Domain.Exceptions

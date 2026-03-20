@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VAlgo.Modules.ProblemClassification.Infrastructure.Persistence;
 using VAlgo.Modules.ProblemManagement.Application.Abstractions;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetClassificationStats;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetCompanyDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
@@ -10,6 +11,7 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemTags;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
 using VAlgo.Modules.ProblemManagement.Domain.Aggregates;
+using VAlgo.Modules.ProblemManagement.Domain.Entities;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
@@ -338,6 +340,33 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
                     Name = c.Name,
                     Type = c.Type
                 })
+                .ToList();
+        }
+
+        public async Task<IReadOnlyList<ClassificationStatsDto>> GetClassificationStatsAsync(ClassificationType? type, CancellationToken cancellationToken = default)
+        {
+            // Đếm problems 
+            var problemCounts = await _dbContext.Set<ProblemClassificationRef>()
+                .GroupBy(x => x.ClassificationId)
+                .Select(g => new { ClassificationId = g.Key, Count = g.Count() })
+                .ToListAsync(cancellationToken);
+
+            // 
+            var classifications = await _classificationDbContext.Classifications
+                .AsNoTracking()
+                .Where(c => c.IsActive && (type == null || c.Type == type.Value))
+                .ToListAsync(cancellationToken);
+
+            return classifications
+                .Select(c => new ClassificationStatsDto
+                {
+                    ClassificationId = c.Id.Value,
+                    Code = c.Code,
+                    Name = c.Name,
+                    Type = c.Type,
+                    ProblemCount = problemCounts.FirstOrDefault(x => x.ClassificationId == c.Id.Value)?.Count ?? 0
+                })
+                .OrderByDescending(x => x.ProblemCount)
                 .ToList();
         }
 

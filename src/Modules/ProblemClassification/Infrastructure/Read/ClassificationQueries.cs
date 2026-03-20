@@ -3,9 +3,9 @@ using VAlgo.Modules.ProblemClassification.Application.Abstractions;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetActiveClassifications;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassificationDetail;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassifications;
-using VAlgo.Modules.ProblemClassification.Domain.Enums;
 using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
 using VAlgo.Modules.ProblemClassification.Infrastructure.Persistence;
+using VAlgo.SharedKernel.CrossModule.Classifications;
 
 namespace VAlgo.Modules.ProblemClassification.Infrastructure.Read
 {
@@ -94,6 +94,5 @@ namespace VAlgo.Modules.ProblemClassification.Infrastructure.Read
 
             return (items, totalCount);
         }
-
     }
 }

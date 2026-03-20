@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using VAlgo.Modules.ProblemClassification.Domain.Aggregates;
-using VAlgo.Modules.ProblemClassification.Domain.Enums;
 using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
 using VAlgo.Modules.ProblemClassification.Infrastructure.Persistence;
 using VAlgo.Modules.ProblemManagement.Application.Abstractions;

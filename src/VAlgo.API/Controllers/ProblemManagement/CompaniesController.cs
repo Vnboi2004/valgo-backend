@@ -9,6 +9,7 @@ using VAlgo.Modules.ProblemManagement.Application.Commands.RenameCompany;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetActiveCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetCompanyDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetCompanyList;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetCompanyStats;
 
 namespace VAlgo.API.Controllers.ProblemManagement
 {
@@ -101,6 +102,18 @@ namespace VAlgo.API.Controllers.ProblemManagement
         public async Task<IActionResult> GetActiveCompanies([FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
         {
             var query = new GetActiveCompaniesQuery(page, pageSize);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/companies/stats
+        [AllowAnonymous]
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetCompanyStats(CancellationToken cancellationToken)
+        {
+            var query = new GetCompanyStatsQuery();
 
             var result = await _mediator.Send(query, cancellationToken);
 

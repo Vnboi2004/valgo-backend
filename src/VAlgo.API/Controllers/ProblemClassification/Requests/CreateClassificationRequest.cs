@@ -1,4 +1,5 @@
-using VAlgo.Modules.ProblemClassification.Domain.Enums;
+
+using VAlgo.SharedKernel.CrossModule.Classifications;
 
 namespace VAlgo.API.Controllers.ProblemClassification.Requests
 {

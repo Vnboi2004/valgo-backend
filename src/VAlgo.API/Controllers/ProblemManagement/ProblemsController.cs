@@ -30,6 +30,7 @@ using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemDifficul
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemEditorial;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemMetadata;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateTestCase;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetClassificationStats;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor;
@@ -39,6 +40,7 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemStats;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemTags;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
+using VAlgo.SharedKernel.CrossModule.Classifications;
 
 namespace VAlgo.API.Controllers.ProblemManagement
 {
@@ -545,6 +547,18 @@ namespace VAlgo.API.Controllers.ProblemManagement
         public async Task<IActionResult> GetProblemStats([FromRoute] Guid problemId, CancellationToken cancellationToken)
         {
             var query = new GetProblemStatsQuery(problemId);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        // GET api/problem-classification/stats
+        [AllowAnonymous]
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetClassificationStats([FromQuery] ClassificationType? type, CancellationToken cancellationToken = default)
+        {
+            var query = new GetClassificationStatsQuery(type);
 
             var result = await _mediator.Send(query, cancellationToken);
 

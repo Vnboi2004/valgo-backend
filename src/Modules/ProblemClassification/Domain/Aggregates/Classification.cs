@@ -1,7 +1,7 @@
-using VAlgo.Modules.ProblemClassification.Domain.Enums;
 using VAlgo.Modules.ProblemClassification.Domain.Exceptions;
 using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.CrossModule.Classifications;
 
 namespace VAlgo.Modules.ProblemClassification.Domain.Aggregates
 {

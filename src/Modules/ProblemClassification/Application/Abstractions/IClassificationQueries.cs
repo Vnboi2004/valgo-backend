@@ -1,8 +1,8 @@
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetActiveClassifications;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassificationDetail;
 using VAlgo.Modules.ProblemClassification.Application.Queries.GetClassifications;
-using VAlgo.Modules.ProblemClassification.Domain.Enums;
 using VAlgo.Modules.ProblemClassification.Domain.ValueObjects;
+using VAlgo.SharedKernel.CrossModule.Classifications;
 
 namespace VAlgo.Modules.ProblemClassification.Application.Abstractions
 {
