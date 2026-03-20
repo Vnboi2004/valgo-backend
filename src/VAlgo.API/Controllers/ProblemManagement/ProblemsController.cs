@@ -558,17 +558,17 @@ namespace VAlgo.API.Controllers.ProblemManagement
             return Ok(result);
         }
 
-        // GET api/problem-classification/stats
-        [AllowAnonymous]
-        [HttpGet("stats")]
-        public async Task<IActionResult> GetClassificationStats([FromQuery] ClassificationType? type, CancellationToken cancellationToken = default)
-        {
-            var query = new GetClassificationStatsQuery(type);
+        // GET api/problems/stats
+        // [AllowAnonymous]
+        // [HttpGet("stats")]
+        // public async Task<IActionResult> GetClassificationStats([FromQuery] ClassificationType? type, CancellationToken cancellationToken = default)
+        // {
+        //     var query = new GetClassificationStatsQuery(type);
 
-            var result = await _mediator.Send(query, cancellationToken);
+        //     var result = await _mediator.Send(query, cancellationToken);
 
-            return Ok(result);
-        }
+        //     return Ok(result);
+        // }
 
 
         // GET api/problems/{problemId}/my-status

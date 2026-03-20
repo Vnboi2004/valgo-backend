@@ -56,21 +56,32 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
 
         public async Task<IReadOnlyList<CompanyStatsDto>> GetCompanyStatsAsync(CancellationToken cancellationToken = default)
         {
-            // Cùng DbContext nên có thể join trực tiếp
-            var result = await _dbContext.Companies
+            var companies = await _dbContext.Companies
                 .AsNoTracking()
                 .Where(c => c.IsActive)
+                .Select(c => new { c.Id, c.Name })
+                .ToListAsync(cancellationToken);
+
+            var companyIds = companies.Select(c => c.Id.Value).ToList();
+
+            var problemCounts = await _dbContext.Set<ProblemCompanyRef>()
+                .AsNoTracking()
+                .Where(r => companyIds.Contains(r.CompanyId))
+                .GroupBy(r => r.CompanyId)
+                .Select(g => new { CompanyId = g.Key, Count = g.Count() })
+                .ToListAsync(cancellationToken);
+
+            var countMap = problemCounts.ToDictionary(x => x.CompanyId, x => x.Count);
+
+            return companies
                 .Select(c => new CompanyStatsDto
                 {
                     CompanyId = c.Id.Value,
                     Name = c.Name,
-                    ProblemCount = _dbContext.Set<ProblemCompanyRef>()
-                        .Count(r => r.CompanyId == c.Id.Value)
+                    ProblemCount = countMap.TryGetValue(c.Id.Value, out var count) ? count : 0
                 })
                 .OrderByDescending(x => x.ProblemCount)
-                .ToListAsync(cancellationToken);
-
-            return result;
+                .ToList();
         }
     }
 }

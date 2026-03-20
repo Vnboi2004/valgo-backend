@@ -124,5 +124,17 @@ namespace VAlgo.API.Controllers.ProblemClassification
 
             return Ok(result);
         }
+
+        // GET api/problem-classification/stats
+        [AllowAnonymous]
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetClassificationStats([FromQuery] ClassificationType? type, CancellationToken cancellationToken = default)
+        {
+            var query = new GetClassificationStatsQuery(type);
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
     }
 }
