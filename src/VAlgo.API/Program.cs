@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VAlgo.API.Hubs;
@@ -16,6 +17,7 @@ using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
 using VAlgo.Modules.Submissions;
 using VAlgo.Modules.Submissions.Application.Abstractions;
+using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Infrastructure.Redis;
 using VAlgo.SharedKernel.Messaging;
 
@@ -57,6 +59,7 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor();
 
 // Swagger
 builder.Services.AddSwaggerGen(options =>
@@ -130,6 +133,7 @@ builder.Services.AddScoped<IContestLeaderboardNotifier, SignalRContestLeaderboar
 // Register services
 builder.Services.AddScoped<IUserReadService, UserReadService>();
 builder.Services.AddScoped<IProblemReadService, ProblemReadService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
 builder.Services.AddOpenApi();
