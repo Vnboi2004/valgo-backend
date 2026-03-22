@@ -7,8 +7,8 @@ namespace VAlgo.Modules.Identity.Domain.Aggregates
 {
     public sealed class EmailVerificationToken : AggregateRoot<EmailVerificationTokenId>
     {
-        public UserId UserId { get; private set; }
-        public string Token { get; private set; }
+        public UserId UserId { get; private set; } = null!;
+        public string Token { get; private set; } = null!;
         public DateTimeOffset ExpiresAt { get; private set; }
         public bool IsUsed { get; private set; }
 

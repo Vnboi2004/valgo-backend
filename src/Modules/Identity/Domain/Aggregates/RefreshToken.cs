@@ -6,8 +6,8 @@ namespace VAlgo.Modules.Identity.Domain.Aggregates
 {
     public sealed class RefreshToken : Entity<RefreshTokenId>
     {
-        public UserId UserId { get; private set; }
-        public string Token { get; private set; }
+        public UserId UserId { get; private set; } = null!;
+        public string Token { get; private set; } = null!;
         public DateTimeOffset ExpiresAt { get; private set; }
         public bool IsRevoked { get; private set; }
 
