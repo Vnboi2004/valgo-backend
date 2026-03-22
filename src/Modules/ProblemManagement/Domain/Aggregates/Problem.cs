@@ -5,6 +5,7 @@ using VAlgo.Modules.ProblemManagement.Domain.Events;
 using VAlgo.Modules.ProblemManagement.Domain.Exceptions;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.CrossModule.Problems;
 
 namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 {

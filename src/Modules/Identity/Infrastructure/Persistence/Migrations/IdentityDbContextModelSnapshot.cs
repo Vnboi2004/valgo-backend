@@ -160,25 +160,81 @@ namespace VAlgo.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text")
+                        .HasColumnName("avatar");
+
+                    b.Property<DateOnly?>("Birthday")
+                        .HasColumnType("date")
+                        .HasColumnName("birthday");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("text")
+                        .HasColumnName("display_name");
+
+                    b.Property<string>("Education")
+                        .HasColumnType("text")
+                        .HasColumnName("education");
+
+                    b.Property<int?>("Gender")
+                        .HasColumnType("integer")
+                        .HasColumnName("gender");
+
+                    b.Property<string>("Github")
+                        .HasColumnType("text")
+                        .HasColumnName("github");
 
                     b.Property<bool>("IsEmailVerified")
                         .HasColumnType("boolean")
                         .HasColumnName("is_email_verified");
 
+                    b.Property<string>("LinkedIn")
+                        .HasColumnType("text")
+                        .HasColumnName("linked_in");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("text")
+                        .HasColumnName("location");
+
                     b.Property<DateTimeOffset?>("LockedUntil")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("locked_until");
+
+                    b.Property<string>("ReadMe")
+                        .HasColumnType("text")
+                        .HasColumnName("read_me");
 
                     b.Property<int>("Role")
                         .HasColumnType("integer")
                         .HasColumnName("role");
 
+                    b.Property<bool>("ShowRecentSubmissions")
+                        .HasColumnType("boolean")
+                        .HasColumnName("show_recent_submissions");
+
+                    b.Property<bool>("ShowSubmissionHeatmap")
+                        .HasColumnType("boolean")
+                        .HasColumnName("show_submission_heatmap");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer")
                         .HasColumnName("status");
+
+                    b.Property<string>("Twitter")
+                        .HasColumnType("text")
+                        .HasColumnName("twitter");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("text")
+                        .HasColumnName("website");
+
+                    b.Property<string>("Work")
+                        .HasColumnType("text")
+                        .HasColumnName("work");
 
                     b.HasKey("Id");
 

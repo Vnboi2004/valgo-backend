@@ -1,6 +1,7 @@
 using MediatR;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
+using VAlgo.SharedKernel.CrossModule.Problems;
 using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemListWithUserStatus

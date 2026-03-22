@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SharedKernel\VAlgo.SharedKernel\VAlgo.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\Modules\Submissions\VAlgo.Modules.Submissions.csproj" />
+    <ProjectReference Include="..\..\Modules\ProblemManagement\VAlgo.Modules.ProblemManagement.csproj" />
+    <ProjectReference Include="..\..\Modules\ProblemClassification\VAlgo.Modules.ProblemClassification.csproj" />
+    <ProjectReference Include="..\..\Modules\Identity\VAlgo.Modules.Identity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+  </ItemGroup>
+
+</Project>

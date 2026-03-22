@@ -1,5 +1,6 @@
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.CrossModule.Problems;
 using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemList

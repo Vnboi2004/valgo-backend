@@ -46,6 +46,7 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetUserProblemStatus;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.SharedKernel.CrossModule.Classifications;
+using VAlgo.SharedKernel.CrossModule.Problems;
 
 namespace VAlgo.API.Controllers.ProblemManagement
 {

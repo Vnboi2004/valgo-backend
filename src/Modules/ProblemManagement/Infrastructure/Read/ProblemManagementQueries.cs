@@ -20,6 +20,7 @@ using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
 using VAlgo.SharedKernel.CrossModule.Classifications;
+using VAlgo.SharedKernel.CrossModule.Problems;
 using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.ProblemManagement.Infractructure.Read

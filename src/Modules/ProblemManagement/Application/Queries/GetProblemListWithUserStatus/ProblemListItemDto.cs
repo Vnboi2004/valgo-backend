@@ -1,5 +1,6 @@
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetUserProblemStatus;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
+using VAlgo.SharedKernel.CrossModule.Problems;
 using VAlgo.SharedKernel.CrossModule.Submissions;
 
 namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemListWithUserStatus

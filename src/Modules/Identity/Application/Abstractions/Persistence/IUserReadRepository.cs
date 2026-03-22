@@ -7,7 +7,5 @@ namespace VAlgo.Modules.Identity.Application.Abstractions
     {
         Task<MyProfileDto?> GetMyProfileAsync(Guid userId, CancellationToken cancellationToken);
         Task<UserPublicProfileDto?> GetPublicProfileAsync(string username, CancellationToken cancellationToken);
-        Task<Guid?> GetUserIdByUsernameAsync(string username, CancellationToken cancellationToken);
-        Task<bool> ExistsAsync(Guid userId, CancellationToken cancellationToken);
     }
 }

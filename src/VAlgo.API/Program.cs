@@ -17,6 +17,7 @@ using VAlgo.Modules.ProblemClassification;
 using VAlgo.Modules.ProblemManagement;
 using VAlgo.Modules.Submissions;
 using VAlgo.Modules.Submissions.Application.Abstractions;
+using VAlgo.Modules.UserProfile;
 using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Infrastructure.Redis;
 using VAlgo.SharedKernel.Messaging;
@@ -109,6 +110,9 @@ builder.Services.AddContestsModule(builder.Configuration);
 
 // Discussions
 builder.Services.AddDiscussionsModule(builder.Configuration);
+
+// UserProfile
+builder.Services.AddUserProfileModule(builder.Configuration);
 
 // SharedKernel
 builder.Services.AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>();
