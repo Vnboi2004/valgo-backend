@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VAlgo.API.Hubs;
+using VAlgo.API.Middleware;
 using VAlgo.API.Realtime;
 using VAlgo.API.Services;
 using VAlgo.Modules.Contests;
@@ -163,6 +164,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<JudgeApiKeyMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");

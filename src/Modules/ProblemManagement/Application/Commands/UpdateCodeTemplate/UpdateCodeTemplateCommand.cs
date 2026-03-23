@@ -6,7 +6,8 @@ namespace VAlgo.Modules.ProblemManagement.Application.Commands.UpdateCodeTemplat
         Guid ProblemId,
         string Language,
         string UserTemplate,
-        string JudgeTemplate
+        string JudgeTemplateHeader,
+        string JudgeTemplateFooter
 
     ) : IRequest<Unit>;
 }

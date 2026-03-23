@@ -27,6 +27,10 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Configurations
                 .HasColumnName("problem_id")
                 .IsRequired();
 
+            builder.Property(x => x.ContestId)
+                .HasColumnName("contest_id")
+                .IsRequired(false);
+
             builder.Property(x => x.SourceCode)
                 .HasColumnName("source_code")
                 .IsRequired();

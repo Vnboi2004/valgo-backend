@@ -457,7 +457,9 @@ namespace VAlgo.API.Controllers.ProblemManagement
                 problemId,
                 request.Language,
                 request.UserTemplate,
-                request.JudgeTemplate);
+                request.JudgeTemplateHeader,
+                request.JudgeTemplateFooter
+            );
 
             await _mediator.Send(command, cancellationToken);
 
@@ -474,7 +476,9 @@ namespace VAlgo.API.Controllers.ProblemManagement
                 problemId,
                 language,
                 request.UserTemplate,
-                request.JudgeTemplate);
+                request.JudgeTemplateHeader,
+                request.JudgeTemplateFooter
+            );
 
             await _mediator.Send(command, cancellationToken);
 
@@ -551,7 +555,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
         }
 
         // GET api/problems/{id}/judge
-        [Authorize(Roles = "Admin,ProblemSetter")]
+        [AllowAnonymous]
         [HttpGet("{problemId:guid}/judge")]
         public async Task<IActionResult> GetProblemForJudge([FromRoute] Guid problemId, CancellationToken cancellationToken)
         {
@@ -708,7 +712,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
         // GET api/problems/{problemId}/templates
         // Admin/Setter — xem tất cả templates kèm JudgeTemplate
-        [Authorize(Roles = "Admin,ProblemSetter")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("{problemId:guid}/templates")]
         public async Task<IActionResult> GetAllCodeTemplates([FromRoute] Guid problemId, CancellationToken cancellationToken)
         {
@@ -719,7 +723,7 @@ namespace VAlgo.API.Controllers.ProblemManagement
 
         // GET api/problems/{problemId}/templates/{language}/judge
         // Internal — Judge Worker lấy full template để compile
-        [Authorize(Roles = "Admin,ProblemSetter,User")]
+        [AllowAnonymous]
         [HttpGet("{problemId:guid}/templates/{language}/judge")]
         public async Task<IActionResult> GetCodeTemplateForJudge([FromRoute] Guid problemId, [FromRoute] string language, CancellationToken cancellationToken)
         {

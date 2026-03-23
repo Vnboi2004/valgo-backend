@@ -24,7 +24,9 @@ namespace VAlgo.Modules.ProblemManagement.Application.Commands.UpdateCodeTemplat
             problem.UpdateCodeTemplate(
                 request.Language,
                 request.UserTemplate,
-                request.JudgeTemplate);
+                request.JudgeTemplateHeader,
+                request.JudgeTemplateFooter
+            );
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

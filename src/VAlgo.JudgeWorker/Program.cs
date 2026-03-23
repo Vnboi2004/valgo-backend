@@ -2,15 +2,19 @@
 using Microsoft.Extensions.Hosting;
 using VAlgo.JudgeWorker.Clients;
 using VAlgo.JudgeWorker.Sandbox;
+using VAlgo.JudgeWorker.Services;
 using VAlgo.JudgeWorker.Workers;
 
 var builder = Host.CreateApplicationBuilder(args);
 
+builder.Services.AddSingleton<JudgeApiKeyHandler>();
+
 builder.Services.AddHttpClient<VAlgoApiClient>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5197");
+    client.BaseAddress = new Uri(builder.Configuration["VAlgoApi:BaseUrl"]!);
     client.Timeout = TimeSpan.FromSeconds(30);
-});
+})
+.AddHttpMessageHandler<JudgeApiKeyHandler>();
 
 builder.Services.AddSingleton<DockerSandboxRunner>();
 

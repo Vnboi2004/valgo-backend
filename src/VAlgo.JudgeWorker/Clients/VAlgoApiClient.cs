@@ -1,6 +1,9 @@
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using VAlgo.JudgeWorker.Models;
+using VAlgo.JudgeWorker.Services;
 
 namespace VAlgo.JudgeWorker.Clients
 {
@@ -10,7 +13,8 @@ namespace VAlgo.JudgeWorker.Clients
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }
         };
 
         public VAlgoApiClient(HttpClient http)
@@ -19,7 +23,6 @@ namespace VAlgo.JudgeWorker.Clients
         }
 
         // Submissions
-
         // GET api/submissions/{submissionId}
         public async Task<SubmissionDto> GetSubmissionAsync(Guid submissionId, CancellationToken cancellationToken = default)
         {

@@ -7,27 +7,30 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Entities
     {
         public string Language { get; private set; } = null!;
         public string UserTemplate { get; private set; } = null!;
-        public string JudgeTemplate { get; private set; } = null!;
+        public string JudgeTemplateHeader { get; private set; } = null!;
+        public string JudgeTemplateFooter { get; private set; } = null!;
 
         private ProblemCodeTemplate() { }
 
-        private ProblemCodeTemplate(ProblemCodeTemplateId id, string language, string userTemplate, string judgeTemplate)
+        private ProblemCodeTemplate(ProblemCodeTemplateId id, string language, string userTemplate, string judgeTemplateHeader, string judgeTemplateFooter)
             : base(id)
         {
             Language = language;
             UserTemplate = userTemplate;
-            JudgeTemplate = judgeTemplate;
+            JudgeTemplateHeader = judgeTemplateHeader;
+            JudgeTemplateFooter = judgeTemplateFooter;
         }
 
-        public static ProblemCodeTemplate Create(string language, string userTemplate, string judgeTemplate)
+        public static ProblemCodeTemplate Create(string language, string userTemplate, string judgeTemplateHeader, string judgeTemplateFooter)
         {
-            return new ProblemCodeTemplate(ProblemCodeTemplateId.New(), language, userTemplate, judgeTemplate);
+            return new ProblemCodeTemplate(ProblemCodeTemplateId.New(), language, userTemplate, judgeTemplateHeader, judgeTemplateFooter);
         }
 
-        public void Update(string userTemplate, string judgeTemplate)
+        public void Update(string userTemplate, string judgeTemplateHeader, string judgeTemplateFooter)
         {
             UserTemplate = userTemplate;
-            JudgeTemplate = judgeTemplate;
+            JudgeTemplateHeader = judgeTemplateHeader;
+            JudgeTemplateFooter = judgeTemplateFooter;
         }
     }
 }

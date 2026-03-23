@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VAlgo.Modules.Submissions.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using VAlgo.Modules.Submissions.Infrastructure.Persistence;
 namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubmissionsDbContext))]
-    partial class SubmissionsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260323055123_Submissions_V3")]
+    partial class Submissions_V3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,7 +31,7 @@ namespace VAlgo.Modules.Submissions.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("ContestId")
+                    b.Property<Guid>("ContestId")
                         .HasColumnType("uuid")
                         .HasColumnName("contest_id");
 

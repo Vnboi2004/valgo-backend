@@ -92,7 +92,11 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             return new Problem(ProblemId.New(), code, title, statement, shortDescription, difficulty, timeLimitMs, memoryLimitKb);
         }
 
-        public void AddCodeTemplate(string language, string userTemplate, string judgeTemplate)
+        public void AddCodeTemplate(
+            string language,
+            string userTemplate,
+            string judgeTemplateHeader,
+            string judgeTemplateFooter)
         {
             EnsureDraft();
 
@@ -102,18 +106,29 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             if (string.IsNullOrWhiteSpace(userTemplate))
                 throw new InvalidOperationException("User template is required.");
 
-            if (string.IsNullOrWhiteSpace(judgeTemplate))
-                throw new InvalidOperationException("Judge template is required.");
+            if (string.IsNullOrWhiteSpace(judgeTemplateHeader))
+                throw new InvalidOperationException("Judge template header is required.");
+
+            if (string.IsNullOrWhiteSpace(judgeTemplateFooter))
+                throw new InvalidOperationException("Judge template footer is required.");
 
             var normalizedLanguage = language.Trim().ToLowerInvariant();
 
             if (_codeTemplates.Any(t => t.Language == normalizedLanguage))
                 throw new DuplicateCodeTemplateException(normalizedLanguage);
 
-            _codeTemplates.Add(ProblemCodeTemplate.Create(language, userTemplate, judgeTemplate));
+            _codeTemplates.Add(ProblemCodeTemplate.Create(
+                language,
+                userTemplate,
+                judgeTemplateHeader,
+                judgeTemplateFooter));
         }
 
-        public void UpdateCodeTemplate(string language, string userTemplate, string judgeTemplate)
+        public void UpdateCodeTemplate(
+            string language,
+            string userTemplate,
+            string judgeTemplateHeader,
+            string judgeTemplateFooter)
         {
             EnsureDraft();
 
@@ -125,10 +140,13 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             if (string.IsNullOrWhiteSpace(userTemplate))
                 throw new InvalidOperationException("User template is required.");
 
-            if (string.IsNullOrWhiteSpace(judgeTemplate))
-                throw new InvalidOperationException("Judge template is required.");
+            if (string.IsNullOrWhiteSpace(judgeTemplateHeader))
+                throw new InvalidOperationException("Judge template header is required.");
 
-            template.Update(userTemplate, judgeTemplate);
+            if (string.IsNullOrWhiteSpace(judgeTemplateFooter))
+                throw new InvalidOperationException("Judge template footer is required.");
+
+            template.Update(userTemplate, judgeTemplateHeader, judgeTemplateFooter);
         }
 
         public void DeleteCodeTemplate(string language)

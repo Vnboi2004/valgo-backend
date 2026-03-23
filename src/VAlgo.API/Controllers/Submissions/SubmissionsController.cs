@@ -43,7 +43,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions/{id}/start
-        [Authorize(Roles = "User")]
+        [AllowAnonymous]
         [HttpPost("{submissionId:guid}/start")]
         public async Task<IActionResult> StartSubmission([FromRoute] Guid submissionId, CancellationToken cancellationToken)
         {
@@ -55,7 +55,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions/{id}/complete
-        [Authorize(Roles = "User")]
+        [AllowAnonymous]
         [HttpPost("{submissionId:guid}/complete")]
         public async Task<IActionResult> CompleteSubmission([FromRoute] Guid submissionId, [FromBody] CompleteSubmissionRequest request, CancellationToken cancellationToken)
         {
@@ -74,8 +74,8 @@ namespace VAlgo.API.Controllers.Submissions
             return NoContent();
         }
 
-        // POST api/submissions/{id}/
-        [Authorize(Roles = "User")]
+        // POST api/submissions/{id}/fail
+        [AllowAnonymous]
         [HttpPost("{submissionId:guid}/fail")]
         public async Task<IActionResult> FailSubmission([FromRoute] Guid submissionId, [FromBody] FailSubmissionRequest request, CancellationToken cancellationToken)
         {
@@ -87,7 +87,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions/{id}/cancel
-        [Authorize(Roles = "User")]
+        [AllowAnonymous]
         [HttpPost("{submissionId:guid}/cancel")]
         public async Task<IActionResult> CancelSubmission([FromRoute] Guid submissionId, CancellationToken cancellationToken)
         {
@@ -99,7 +99,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions/{id}/enqueue
-        [Authorize(Roles = "User")]
+        [AllowAnonymous]
         [HttpPost("{submissionId:guid}/enqueue")]
         public async Task<IActionResult> EnqueueSumbission([FromRoute] Guid submissionId, CancellationToken cancellationToken)
         {
@@ -129,7 +129,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // GET api/submissions/{id}
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("{submissionId:guid}")]
         public async Task<IActionResult> GetSubmissionDetail([FromRoute] Guid submissionId, CancellationToken cancellationToken)
         {

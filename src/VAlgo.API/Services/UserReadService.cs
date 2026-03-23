@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using VAlgo.Modules.Identity.Domain.ValueObjects;
 using VAlgo.Modules.Identity.Infrastructure.Persistence;
 using VAlgo.Modules.Submissions.Application.Abstractions;
 
@@ -17,7 +18,7 @@ namespace VAlgo.API.Services
         {
             return await _dbContext.Users
                 .AsNoTracking()
-                .AnyAsync(x => x.Id.Value == userId);
+                .AnyAsync(x => x.Id == UserId.From(userId));
         }
     }
 }

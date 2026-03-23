@@ -51,7 +51,8 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
                 {
                     Language = t.Language,
                     UserTemplate = t.UserTemplate,
-                    JudgeTemplate = t.JudgeTemplate
+                    JudgeTemplateHeader = t.JudgeTemplateHeader,
+                    JudgeTemplateFooter = t.JudgeTemplateFooter
                 })
                 .FirstOrDefaultAsync(cancellationToken);
         }
@@ -68,7 +69,8 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
                 {
                     Language = t.Language,
                     UserTemplate = t.UserTemplate,
-                    JudgeTemplate = t.JudgeTemplate
+                    JudgeTemplateHeader = t.JudgeTemplateHeader,
+                    JudgeTemplateFooter = t.JudgeTemplateFooter
                 })
                 .ToListAsync(cancellationToken);
         }

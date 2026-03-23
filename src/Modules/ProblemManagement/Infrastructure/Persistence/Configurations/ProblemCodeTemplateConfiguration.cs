@@ -27,8 +27,12 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Configurati
                 .HasColumnName("user_template")
                 .IsRequired();
 
-            builder.Property(x => x.JudgeTemplate)
-                .HasColumnName("judge_template")
+            builder.Property(x => x.JudgeTemplateHeader)
+                .HasColumnName("judge_template_header")
+                .IsRequired();
+
+            builder.Property(x => x.JudgeTemplateFooter)
+                .HasColumnName("judge_template_footer")
                 .IsRequired();
         }
     }
