@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VAlgo.API.Controllers.ProblemManagement.Requests;
 using VAlgo.Modules.ProblemManagement.Application.Commands.AddAllowedLanguage;
+using VAlgo.Modules.ProblemManagement.Application.Commands.AddCodeTemplate;
 using VAlgo.Modules.ProblemManagement.Application.Commands.AddCompany;
 using VAlgo.Modules.ProblemManagement.Application.Commands.AddExample;
 using VAlgo.Modules.ProblemManagement.Application.Commands.AddHint;
@@ -11,6 +12,7 @@ using VAlgo.Modules.ProblemManagement.Application.Commands.AddTestCase;
 using VAlgo.Modules.ProblemManagement.Application.Commands.ArchiveProblem;
 using VAlgo.Modules.ProblemManagement.Application.Commands.AssignClassification;
 using VAlgo.Modules.ProblemManagement.Application.Commands.CreateProblem;
+using VAlgo.Modules.ProblemManagement.Application.Commands.DeleteCodeTemplate;
 using VAlgo.Modules.ProblemManagement.Application.Commands.DeleteCompany;
 using VAlgo.Modules.ProblemManagement.Application.Commands.DeleteExample;
 using VAlgo.Modules.ProblemManagement.Application.Commands.DeleteHint;
@@ -22,6 +24,7 @@ using VAlgo.Modules.ProblemManagement.Application.Commands.ReorderExamples;
 using VAlgo.Modules.ProblemManagement.Application.Commands.ReorderHints;
 using VAlgo.Modules.ProblemManagement.Application.Commands.ReorderTestCases;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UnassignClassification;
+using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateCodeTemplate;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateConstraints;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateExample;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateHint;
@@ -30,7 +33,10 @@ using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemDifficul
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemEditorial;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemMetadata;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateTestCase;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetAllCodeTemplates;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetClassificationStats;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetCodeTemplate;
+using VAlgo.Modules.ProblemManagement.Application.Queries.GetCodeTemplateForJudge;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemDetail;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor;
@@ -441,6 +447,51 @@ namespace VAlgo.API.Controllers.ProblemManagement
             return NoContent();
         }
 
+        // POST api/problems/{problemId}/templates
+        [Authorize(Roles = "Admin,ProblemSetter")]
+        [HttpPost("{problemId:guid}/templates")]
+        public async Task<IActionResult> AddCodeTemplate([FromRoute] Guid problemId, [FromBody] AddCodeTemplateRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command = new AddCodeTemplateCommand(
+                problemId,
+                request.Language,
+                request.UserTemplate,
+                request.JudgeTemplate);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return NoContent();
+        }
+
+
+        // PUT api/problems/{problemId}/templates/{language}
+        [Authorize(Roles = "Admin,ProblemSetter")]
+        [HttpPut("{problemId:guid}/templates/{language}")]
+        public async Task<IActionResult> UpdateCodeTemplate([FromRoute] Guid problemId, [FromRoute] string language, [FromBody] UpdateCodeTemplateRequest request, CancellationToken cancellationToken)
+        {
+            var command = new UpdateCodeTemplateCommand(
+                problemId,
+                language,
+                request.UserTemplate,
+                request.JudgeTemplate);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return NoContent();
+        }
+
+        // DELETE api/problems/{problemId}/templates/{language}
+        [Authorize(Roles = "Admin,ProblemSetter")]
+        [HttpDelete("{problemId:guid}/templates/{language}")]
+        public async Task<IActionResult> DeleteCodeTemplate([FromRoute] Guid problemId, [FromRoute] string language, CancellationToken cancellationToken)
+        {
+            var command = new DeleteCodeTemplateCommand(problemId, language);
+            await _mediator.Send(command, cancellationToken);
+            return NoContent();
+        }
+
+
         // Query side
         // GET api/problems/{id}
         [AllowAnonymous]
@@ -640,6 +691,39 @@ namespace VAlgo.API.Controllers.ProblemManagement
         public async Task<IActionResult> GetRandomProblem([FromQuery] Difficulty? difficulty, [FromQuery] Guid? classificationId, CancellationToken cancellationToken)
         {
             var query = new GetRandomProblemQuery(difficulty, classificationId);
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
+        // GET api/problems/{problemId}/templates/{language}
+        // Public — user lấy UserTemplate để load vào Monaco Editor
+        [AllowAnonymous]
+        [HttpGet("{problemId:guid}/templates/{language}")]
+        public async Task<IActionResult> GetCodeTemplate([FromRoute] Guid problemId, [FromRoute] string language, CancellationToken cancellationToken)
+        {
+            var query = new GetCodeTemplateQuery(problemId, language);
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
+        // GET api/problems/{problemId}/templates
+        // Admin/Setter — xem tất cả templates kèm JudgeTemplate
+        [Authorize(Roles = "Admin,ProblemSetter")]
+        [HttpGet("{problemId:guid}/templates")]
+        public async Task<IActionResult> GetAllCodeTemplates([FromRoute] Guid problemId, CancellationToken cancellationToken)
+        {
+            var query = new GetAllCodeTemplatesQuery(problemId);
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
+        // GET api/problems/{problemId}/templates/{language}/judge
+        // Internal — Judge Worker lấy full template để compile
+        [Authorize(Roles = "Admin,ProblemSetter,User")]
+        [HttpGet("{problemId:guid}/templates/{language}/judge")]
+        public async Task<IActionResult> GetCodeTemplateForJudge([FromRoute] Guid problemId, [FromRoute] string language, CancellationToken cancellationToken)
+        {
+            var query = new GetCodeTemplateForJudgeQuery(problemId, language);
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }

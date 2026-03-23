@@ -33,6 +33,7 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<ICompanyReadRepository, CompanyReadRepository>();
             services.AddScoped<ISubmissionReadService, SubmissionReadService>();
+            services.AddScoped<ICodeTemplateReadRepository, CodeTemplateReadRepository>();
 
             return services;
         }

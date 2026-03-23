@@ -128,6 +128,11 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Configurati
                 .HasForeignKey("problem_id")
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(x => x.CodeTemplates)
+                .WithOne()
+                .HasForeignKey("problem_id")
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             builder.Metadata
                 .FindNavigation(nameof(Problem.AllowedLanguages))!

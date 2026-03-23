@@ -14,6 +14,7 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Persistence
         public DbSet<ProblemHint> ProblemHints => Set<ProblemHint>();
         public DbSet<SimilarProblemRef> SimilarProblemRefs => Set<SimilarProblemRef>();
         public DbSet<ProblemCompanyRef> ProblemCompanyRefs => Set<ProblemCompanyRef>();
+        public DbSet<ProblemCodeTemplate> ProblemCodeTemplates => Set<ProblemCodeTemplate>();
 
         public ProblemManagementDbContext(DbContextOptions<ProblemManagementDbContext> options)
             : base(options) { }

@@ -30,6 +30,17 @@ namespace VAlgo.JudgeWorker.Clients
             return (await response.Content.ReadFromJsonAsync<SubmissionDto>(JsonOptions, cancellationToken))!;
         }
 
+        // GET api/problems/{problemId}/templates/{language}/judge
+        public async Task<CodeTemplateForJudgeDto> GetCodeTemplateForJudgeAsync(Guid problemId, string language, CancellationToken cancellationToken = default)
+        {
+            var response = await _http.GetAsync($"/api/problems/{problemId}/templates/{language}/judge", cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            return (await response.Content.ReadFromJsonAsync<CodeTemplateForJudgeDto>(
+                JsonOptions, cancellationToken))!;
+        }
+
         // POST api/submissions/{submissionId}/start
         public async Task StartSubmissionAsync(Guid submissionId, CancellationToken cancellationToken = default)
         {

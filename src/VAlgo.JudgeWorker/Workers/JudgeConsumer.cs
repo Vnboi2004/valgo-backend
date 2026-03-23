@@ -96,6 +96,10 @@ public sealed class JudgeConsumer : BackgroundService
             var submission = await _apiClient.GetSubmissionAsync(job.SubmissionId);
             var problem = await _apiClient.GetProblemForJudgeAsync(job.ProblemId);
 
+            var codeTemplate = await _apiClient.GetCodeTemplateForJudgeAsync(job.ProblemId, submission.Language);
+
+            var fullCode = codeTemplate.GetFullCode(submission.SourceCode);
+
             await _apiClient.StartSubmissionAsync(submission.SubmissionId);
 
             var language = SandboxLanguageRegistry.Resolve(submission.Language);
@@ -104,7 +108,7 @@ public sealed class JudgeConsumer : BackgroundService
             // 1️⃣ COMPILE
             // ========================================================
             var compile = await _sandbox.CompileAsync(
-                new SandboxCompileRequest(submission.SourceCode, language));
+                new SandboxCompileRequest(fullCode, language));
 
             if (!compile.Success)
             {
@@ -139,7 +143,7 @@ public sealed class JudgeConsumer : BackgroundService
             {
                 var run = await _sandbox.RunAsync(
                     new SandboxRunRequest(
-                        submission.SourceCode,
+                        fullCode,
                         tc.Input,
                         language,
                         problem.TimeLimitMs,

@@ -52,6 +52,9 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
         private readonly List<ProblemClassificationRef> _classifications = new();
         public IReadOnlyList<ProblemClassificationRef> Classifications => _classifications;
 
+        private readonly List<ProblemCodeTemplate> _codeTemplates = new();
+        public IReadOnlyList<ProblemCodeTemplate> CodeTemplates => _codeTemplates;
+
         private Problem() { }
 
         private Problem(
@@ -87,6 +90,57 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
         )
         {
             return new Problem(ProblemId.New(), code, title, statement, shortDescription, difficulty, timeLimitMs, memoryLimitKb);
+        }
+
+        public void AddCodeTemplate(string language, string userTemplate, string judgeTemplate)
+        {
+            EnsureDraft();
+
+            if (string.IsNullOrWhiteSpace(language))
+                throw new InvalidOperationException("Language is required.");
+
+            if (string.IsNullOrWhiteSpace(userTemplate))
+                throw new InvalidOperationException("User template is required.");
+
+            if (string.IsNullOrWhiteSpace(judgeTemplate))
+                throw new InvalidOperationException("Judge template is required.");
+
+            var normalizedLanguage = language.Trim().ToLowerInvariant();
+
+            if (_codeTemplates.Any(t => t.Language == normalizedLanguage))
+                throw new DuplicateCodeTemplateException(normalizedLanguage);
+
+            _codeTemplates.Add(ProblemCodeTemplate.Create(language, userTemplate, judgeTemplate));
+        }
+
+        public void UpdateCodeTemplate(string language, string userTemplate, string judgeTemplate)
+        {
+            EnsureDraft();
+
+            var normalizedLanguage = language.Trim().ToLowerInvariant();
+
+            var template = _codeTemplates.FirstOrDefault(t => t.Language == normalizedLanguage)
+                ?? throw new CodeTemplateNotFoundException(normalizedLanguage);
+
+            if (string.IsNullOrWhiteSpace(userTemplate))
+                throw new InvalidOperationException("User template is required.");
+
+            if (string.IsNullOrWhiteSpace(judgeTemplate))
+                throw new InvalidOperationException("Judge template is required.");
+
+            template.Update(userTemplate, judgeTemplate);
+        }
+
+        public void DeleteCodeTemplate(string language)
+        {
+            EnsureDraft();
+
+            var normalizedLanguage = language.Trim().ToLowerInvariant();
+
+            var template = _codeTemplates.FirstOrDefault(t => t.Language == normalizedLanguage)
+                ?? throw new CodeTemplateNotFoundException(normalizedLanguage);
+
+            _codeTemplates.Remove(template);
         }
 
         public void UpdateContent(
@@ -473,6 +527,14 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
 
             if (string.IsNullOrWhiteSpace(ShortDescription))
                 throw new MissingShortDescriptionException(Id.Value);
+
+            var missTemplates = _allowedLanguages
+                .Where(lang => !_codeTemplates.Any(t => t.Language == lang.Value.ToLowerInvariant()))
+                .Select(lang => lang.Value)
+                .ToList();
+
+            if (missTemplates.Any())
+                throw new InvalidOperationException("Missing code template.");
 
             Status = ProblemStatus.Published;
 
