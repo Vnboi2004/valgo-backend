@@ -3,6 +3,7 @@ using VAlgo.Modules.Submissions.Application.Abstractions;
 using VAlgo.Modules.Submissions.Application.Events;
 using VAlgo.Modules.Submissions.Domain.Aggregates;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;
+using VAlgo.SharedKernel.Abstractions;
 using VAlgo.SharedKernel.Messaging;
 
 namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
@@ -13,6 +14,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
         private readonly IUserReadService _userReadService;
         private readonly IProblemReadService _problemReadService;
         private readonly IRabbitMqPublisher _publisher;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateSubmissionCommandHandler(
@@ -20,6 +22,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
             IUserReadService userReadService,
             IProblemReadService problemReadService,
             IRabbitMqPublisher publisher,
+            ICurrentUserService currentUserService,
             IUnitOfWork unitOfWork
         )
         {
@@ -27,13 +30,14 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
             _userReadService = userReadService;
             _problemReadService = problemReadService;
             _publisher = publisher;
+            _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
         {
             // 1. Check user
-            var existUser = await _userReadService.ExistsAsync(request.UserId);
+            var existUser = await _userReadService.ExistsAsync(_currentUserService.UserId);
             if (!existUser)
                 throw new ApplicationException("User does not exist");
 
@@ -48,7 +52,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
 
             // 4. Create Submission
             var submission = Submission.Create(
-                request.UserId,
+                _currentUserService.UserId,
                 request.ProblemId,
                 request.ContestId,
                 language,

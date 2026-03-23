@@ -6,9 +6,6 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
     {
         public CreateSubmissionValidator()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty();
-
             RuleFor(x => x.ProblemId)
                 .NotEmpty();
 

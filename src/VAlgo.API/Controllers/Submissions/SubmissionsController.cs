@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 using VAlgo.API.Controllers.Submissions.Requests;
 using VAlgo.Modules.Submissions.Application.Commands.CancelSubmission;
 using VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission;
@@ -24,11 +26,11 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateSubmission([FromBody] CreateSubmissionRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateSubmissionCommand(
-                request.UserId,
                 request.ProblemId,
                 request.ContestId,
                 request.Language,
@@ -41,6 +43,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions/{id}/start
+        [Authorize(Roles = "User")]
         [HttpPost("{submissionId:guid}/start")]
         public async Task<IActionResult> StartSubmission([FromRoute] Guid submissionId, CancellationToken cancellationToken)
         {
@@ -52,6 +55,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions/{id}/complete
+        [Authorize(Roles = "User")]
         [HttpPost("{submissionId:guid}/complete")]
         public async Task<IActionResult> CompleteSubmission([FromRoute] Guid submissionId, [FromBody] CompleteSubmissionRequest request, CancellationToken cancellationToken)
         {
@@ -70,7 +74,8 @@ namespace VAlgo.API.Controllers.Submissions
             return NoContent();
         }
 
-        // POST api/submissions/{id}/fail
+        // POST api/submissions/{id}/
+        [Authorize(Roles = "User")]
         [HttpPost("{submissionId:guid}/fail")]
         public async Task<IActionResult> FailSubmission([FromRoute] Guid submissionId, [FromBody] FailSubmissionRequest request, CancellationToken cancellationToken)
         {
@@ -82,6 +87,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions/{id}/cancel
+        [Authorize(Roles = "User")]
         [HttpPost("{submissionId:guid}/cancel")]
         public async Task<IActionResult> CancelSubmission([FromRoute] Guid submissionId, CancellationToken cancellationToken)
         {
@@ -93,6 +99,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // POST api/submissions/{id}/enqueue
+        [Authorize(Roles = "User")]
         [HttpPost("{submissionId:guid}/enqueue")]
         public async Task<IActionResult> EnqueueSumbission([FromRoute] Guid submissionId, CancellationToken cancellationToken)
         {
@@ -104,6 +111,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // GET api/submissions
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetSubmissionList(
             [FromQuery] Guid? userId,
@@ -121,6 +129,7 @@ namespace VAlgo.API.Controllers.Submissions
         }
 
         // GET api/submissions/{id}
+        [Authorize]
         [HttpGet("{submissionId:guid}")]
         public async Task<IActionResult> GetSubmissionDetail([FromRoute] Guid submissionId, CancellationToken cancellationToken)
         {

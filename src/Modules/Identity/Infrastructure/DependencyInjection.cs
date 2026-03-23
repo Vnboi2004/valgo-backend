@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VAlgo.Modules.Identity.Application.Abstractions;
 using VAlgo.Modules.Identity.Application.Abstractions.Communication;
 using VAlgo.Modules.Identity.Application.Abstractions.Persistence;
 using VAlgo.Modules.Identity.Application.Abstractions.Security;
@@ -10,6 +11,7 @@ using VAlgo.Modules.Identity.Domain.Services;
 using VAlgo.Modules.Identity.Infrastructure.Communication;
 using VAlgo.Modules.Identity.Infrastructure.Persistence;
 using VAlgo.Modules.Identity.Infrastructure.Persistence.Repositories;
+using VAlgo.Modules.Identity.Infrastructure.Read;
 using VAlgo.Modules.Identity.Infrastructure.Security;
 using VAlgo.Modules.Identity.Infrastructure.Time;
 using VAlgo.SharedKernel.Time;
@@ -41,6 +43,7 @@ namespace VAlgo.Modules.Identity.Infrastructure
             services.AddScoped<ISecureTokenGenerator, SecureTokenGenerator>();
             services.AddScoped<ILoginPolicy, LoginPolicy>();
             services.AddScoped<IEmailSender, SmtpEmailSender>();
+            services.AddScoped<IUserReadRepository, UserReadRepository>();
 
             services.Configure<EmailOptions>(configuration.GetSection("Email"));
             services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
