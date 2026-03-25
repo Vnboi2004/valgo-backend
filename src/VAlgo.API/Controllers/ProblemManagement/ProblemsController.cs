@@ -34,7 +34,6 @@ using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemEditoria
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateProblemMetadata;
 using VAlgo.Modules.ProblemManagement.Application.Commands.UpdateTestCase;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetAllCodeTemplates;
-using VAlgo.Modules.ProblemManagement.Application.Queries.GetClassificationStats;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetCodeTemplate;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetCodeTemplateForJudge;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemCompanies;
@@ -51,7 +50,6 @@ using VAlgo.Modules.ProblemManagement.Application.Queries.GetRandomProblem;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetSimilarProblems;
 using VAlgo.Modules.ProblemManagement.Application.Queries.GetUserProblemStatus;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
-using VAlgo.SharedKernel.CrossModule.Classifications;
 using VAlgo.SharedKernel.CrossModule.Problems;
 
 namespace VAlgo.API.Controllers.ProblemManagement

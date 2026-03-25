@@ -21,7 +21,7 @@ namespace VAlgo.Modules.ProblemManagement.Application.Commands.AddCodeTemplate
             var problem = await _problemRepository.GetByIdAsync(ProblemId.From(request.ProblemId), cancellationToken)
                 ?? throw new ProblemNotFoundException(request.ProblemId);
 
-            problem.AddCodeTemplate(request.Language, request.UserTemplate, request.JudgeTemplateFooter, request.JudgeTemplateFooter);
+            problem.AddCodeTemplate(request.Language, request.UserTemplate, request.JudgeTemplateHeader, request.JudgeTemplateFooter);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

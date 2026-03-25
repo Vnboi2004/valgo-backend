@@ -98,7 +98,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
             string judgeTemplateHeader,
             string judgeTemplateFooter)
         {
-            EnsureDraft();
+            //EnsureDraft();
 
             if (string.IsNullOrWhiteSpace(language))
                 throw new InvalidOperationException("Language is required.");

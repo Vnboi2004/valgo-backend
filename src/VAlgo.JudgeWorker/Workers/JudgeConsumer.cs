@@ -99,6 +99,11 @@ public sealed class JudgeConsumer : BackgroundService
             var codeTemplate = await _apiClient.GetCodeTemplateForJudgeAsync(job.ProblemId, submission.Language);
 
             var fullCode = codeTemplate.GetFullCode(submission.SourceCode);
+            _logger.LogInformation("Full code to compile:\n{Fullcode}:", fullCode);
+            _logger.LogInformation("Language: {Lang}", submission.Language);
+            _logger.LogInformation("Header:\n{Header}", codeTemplate?.JudgeTemplateHeader);
+            _logger.LogInformation("User:\n{User}", submission.SourceCode);
+            _logger.LogInformation("Footer:\n{Footer}", codeTemplate?.JudgeTemplateFooter);
 
             await _apiClient.StartSubmissionAsync(submission.SubmissionId);
 
