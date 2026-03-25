@@ -15,10 +15,8 @@ namespace VAlgo.Modules.Identity.Application.Queries.GetUserPublicProfile
         public async Task<UserPublicProfileDto> Handle(GetUserPublicProfileQuery request, CancellationToken cancellationToken)
         {
             var user = await _userReadRepository.GetPublicProfileAsync(request.UserName, cancellationToken);
-
             if (user == null)
                 throw new InvalidOperationException("User not found.");
-
             return user;
         }
     }

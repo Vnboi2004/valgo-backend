@@ -47,9 +47,7 @@ namespace VAlgo.Modules.Identity.Infrastructure.Read
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<UserPublicProfileDto?> GetPublicProfileAsync(
-            string username,
-            CancellationToken cancellationToken)
+        public async Task<UserPublicProfileDto?> GetPublicProfileAsync(string username, CancellationToken cancellationToken)
         {
             return await _dbContext.Users
                 .AsNoTracking()

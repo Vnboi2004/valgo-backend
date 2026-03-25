@@ -2,10 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using VAlgo.Modules.ProblemClassification.Infrastructure.Persistence;
 using VAlgo.Modules.ProblemManagement.Domain.Entities;
 using VAlgo.Modules.ProblemManagement.Domain.Enums;
+using VAlgo.Modules.ProblemManagement.Domain.ValueObjects;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
+using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail;
 using VAlgo.Modules.Submissions.Infrastructure.Persistence;
 using VAlgo.Modules.UserProfile.Application.Abstractions;
 using VAlgo.Modules.UserProfile.Application.DTOs;
+using VAlgo.Modules.UserProfile.Application.Queries.GetUserPracticeHistory;
 using VAlgo.SharedKernel.CrossModule.Classifications;
 using VAlgo.SharedKernel.CrossModule.Problems;
 using VAlgo.SharedKernel.CrossModule.Submissions;
@@ -38,9 +41,11 @@ namespace VAlgo.Modules.UserProfile.Infrastructure.Services
                 .Distinct()
                 .ToListAsync(cancellationToken);
 
+            var problemIds = solvedProblemIds.Select(ProblemId.From).ToList();
+
             var solvedProblems = await _problemDbContext.Problems
                 .AsNoTracking()
-                .Where(p => solvedProblemIds.Contains(p.Id.Value))
+                .Where(p => problemIds.Contains(p.Id))
                 .Select(p => new { p.Difficulty })
                 .ToListAsync(cancellationToken);
 
@@ -51,13 +56,21 @@ namespace VAlgo.Modules.UserProfile.Infrastructure.Services
                 .Select(g => new { Difficulty = g.Key, Count = g.Count() })
                 .ToListAsync(cancellationToken);
 
+            var submissionStats = await _submissionsDbContext.Submissions
+                .AsNoTracking()
+                .Where(s => s.UserId == userId)
+                .GroupBy(_ => 1)
+                .Select(g => new
+                {
+                    Total = g.Count(),
+                    Accepted = g.Count(s => s.Verdict == Verdict.Accepted)
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
             var totalSubmissions = await _submissionsDbContext.Submissions
                 .AsNoTracking()
                 .CountAsync(s => s.UserId == userId, cancellationToken);
 
-            var acceptedSubmissions = await _submissionsDbContext.Submissions
-                .AsNoTracking()
-                .CountAsync(s => s.UserId == userId && s.Verdict == Verdict.Accepted, cancellationToken);
 
             var totalMap = totalByDifficulty.ToDictionary(x => x.Difficulty, x => x.Count);
 
@@ -71,17 +84,18 @@ namespace VAlgo.Modules.UserProfile.Infrastructure.Services
                 MediumTotal = totalMap.GetValueOrDefault(Difficulty.Medium, 0),
                 HardTotal = totalMap.GetValueOrDefault(Difficulty.Hard, 0),
                 TotalSubmissions = totalSubmissions,
-                AcceptedSubmissions = acceptedSubmissions
+                AcceptedSubmissions = submissionStats?.Accepted ?? 0
             };
         }
 
-        public async Task<IReadOnlyList<UserHeatmapItemDto>> GetUserHeatmapAsync(Guid userId, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<UserHeatmapItemDto>> GetUserHeatmapAsync(Guid userId, int year, CancellationToken cancellationToken)
         {
-            var oneYearAgo = DateTimeOffset.UtcNow.AddYears(-1);
+            var startOfYear = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.Zero);
+            var endOfYear = startOfYear.AddYears(1);
 
             var submissions = await _submissionsDbContext.Submissions
                 .AsNoTracking()
-                .Where(s => s.UserId == userId && s.CreatedAt >= oneYearAgo)
+                .Where(s => s.UserId == userId && s.CreatedAt >= startOfYear && s.CreatedAt < endOfYear)
                 .Select(s => new { s.CreatedAt })
                 .ToListAsync(cancellationToken);
 
@@ -114,10 +128,11 @@ namespace VAlgo.Modules.UserProfile.Infrastructure.Services
             if (!recentAc.Any()) return [];
 
             var problemIds = recentAc.Select(x => x.ProblemId).ToList();
+            var Ids = problemIds.Select(ProblemId.From).ToList();
 
             var problems = await _problemDbContext.Problems
                 .AsNoTracking()
-                .Where(p => problemIds.Contains(p.Id.Value))
+                .Where(p => Ids.Contains(p.Id))
                 .Select(p => new { p.Id, p.Code, p.Title, p.Difficulty })
                 .ToListAsync(cancellationToken);
 
@@ -168,9 +183,11 @@ namespace VAlgo.Modules.UserProfile.Infrastructure.Services
             if (!solvedProblemIds.Any())
                 return new UserSkillsDto();
 
+            var problemIds = solvedProblemIds.Select(ProblemClassificationRefId.From).ToList();
+
             var classificationRefs = await _problemDbContext.Set<ProblemClassificationRef>()
                 .AsNoTracking()
-                .Where(r => solvedProblemIds.Contains(r.Id.Value))
+                .Where(r => problemIds.Contains(r.Id))
                 .Select(r => new { r.Id.Value, r.ClassificationId })
                 .ToListAsync(cancellationToken);
 
@@ -219,57 +236,134 @@ namespace VAlgo.Modules.UserProfile.Infrastructure.Services
             };
         }
 
-        public async Task<PagedResult<UserPracticeHistoryItemDto>> GetUserPracticeHistoryAsync(Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<UserPracticeHistoryDto> GetUserPracticeHistoryAsync(
+            Guid userId,
+            int page,
+            int pageSize,
+            PracticeStatusFilter? status,
+            Difficulty? difficulty,
+            CancellationToken cancellationToken)
         {
-            var latestSubmissions = await _submissionsDbContext.Submissions
+            // ── 1. Lấy tất cả submissions của user ──────────────────────────────
+            var allSubmissions = await _submissionsDbContext.Submissions
                 .AsNoTracking()
                 .Where(s => s.UserId == userId)
-                .GroupBy(s => s.ProblemId)
-                .Select(g => new
+                .Select(s => new
                 {
-                    ProblemId = g.Key,
-                    LastSubmittedAt = g.Max(s => s.CreatedAt),
-                    LastVerdict = g.OrderByDescending(s => s.CreatedAt).First().Verdict,
-                    SubmissionCount = g.Count()
+                    s.Id,
+                    s.ProblemId,
+                    s.CreatedAt,
+                    s.Verdict,
+                    s.Language,
+                    s.JudgeSummary.MaxTimeMs,
+                    s.JudgeSummary.MaxMemoryKb
                 })
-                .OrderByDescending(x => x.LastSubmittedAt)
                 .ToListAsync(cancellationToken);
 
-            var totalCount = latestSubmissions.Count;
-
-            var paged = latestSubmissions
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+            // ── 2. Group theo ProblemId ──────────────────────────────────────────
+            var grouped = allSubmissions
+                .GroupBy(s => s.ProblemId)
+                .Select(g =>
+                {
+                    var ordered = g.OrderByDescending(s => s.CreatedAt).ToList();
+                    return new
+                    {
+                        ProblemId = g.Key,
+                        LastSubmittedAt = ordered.First().CreatedAt,
+                        LastVerdict = ordered.First().Verdict,
+                        SubmissionCount = g.Count(),
+                        Submissions = ordered.Select(s => new UserSubmissionDetailDto
+                        {
+                            SubmissionId = s.Id.Value,
+                            SubmittedAt = s.CreatedAt,
+                            Verdict = s.Verdict,
+                            Language = s.Language.Value,
+                            RuntimeMs = s.MaxTimeMs,
+                            MemoryMb = s.MaxMemoryKb
+                        }).ToList()
+                    };
+                })
                 .ToList();
 
-            if (!paged.Any())
-                return new PagedResult<UserPracticeHistoryItemDto>([], totalCount, page, pageSize);
-
-            var problemIds = paged.Select(x => x.ProblemId).ToList();
-
-            var problems = await _problemDbContext.Problems
+            // ── 3. Lấy problem info từ problemDbContext ──────────────────────────
+            var allPublishedProblems = await _problemDbContext.Problems
                 .AsNoTracking()
-                .Where(p => problemIds.Contains(p.Id.Value))
+                .Where(p => p.Status == ProblemStatus.Published)
                 .Select(p => new { p.Id, p.Code, p.Title, p.Difficulty })
                 .ToListAsync(cancellationToken);
 
-            var problemMap = problems.ToDictionary(p => p.Id.Value);
+            var problemMap = allPublishedProblems.ToDictionary(p => p.Id.Value);
 
-            var items = paged
+            // ── 4. Join + filter ─────────────────────────────────────────────────
+            var joined = grouped
                 .Where(x => problemMap.ContainsKey(x.ProblemId))
-                .Select(x => new UserPracticeHistoryItemDto
+                .Select(x => new
                 {
-                    ProblemId = x.ProblemId,
-                    Code = problemMap[x.ProblemId].Code,
-                    Title = problemMap[x.ProblemId].Title,
-                    Difficulty = problemMap[x.ProblemId].Difficulty,
-                    LastSubmittedAt = x.LastSubmittedAt,
-                    LastVerdict = x.LastVerdict,
-                    SubmissionCount = x.SubmissionCount
+                    Problem = problemMap[x.ProblemId],
+                    x.ProblemId,
+                    x.LastSubmittedAt,
+                    x.LastVerdict,
+                    x.SubmissionCount,
+                    x.Submissions
                 })
                 .ToList();
 
-            return new PagedResult<UserPracticeHistoryItemDto>(items, totalCount, page, pageSize);
+            // Filter theo Difficulty
+            if (difficulty.HasValue)
+                joined = joined.Where(x => x.Problem.Difficulty == difficulty.Value).ToList();
+
+            // Filter theo Status
+            if (status.HasValue)
+            {
+                joined = status.Value == PracticeStatusFilter.Solved
+                    ? joined.Where(x => x.LastVerdict == Verdict.Accepted).ToList()
+                    : joined.Where(x => x.LastVerdict != Verdict.Accepted).ToList();
+            }
+
+            // ── 5. Summary — tính trước khi phân trang ───────────────────────────
+            var totalSubmissionsCount = joined.Sum(x => x.SubmissionCount);
+            var acceptedSubmissionsCount = allSubmissions.Count(s =>
+                problemMap.ContainsKey(s.ProblemId) && s.Verdict == Verdict.Accepted);
+
+            var solvedProblems = joined.Where(x => x.LastVerdict == Verdict.Accepted).ToList();
+
+            var summary = new UserPracticeHistorySummaryDto
+            {
+                TotalProblems = solvedProblems.Count,
+                EasySolved = solvedProblems.Count(x => x.Problem.Difficulty == Difficulty.Easy),
+                MediumSolved = solvedProblems.Count(x => x.Problem.Difficulty == Difficulty.Medium),
+                HardSolved = solvedProblems.Count(x => x.Problem.Difficulty == Difficulty.Hard),
+                TotalSubmissions = totalSubmissionsCount,
+                AcceptanceRate = totalSubmissionsCount == 0
+                    ? 0
+                    : Math.Round((double)acceptedSubmissionsCount / totalSubmissionsCount * 100, 1)
+            };
+
+            // ── 6. Phân trang ────────────────────────────────────────────────────
+            var totalCount = joined.Count;
+
+            var items = joined
+                .OrderByDescending(x => x.LastSubmittedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => new UserPracticeHistoryItemDto
+                {
+                    ProblemId = x.ProblemId,
+                    Code = x.Problem.Code,
+                    Title = x.Problem.Title,
+                    Difficulty = x.Problem.Difficulty,
+                    LastSubmittedAt = x.LastSubmittedAt,
+                    LastVerdict = x.LastVerdict,
+                    SubmissionCount = x.SubmissionCount,
+                    Submissions = x.Submissions
+                })
+                .ToList();
+
+            return new UserPracticeHistoryDto
+            {
+                History = new PagedResult<UserPracticeHistoryItemDto>(items, totalCount, page, pageSize),
+                Summary = summary
+            };
         }
     }
 }

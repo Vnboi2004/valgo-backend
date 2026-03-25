@@ -6,7 +6,7 @@ using VAlgo.SharedKernel.Domain;
 
 namespace VAlgo.Modules.UserProfile.Application.Queries.GetUserPracticeHistory
 {
-    public sealed class GetUserPracticeHistoryQueryHandler : IRequestHandler<GetUserPracticeHistoryQuery, PagedResult<UserPracticeHistoryItemDto>>
+    public sealed class GetUserPracticeHistoryQueryHandler : IRequestHandler<GetUserPracticeHistoryQuery, UserPracticeHistoryDto>
     {
         private readonly IUserIdentityReadService _userIdentityReadService;
         private readonly IUserProfileReadService _userProfileReadService;
@@ -17,13 +17,19 @@ namespace VAlgo.Modules.UserProfile.Application.Queries.GetUserPracticeHistory
             _userProfileReadService = userProfileReadService;
         }
 
-        public async Task<PagedResult<UserPracticeHistoryItemDto>> Handle(GetUserPracticeHistoryQuery request, CancellationToken cancellationToken)
+        public async Task<UserPracticeHistoryDto> Handle(GetUserPracticeHistoryQuery request, CancellationToken cancellationToken)
         {
             var userId = await _userIdentityReadService.GetUserIdByUsernameAsync(request.Username, cancellationToken)
                 ?? throw new UserProfileNotFoundException(request.Username);
 
             return await _userProfileReadService.GetUserPracticeHistoryAsync(
-                userId, request.Page, request.PageSize, cancellationToken);
+                userId,
+                request.Page,
+                request.PageSize,
+                request.Status,
+                request.Difficulty,
+                cancellationToken
+            );
         }
     }
 }

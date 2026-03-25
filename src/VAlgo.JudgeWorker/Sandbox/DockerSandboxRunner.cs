@@ -84,15 +84,47 @@ public sealed class DockerSandboxRunner
 
         stopwatch.Stop();
 
+        var memoryKb = ParseMemoryKb(workDir);
+
         return new SandboxRunResult
         {
             ExitCode = result.ExitCode,
             Stdout = result.Stdout,
             Stderr = result.Stderr,
             TimeMs = (int)stopwatch.ElapsedMilliseconds,
-            MemoryKb = 0,
+            MemoryKb = memoryKb,
             Verdict = MapVerdict(result)
         };
+    }
+
+    private int ParseMemoryKb(string workDir)
+    {
+        try
+        {
+            var timePath = Path.Combine(workDir, "time_result.txt");
+            if (!File.Exists(timePath))
+                return 0;
+
+            var lines = File.ReadAllLines(timePath);
+
+            // /usr/bin/time -v output có dòng:
+            // "Maximum resident set size (kbytes): 3456"
+            foreach (var line in lines)
+            {
+                if (line.Contains("Maximum resident set size"))
+                {
+                    var parts = line.Split(':');
+                    if (parts.Length == 2 && int.TryParse(parts[1].Trim(), out var kb))
+                        return kb;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning("Failed to parse memory usage: {Message}", ex.Message);
+        }
+
+        return 0;
     }
 
     // ============================================================

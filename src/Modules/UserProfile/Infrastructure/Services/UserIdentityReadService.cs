@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using VAlgo.Modules.Identity.Domain.ValueObjects;
 using VAlgo.Modules.Identity.Infrastructure.Persistence;
 using VAlgo.Modules.UserProfile.Application.Abstractions;
+using VAlgo.Modules.UserProfile.Application.DTOs;
+using VAlgo.Modules.UserProfile.Application.Queries.GetUserHeatmap;
 
 namespace VAlgo.Modules.UserProfile.Infrastructure.Services
 {
@@ -32,6 +34,19 @@ namespace VAlgo.Modules.UserProfile.Infrastructure.Services
             return await _identityDbContext.Users
                 .AsNoTracking()
                 .AnyAsync(u => u.Id == UserId.From(userId), cancellationToken);
+        }
+
+        public async Task<UserIdentityDto?> GetUserByUsernameAsync(string username, CancellationToken cancellationToken)
+        {
+            return await _identityDbContext.Users
+                .AsNoTracking()
+                .Where(x => x.Username.Value == username)
+                .Select(x => new UserIdentityDto
+                {
+                    Id = x.Id.Value,
+                    CreatedAt = x.CreatedAt
+                })
+                .FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

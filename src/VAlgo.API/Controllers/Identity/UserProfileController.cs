@@ -7,6 +7,7 @@ using VAlgo.Modules.UserProfile.Application.Queries.GetUserPracticeHistory;
 using VAlgo.Modules.UserProfile.Application.Queries.GetUserRecentAc;
 using VAlgo.Modules.UserProfile.Application.Queries.GetUserSkills;
 using VAlgo.Modules.UserProfile.Application.Queries.GetUserStats;
+using VAlgo.SharedKernel.CrossModule.Problems;
 
 namespace VAlgo.API.Controllers.Identity
 {
@@ -34,9 +35,9 @@ namespace VAlgo.API.Controllers.Identity
         // GET api/users/{username}/heatmap
         [AllowAnonymous]
         [HttpGet("{username}/heatmap")]
-        public async Task<IActionResult> GetUserHeatmap([FromRoute] string username, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserHeatmap([FromRoute] string username, [FromQuery] int? year, CancellationToken cancellationToken)
         {
-            var query = new GetUserHeatmapQuery(username);
+            var query = new GetUserHeatmapQuery(username, year);
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }
@@ -74,9 +75,15 @@ namespace VAlgo.API.Controllers.Identity
         // GET api/users/{username}/practice-history
         [AllowAnonymous]
         [HttpGet("{username}/practice-history")]
-        public async Task<IActionResult> GetUserPracticeHistory([FromRoute] string username, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetUserPracticeHistory(
+            [FromRoute] string username,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20,
+            [FromQuery] PracticeStatusFilter? status = null,
+            [FromQuery] Difficulty? difficulty = null,
+            CancellationToken cancellationToken = default)
         {
-            var query = new GetUserPracticeHistoryQuery(username, page, pageSize);
+            var query = new GetUserPracticeHistoryQuery(username, page, pageSize, status, difficulty);
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }

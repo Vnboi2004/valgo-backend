@@ -38,7 +38,7 @@ namespace VAlgo.API.Controllers.Identity
         public async Task<IActionResult> GetUserPublicProfileQuery([FromRoute] string username, CancellationToken cancellationToken)
         {
             var query = new GetUserPublicProfileQuery(username);
-            var result = await _mediator.Send(cancellationToken, cancellationToken);
+            var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }
 
