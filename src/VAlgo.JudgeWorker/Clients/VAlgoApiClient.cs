@@ -55,7 +55,10 @@ namespace VAlgo.JudgeWorker.Clients
         // POST api/submissions/{submissionId}/complete
         public async Task CompleteSubmissionAsync(Guid submissionId, CompleteSubmissionRequest request, CancellationToken cancellationToken = default)
         {
-            var response = await _http.PostAsJsonAsync($"/api/submissions/{submissionId}/complete", request, cancellationToken);
+            var response = await _http.PostAsJsonAsync(
+                $"/api/submissions/{submissionId}/complete",
+                request,
+                cancellationToken);
 
             response.EnsureSuccessStatusCode();
         }

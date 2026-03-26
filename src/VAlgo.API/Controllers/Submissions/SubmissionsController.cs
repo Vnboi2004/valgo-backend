@@ -59,15 +59,16 @@ namespace VAlgo.API.Controllers.Submissions
         [HttpPost("{submissionId:guid}/complete")]
         public async Task<IActionResult> CompleteSubmission([FromRoute] Guid submissionId, [FromBody] CompleteSubmissionRequest request, CancellationToken cancellationToken)
         {
-            var command = new CompleteSubmissionCommand(
-                submissionId,
-                request.Verdict,
-                request.PassedTestCases,
-                request.TotalTestCases,
-                request.TimeMs,
-                request.MemoryKb,
-                request.TestCases
-            );
+            var command = new CompleteSubmissionCommand
+            {
+                SubmissionId = submissionId,
+                Verdict = request.Verdict,
+                PassedTestCases = request.PassedTestCases,
+                TotalTestCases = request.TotalTestCases,
+                MaxTimeMs = request.MaxTimeMs,
+                MaxMemoryKb = request.MaxMemoryKb,
+                TestCases = request.TestCases
+            };
 
             await _mediator.Send(command, cancellationToken);
 

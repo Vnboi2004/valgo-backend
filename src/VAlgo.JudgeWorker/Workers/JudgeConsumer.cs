@@ -109,6 +109,8 @@ public sealed class JudgeConsumer : BackgroundService
 
             var language = SandboxLanguageRegistry.Resolve(submission.Language);
 
+            _logger.LogInformation("Resolved DockerImage: {Image}", language.DockerImage);
+
             // ========================================================
             // 1️⃣ COMPILE
             // ========================================================
@@ -155,6 +157,13 @@ public sealed class JudgeConsumer : BackgroundService
                         problem.MemoryLimitKb),
                     workDir);
 
+                _logger.LogInformation(
+                    "RUN RESULT: time={time}, memory={memory}, verdict={verdict}",
+                    run.TimeMs,
+                    run.MemoryKb,
+                    run.Verdict
+                );
+
                 maxTime = Math.Max(maxTime, run.TimeMs);
                 maxMemory = Math.Max(maxMemory, run.MemoryKb);
 
@@ -184,6 +193,12 @@ public sealed class JudgeConsumer : BackgroundService
                     run.Stdout            // 🔥 gửi output luôn
                 ));
             }
+
+            _logger.LogInformation(
+                "FINAL SUMMARY: maxTime={time}, maxMemory={memory}",
+                maxTime,
+                maxMemory
+            );
 
 
             // ========================================================

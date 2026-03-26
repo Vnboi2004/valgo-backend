@@ -26,12 +26,21 @@ public sealed class DockerSandboxRunner
         var sourcePath = Path.Combine(workDir, request.Language.SourceFileName);
         await File.WriteAllTextAsync(sourcePath, request.SourceCode, cancellationToken);
 
+        var containerName = $"sandbox-{Guid.NewGuid():N}";
+
         var dockerArgs =
-            $"run --rm " +
+            $"run --rm --name {containerName} " +
+            $"--network none " +
+            $"--pids-limit 64 " +
+            $"--read-only " +
+            $"--cap-drop ALL " +
+            $"--security-opt no-new-privileges " +
             $"-v \"{workDir}:/sandbox\" " +
             $"-w /sandbox " +
             $"{request.Language.DockerImage} " +
             $"sh -c \"{request.Language.CompileCommand}\"";
+
+        _logger.LogInformation("Docker compile args: {Args}", dockerArgs);
 
         var result = await ExecuteProcessAsync(
             "docker",
@@ -64,37 +73,81 @@ public sealed class DockerSandboxRunner
         await File.WriteAllTextAsync(inputPath, request.Input, cancellationToken);
 
         var memoryMb = Math.Max(16, request.MemoryLimitKb / 1024);
+        var containerName = $"sandbox-{Guid.NewGuid():N}";
 
         var dockerArgs =
-            $"run --rm " +
+            $"run --rm --name {containerName} " +
             $"--network none " +
             $"--memory {memoryMb}m " +
+            $"--pids-limit 64 " +
+            $"--read-only " +
+            $"--cap-drop ALL " +
+            $"--security-opt no-new-privileges " +
             $"-v \"{workDir}:/sandbox\" " +
             $"-w /sandbox " +
             $"{request.Language.DockerImage} " +
-            $"sh -c \"{request.Language.RunCommand} < input.txt\"";
+            $"sh -c \"/usr/bin/time -v {request.Language.RunCommand} < input.txt 2> time_result.txt\"";
 
-        var stopwatch = Stopwatch.StartNew();
+        _logger.LogInformation("Docker args: {Args}", dockerArgs);
+
 
         var result = await ExecuteProcessAsync(
             "docker",
             dockerArgs,
-            request.TimeLimitMs,
+            request.TimeLimitMs + 1000,
             cancellationToken);
 
-        stopwatch.Stop();
-
+        var timeMs = ParseTimeMs(workDir);
         var memoryKb = ParseMemoryKb(workDir);
+
 
         return new SandboxRunResult
         {
             ExitCode = result.ExitCode,
             Stdout = result.Stdout,
             Stderr = result.Stderr,
-            TimeMs = (int)stopwatch.ElapsedMilliseconds,
+            TimeMs = timeMs,
             MemoryKb = memoryKb,
-            Verdict = MapVerdict(result)
+            Verdict = MapVerdict(result, timeMs, request.TimeLimitMs)
         };
+    }
+
+    private int ParseTimeMs(string workDir)
+    {
+        try
+        {
+            var timePath = Path.Combine(workDir, "time_result.txt");
+            if (!File.Exists(timePath))
+                return 0;
+
+            var lines = File.ReadAllLines(timePath);
+
+            double user = 0, sys = 0;
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("User time"))
+                {
+                    var value = line.Split(':').Last().Trim();
+                    double.TryParse(value, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out user);
+                }
+
+                if (line.Contains("System time"))
+                {
+                    var value = line.Split(':').Last().Trim();
+                    double.TryParse(value, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out sys);
+                }
+            }
+
+            return (int)((user + sys) * 1000);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning("Failed to parse time usage: {Message}", ex.Message);
+            return 0;
+        }
     }
 
     private int ParseMemoryKb(string workDir)
@@ -171,9 +224,17 @@ public sealed class DockerSandboxRunner
         var exitTask = process.WaitForExitAsync(cancellationToken);
         var completed = await Task.WhenAny(exitTask, Task.Delay(timeoutMs, cancellationToken));
 
+        var containerName = $"sandbox-{Guid.NewGuid():N}";
+
         if (completed != exitTask)
         {
             TryKill(process);
+
+            await ExecuteProcessAsync(
+                "docker",
+                $"kill {containerName}",
+                5000,
+                CancellationToken.None);
 
             return new ProcessResult
             {
@@ -197,9 +258,12 @@ public sealed class DockerSandboxRunner
     // ============================================================
     // VERDICT
     // ============================================================
-    private static Verdict MapVerdict(ProcessResult result)
+    private static Verdict MapVerdict(ProcessResult result, int timeMs, int timeLimitMs)
     {
         if (result.ExitCode == -1)
+            return Verdict.TimeLimitExceeded;
+
+        if (timeMs > timeLimitMs)
             return Verdict.TimeLimitExceeded;
 
         if (result.ExitCode == 137)
