@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StackExchange.Redis;
 using VAlgo.API.Controllers.Submissions.Requests;
 using VAlgo.Modules.Submissions.Application.Commands.CancelSubmission;
 using VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission;
