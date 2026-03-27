@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SharedKernel\VAlgo.SharedKernel\VAlgo.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\VAlgo.BuildingBlocks.Sandbox/VAlgo.BuildingBlocks.Sandbox.csproj" />
   </ItemGroup>
 
   <ItemGroup>

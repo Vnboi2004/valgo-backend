@@ -4,18 +4,20 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using VAlgo.BuildingBlocks.Sandbox.Abstractions;
+using VAlgo.BuildingBlocks.Sandbox.Implementations;
+using VAlgo.BuildingBlocks.Sandbox.Judging;
+using VAlgo.BuildingBlocks.Sandbox.Models;
 using VAlgo.JudgeWorker.Clients;
-using VAlgo.JudgeWorker.Judging;
 using VAlgo.JudgeWorker.Models;
-using VAlgo.JudgeWorker.Sandbox;
-
+using VAlgo.SharedKernel.CrossModule.Submissions;
 namespace VAlgo.JudgeWorker.Workers;
 
 public sealed class JudgeConsumer : BackgroundService
 {
     private readonly ILogger<JudgeConsumer> _logger;
     private readonly VAlgoApiClient _apiClient;
-    private readonly DockerSandboxRunner _sandbox;
+    private readonly ISandboxRunner _sandbox;
 
     private IConnection? _connection;
     private IModel? _channel;
@@ -25,7 +27,7 @@ public sealed class JudgeConsumer : BackgroundService
     public JudgeConsumer(
         ILogger<JudgeConsumer> logger,
         VAlgoApiClient apiClient,
-        DockerSandboxRunner sandbox)
+        ISandboxRunner sandbox)
     {
         _logger = logger;
         _apiClient = apiClient;
@@ -112,7 +114,7 @@ public sealed class JudgeConsumer : BackgroundService
             _logger.LogInformation("Resolved DockerImage: {Image}", language.DockerImage);
 
             // ========================================================
-            // 1️⃣ COMPILE
+            // 1. COMPILE
             // ========================================================
             var compile = await _sandbox.CompileAsync(
                 new SandboxCompileRequest(fullCode, language));
@@ -137,7 +139,7 @@ public sealed class JudgeConsumer : BackgroundService
             workDir = compile.WorkDir;
 
             // ========================================================
-            // 2️⃣ RUN TEST CASES
+            // 2. RUN TEST CASES
             // ========================================================
             int passed = 0;
             int maxTime = 0;
@@ -187,10 +189,10 @@ public sealed class JudgeConsumer : BackgroundService
 
                 testCaseResults.Add(new SubmissionTestCaseResult(
                     tc.Order,
-                    caseVerdict,          // 🔥 dùng Verdict enum
+                    caseVerdict,
                     run.TimeMs,
                     run.MemoryKb,
-                    run.Stdout            // 🔥 gửi output luôn
+                    run.Stdout
                 ));
             }
 
@@ -202,7 +204,7 @@ public sealed class JudgeConsumer : BackgroundService
 
 
             // ========================================================
-            // 3️⃣ COMPLETE
+            // 3. COMPLETE
             // ========================================================
             await _apiClient.CompleteSubmissionAsync(
                 submission.SubmissionId,
@@ -225,10 +227,7 @@ public sealed class JudgeConsumer : BackgroundService
             {
                 try
                 {
-                    await _apiClient.FailSubmissionAsync(
-                        job.SubmissionId,
-                        new FailSubmissionRequest(
-                            SubmissionFailureReason.InternalJudgeError));
+                    await _apiClient.FailSubmissionAsync(job.SubmissionId, new FailSubmissionRequest(SubmissionFailureReason.InternalJudgeError));
                 }
                 catch { }
             }

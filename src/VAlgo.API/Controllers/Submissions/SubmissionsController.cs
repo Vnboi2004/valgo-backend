@@ -8,6 +8,7 @@ using VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission;
 using VAlgo.Modules.Submissions.Application.Commands.CreateSubmission;
 using VAlgo.Modules.Submissions.Application.Commands.EnqueueSubmission;
 using VAlgo.Modules.Submissions.Application.Commands.FailSubmission;
+using VAlgo.Modules.Submissions.Application.Commands.RunCode;
 using VAlgo.Modules.Submissions.Application.Commands.StartSubmissionExecution;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissionDetail;
 using VAlgo.Modules.Submissions.Application.Queries.GetSubmissions;
@@ -40,6 +41,16 @@ namespace VAlgo.API.Controllers.Submissions
             var submissionId = await _mediator.Send(command, cancellationToken);
 
             return CreatedAtAction(nameof(GetSubmissionDetail), new { submissionId }, new { SubmissionId = submissionId });
+        }
+
+        // POST api/submissions/run
+        [Authorize]
+        [HttpPost("run")]
+        public async Task<IActionResult> RunCode([FromBody] RunCodeRequest request, CancellationToken cancellationToken)
+        {
+            var command = new RunCodeCommand(request.ProblemId, request.Language, request.SourceCode);
+            var result = await _mediator.Send(command, cancellationToken);
+            return Ok(result);
         }
 
         // POST api/submissions/{id}/start

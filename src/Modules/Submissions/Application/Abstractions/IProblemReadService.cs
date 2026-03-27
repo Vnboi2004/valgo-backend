@@ -1,6 +1,6 @@
 namespace VAlgo.Modules.Submissions.Application.Abstractions
 {
-    public interface IProblemReadService
+    public interface IProblemReadToSubmissionService
     {
         Task<bool> ExistsAsync(Guid problemId);
     }

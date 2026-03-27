@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserProfile", "UserProfile"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAlgo.Modules.UserProfile", "src\Modules\UserProfile\VAlgo.Modules.UserProfile.csproj", "{C19ED35E-758B-4071-AB98-6AF7B303430E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAlgo.BuildingBlocks.Sandbox", "src\VAlgo.BuildingBlocks.Sandbox\VAlgo.BuildingBlocks.Sandbox.csproj", "{F6C1EA04-CF2F-4650-8945-FD0978479E00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +189,18 @@ Global
 		{C19ED35E-758B-4071-AB98-6AF7B303430E}.Release|x64.Build.0 = Release|Any CPU
 		{C19ED35E-758B-4071-AB98-6AF7B303430E}.Release|x86.ActiveCfg = Release|Any CPU
 		{C19ED35E-758B-4071-AB98-6AF7B303430E}.Release|x86.Build.0 = Release|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Debug|x64.Build.0 = Debug|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Debug|x86.Build.0 = Debug|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Release|x64.ActiveCfg = Release|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Release|x64.Build.0 = Release|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Release|x86.ActiveCfg = Release|Any CPU
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -212,5 +226,6 @@ Global
 		{70F07AC8-2A7F-4171-AE9C-63953C543665} = {EBFA2A3A-3FD0-BD0E-A20C-97D55206B953}
 		{2EA2AAA1-79BC-8BBA-DC48-20842FB478C2} = {EC447DCF-ABFA-6E24-52A5-D7FD48A5C558}
 		{C19ED35E-758B-4071-AB98-6AF7B303430E} = {2EA2AAA1-79BC-8BBA-DC48-20842FB478C2}
+		{F6C1EA04-CF2F-4650-8945-FD0978479E00} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

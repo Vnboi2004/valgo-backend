@@ -5,11 +5,11 @@ using VAlgo.Modules.Submissions.Application.Abstractions;
 
 namespace VAlgo.API.Services
 {
-    public sealed class ProblemReadService : IProblemReadService
+    public sealed class ProblemReadToSubmissionService : IProblemReadToSubmissionService
     {
         private readonly ProblemManagementDbContext _dbContext;
 
-        public ProblemReadService(ProblemManagementDbContext dbContext)
+        public ProblemReadToSubmissionService(ProblemManagementDbContext dbContext)
         {
             _dbContext = dbContext;
         }

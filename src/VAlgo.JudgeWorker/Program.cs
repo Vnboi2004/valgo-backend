@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VAlgo.BuildingBlocks.Sandbox.Abstractions;
+using VAlgo.BuildingBlocks.Sandbox.Implementations;
 using VAlgo.JudgeWorker.Clients;
-using VAlgo.JudgeWorker.Sandbox;
 using VAlgo.JudgeWorker.Services;
 using VAlgo.JudgeWorker.Workers;
 
@@ -16,7 +17,7 @@ builder.Services.AddHttpClient<VAlgoApiClient>(client =>
 })
 .AddHttpMessageHandler<JudgeApiKeyHandler>();
 
-builder.Services.AddSingleton<DockerSandboxRunner>();
+builder.Services.AddScoped<ISandboxRunner, DockerSandboxRunner>();
 
 builder.Services.AddHostedService<JudgeConsumer>();
 

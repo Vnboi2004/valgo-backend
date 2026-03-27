@@ -1,4 +1,4 @@
-namespace VAlgo.Modules.ProblemManagement.Domain.Enums
+namespace VAlgo.SharedKernel.CrossModule.Problems
 {
     public enum OutputComparisonStrategy
     {

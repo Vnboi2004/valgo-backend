@@ -1,6 +1,6 @@
 using VAlgo.SharedKernel.CrossModule.Submissions;
 
-namespace VAlgo.JudgeWorker.Models
+namespace VAlgo.BuildingBlocks.Sandbox.Models
 {
     public sealed class SandboxRunResult
     {

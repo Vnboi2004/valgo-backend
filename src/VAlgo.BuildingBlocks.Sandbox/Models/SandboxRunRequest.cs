@@ -1,4 +1,4 @@
-namespace VAlgo.JudgeWorker.Models
+namespace VAlgo.BuildingBlocks.Sandbox.Models
 {
     public sealed record SandboxRunRequest(
         string SourceCode,

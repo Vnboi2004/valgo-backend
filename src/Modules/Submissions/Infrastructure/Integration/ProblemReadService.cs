@@ -5,11 +5,11 @@ using VAlgo.Modules.Submissions.Infrastructure.Persistence;
 
 namespace VAlgo.Modules.Submissions.Infrastructure.Integration
 {
-    public sealed class ProblemReadService : IProblemReadService
+    public sealed class ProblemReadToSubmissionService : IProblemReadToSubmissionService
     {
         private readonly SubmissionsDbContext _dbContext;
 
-        public ProblemReadService(SubmissionsDbContext dbContext)
+        public ProblemReadToSubmissionService(SubmissionsDbContext dbContext)
             => _dbContext = dbContext;
 
         public async Task<bool> ExistsAsync(Guid problemId)

@@ -6,6 +6,7 @@ using VAlgo.Modules.Submissions.Infrastructure.Integration;
 using VAlgo.Modules.Submissions.Infrastructure.Persistence;
 using VAlgo.Modules.Submissions.Infrastructure.Persistence.Repositories;
 using VAlgo.Modules.Submissions.Infrastructure.Read;
+using VAlgo.Modules.Submissions.Infrastructure.Services;
 using VAlgo.Modules.Submissions.Infrastructure.Time;
 using VAlgo.SharedKernel.Time;
 
@@ -28,12 +29,9 @@ namespace VAlgo.Modules.Submissions.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISubmissionRepository, SubmissionRepository>();
             services.AddScoped<ISubmissionQueries, SubmissionQueries>();
-
             services.AddScoped<IJudgeQueue, JudgeQueue>();
-            // services.AddScoped<IUserReadService, UserReadService>();
-            // services.AddScoped<IProblemReadService, ProblemReadService>();
-
             services.AddScoped<IClock, SystemClock>();
+            services.AddScoped<IRunCodeService, RunCodeService>();
 
             return services;
         }

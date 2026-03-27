@@ -5,7 +5,9 @@ using VAlgo.Modules.ProblemManagement.Application.Abstractions;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence;
 using VAlgo.Modules.ProblemManagement.Infractructure.Persistence.Repositories;
 using VAlgo.Modules.ProblemManagement.Infractructure.Read;
+using VAlgo.Modules.ProblemManagement.Infractructure.Services;
 using VAlgo.Modules.ProblemManagement.Infractructure.Time;
+using VAlgo.SharedKernel.CrossModule.Problems;
 using VAlgo.SharedKernel.Time;
 
 namespace VAlgo.Modules.ProblemManagement.Infractructure
@@ -34,6 +36,8 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure
             services.AddScoped<ICompanyReadRepository, CompanyReadRepository>();
             services.AddScoped<ISubmissionReadService, SubmissionReadService>();
             services.AddScoped<ICodeTemplateReadRepository, CodeTemplateReadRepository>();
+            services.AddScoped<IProblemReadService, ProblemReadService>();
+            services.AddScoped<ICodeTemplateReadService, CodeTemplateReadService>();
 
             return services;
         }

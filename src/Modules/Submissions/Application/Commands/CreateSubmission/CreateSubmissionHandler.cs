@@ -12,7 +12,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
     {
         private readonly ISubmissionRepository _submissionRepository;
         private readonly IUserReadService _userReadService;
-        private readonly IProblemReadService _problemReadService;
+        private readonly IProblemReadToSubmissionService _problemReadToSubmissionService;
         private readonly IRabbitMqPublisher _publisher;
         private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
@@ -20,7 +20,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
         public CreateSubmissionCommandHandler(
             ISubmissionRepository submissionRepository,
             IUserReadService userReadService,
-            IProblemReadService problemReadService,
+            IProblemReadToSubmissionService problemReadToSubmissionService,
             IRabbitMqPublisher publisher,
             ICurrentUserService currentUserService,
             IUnitOfWork unitOfWork
@@ -28,7 +28,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
         {
             _submissionRepository = submissionRepository;
             _userReadService = userReadService;
-            _problemReadService = problemReadService;
+            _problemReadToSubmissionService = problemReadToSubmissionService;
             _publisher = publisher;
             _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
@@ -42,7 +42,7 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CreateSubmission
                 throw new ApplicationException("User does not exist");
 
             // 2.Check problem
-            var existProblem = await _problemReadService.ExistsAsync(request.ProblemId);
+            var existProblem = await _problemReadToSubmissionService.ExistsAsync(request.ProblemId);
             if (!existProblem)
                 throw new ApplicationException("Problem does not exist");
 

@@ -1,6 +1,6 @@
 using MediatR;
-using VAlgo.Modules.ProblemManagement.Domain.Enums;
 using VAlgo.SharedKernel.Abstractions;
+using VAlgo.SharedKernel.CrossModule.Problems;
 
 namespace VAlgo.Modules.ProblemManagement.Application.Commands.AddTestCase
 {

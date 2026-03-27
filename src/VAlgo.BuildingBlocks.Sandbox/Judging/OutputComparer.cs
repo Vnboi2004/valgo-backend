@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace VAlgo.JudgeWorker.Judging
+namespace VAlgo.BuildingBlocks.Sandbox.Judging
 {
     public static class OutputComparer
     {

@@ -2,13 +2,13 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VAlgo.API.Hubs;
 using VAlgo.API.Middleware;
 using VAlgo.API.Realtime;
 using VAlgo.API.Services;
+using VAlgo.BuildingBlocks.Sandbox;
 using VAlgo.Modules.Contests;
 using VAlgo.Modules.Contests.Application.Realtime;
 using VAlgo.Modules.Discussions;
@@ -119,6 +119,9 @@ builder.Services.AddUserProfileModule(builder.Configuration);
 builder.Services.AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>();
 builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
 
+// BuildingBlocks
+builder.Services.AddSandbox();
+
 // Register RedisConnectionFactory
 builder.Services.Configure<RedisOptions>(builder.Configuration.GetSection("Redis"));
 builder.Services.AddSingleton<RedisConnectionStringFactory>(sp =>
@@ -137,7 +140,7 @@ builder.Services.AddScoped<IContestLeaderboardNotifier, SignalRContestLeaderboar
 
 // Register services
 builder.Services.AddScoped<IUserReadService, UserReadService>();
-builder.Services.AddScoped<IProblemReadService, ProblemReadService>();
+builder.Services.AddScoped<IProblemReadToSubmissionService, ProblemReadToSubmissionService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
