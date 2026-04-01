@@ -7,6 +7,5 @@ namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetProblemEditor
         public string Input { get; init; } = null!;
         public string Output { get; init; } = null!;
         public string? Explanation { get; init; }
-
     }
 }

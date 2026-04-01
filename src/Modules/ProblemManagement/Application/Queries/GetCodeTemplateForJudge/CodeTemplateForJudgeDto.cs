@@ -10,6 +10,5 @@ namespace VAlgo.Modules.ProblemManagement.Application.Queries.GetCodeTemplateFor
         // Judge ghép 2 phần lại để compile
         public string GetFullCode(string userSolution)
             => $"{JudgeTemplateHeader}\n\n{userSolution}\n\n{JudgeTemplateFooter}";
-
     }
 }
