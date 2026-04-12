@@ -1,17 +1,20 @@
 using MediatR;
 using VAlgo.Modules.Contests.Application.Interfaces;
 using VAlgo.Modules.Contests.Domain.ValueObjects;
+using VAlgo.SharedKernel.Abstractions;
 
 namespace VAlgo.Modules.Contests.Application.Commands.LeaveContest
 {
     public sealed class LeaveContestCommandHandler : IRequestHandler<LeaveContestCommand, Unit>
     {
         private readonly IContestRepository _contestRepository;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public LeaveContestCommandHandler(IContestRepository contestRepository, IUnitOfWork unitOfWork)
+        public LeaveContestCommandHandler(IContestRepository contestRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
         {
             _contestRepository = contestRepository;
+            _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
         }
 
@@ -24,7 +27,7 @@ namespace VAlgo.Modules.Contests.Application.Commands.LeaveContest
             if (contest == null)
                 throw new InvalidOperationException("Contest not found.");
 
-            contest.Leave(request.UserId);
+            contest.Leave(_currentUserService.UserId);
 
             await _contestRepository.UpdateAsync(contest, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

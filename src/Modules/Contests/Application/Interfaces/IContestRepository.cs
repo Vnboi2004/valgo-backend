@@ -17,5 +17,8 @@ namespace VAlgo.Modules.Contests.Application.Interfaces
             int pageSize,
             CancellationToken cancellationToken = default
         );
+        Task<IReadOnlyList<Contest>> GetPublishedContestsToStartAsync(DateTime now, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<Contest>> GetRunningContestsToFinishAsync(DateTime now, CancellationToken cancellationToken);
+        Task<IReadOnlyList<Contest>> GetRunningContestsToFreezeAsync(DateTime now, CancellationToken cancellationToken);
     }
 }

@@ -6,6 +6,7 @@ using VAlgo.Modules.Contests.Application.Leaderboard;
 using VAlgo.Modules.Contests.Infrastructure.Leaderboard;
 using VAlgo.Modules.Contests.Infrastructure.Persistence;
 using VAlgo.Modules.Contests.Infrastructure.Persistence.Repositories;
+using VAlgo.Modules.Submissions.Infrastructure.ReadServices;
 
 namespace VAlgo.Modules.Contests.Infrastructure
 {
@@ -15,7 +16,7 @@ namespace VAlgo.Modules.Contests.Infrastructure
         {
             services.AddDbContext<ContestsDbContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString("ContestDb"), npgsql =>
+                options.UseNpgsql(configuration.GetConnectionString("ContestsDb"), npgsql =>
                 {
                     npgsql.MigrationsAssembly(typeof(ContestsDbContext).Assembly.FullName);
                     npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null);
@@ -28,6 +29,9 @@ namespace VAlgo.Modules.Contests.Infrastructure
             // Register service
             services.AddScoped<ILeaderboardService, RedisLeaderboardService>();
             services.AddScoped<ILeaderboardCacheService, RedisLeaderboardCacheService>();
+            services.AddScoped<ILeaderboardSnapshotService, RedisLeaderboardSnapshotService>();
+            services.AddScoped<IVirtualContestSessionRepository, VirtualContestSessionRepository>();
+            services.AddScoped<ISubmissionReadService, SubmissionReadService>();
 
             return services;
         }

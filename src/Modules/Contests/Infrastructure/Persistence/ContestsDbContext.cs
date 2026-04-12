@@ -9,6 +9,9 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence
         public DbSet<Contest> Contests => Set<Contest>();
         public DbSet<ContestProblem> ContestProblems => Set<ContestProblem>();
         public DbSet<ContestParticipant> ContestParticipants => Set<ContestParticipant>();
+        public DbSet<ContestSubmission> ContestSubmissions => Set<ContestSubmission>();
+        public DbSet<ParticipantProblemStat> participantProblemStats => Set<ParticipantProblemStat>();
+        public DbSet<VirtualContestSession> VirtualContestSessions => Set<VirtualContestSession>();
 
         public ContestsDbContext(DbContextOptions<ContestsDbContext> options)
             : base(options) { }

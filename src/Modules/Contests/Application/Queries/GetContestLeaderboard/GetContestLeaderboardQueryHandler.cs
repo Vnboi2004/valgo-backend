@@ -11,16 +11,36 @@ namespace VAlgo.Modules.Contests.Application.Queries.GetContestLeaderboard
         private readonly IContestRepository _contestRepository;
         private readonly ILeaderboardService _leaderboard;
         private readonly ILeaderboardCacheService _cache;
+        private readonly ILeaderboardSnapshotService _snapshot;
 
-        public GetContestLeaderboardQueryHandler(IContestRepository contestRepository, ILeaderboardService leaderboard, ILeaderboardCacheService cache)
+        public GetContestLeaderboardQueryHandler(IContestRepository contestRepository, ILeaderboardService leaderboard, ILeaderboardCacheService cache, ILeaderboardSnapshotService snapshot)
         {
             _contestRepository = contestRepository;
             _leaderboard = leaderboard;
             _cache = cache;
+            _snapshot = snapshot;
         }
 
-        public async Task<IReadOnlyList<ContestLeaderboardItemDto>> Handle(GetContestLeaderboardQuery request, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<ContestLeaderboardItemDto>> Handle(
+            GetContestLeaderboardQuery request,
+            CancellationToken cancellationToken)
         {
+            // 1. Get contest
+            var contest = await _contestRepository.GetByIdAsync(ContestId.From(request.ContestId), cancellationToken);
+
+            if (contest == null)
+                throw new InvalidOperationException("Contest not found.");
+
+            // 2. Nếu freeze → trả snapshot
+            if (contest.IsLeaderboardFrozen)
+            {
+                var snapshot = await _snapshot.GetSnapshotAsync(request.ContestId);
+
+                if (snapshot != null)
+                    return snapshot;
+            }
+
+            // 3. Cache
             var cached = await _cache.GetCachedTopAsync(request.ContestId);
 
             if (cached != null)
@@ -28,29 +48,51 @@ namespace VAlgo.Modules.Contests.Application.Queries.GetContestLeaderboard
                 return JsonSerializer.Deserialize<List<ContestLeaderboardItemDto>>(cached)!;
             }
 
+            // 4. Get live leaderboard
             var data = await _leaderboard.GetTopAsync(request.ContestId, 100);
 
-            var leaderboard = new List<ContestLeaderboardItemDto>();
+            var userIds = data.Select(x => x.UserId).ToList();
 
-            int rank = 1;
+            var solvedMap = await _leaderboard.GetSolvedMapAsync(
+                request.ContestId,
+                userIds);
+
+            var result = new List<ContestLeaderboardItemDto>();
+
+            int currentRank = 0;
+            int index = 0;
+
+            int? lastScore = null;
+            int? lastPenalty = null;
 
             foreach (var item in data)
             {
-                leaderboard.Add(new ContestLeaderboardItemDto
+                index++;
+
+                // Tie ranking (ICPC style)
+                if (lastScore != item.Score || lastPenalty != item.Penalty)
                 {
-                    Rank = rank++,
+                    currentRank = index;
+                    lastScore = item.Score;
+                    lastPenalty = item.Penalty;
+                }
+
+                result.Add(new ContestLeaderboardItemDto
+                {
+                    Rank = currentRank,
                     UserId = item.UserId,
                     Score = item.Score,
                     Penalty = item.Penalty,
-                    SolvedProblems = item.Score
+                    SolvedProblems = solvedMap.GetValueOrDefault(item.UserId, 0)
                 });
             }
 
-            var json = JsonSerializer.Serialize(leaderboard);
+            // 5. Cache lại
+            var json = JsonSerializer.Serialize(result);
 
             await _cache.CacheTopAsync(request.ContestId, json);
 
-            return leaderboard;
+            return result;
         }
     }
 }

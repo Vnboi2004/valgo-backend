@@ -4,12 +4,18 @@ using VAlgo.API.Controllers.Contests.Requests;
 using VAlgo.Modules.Contests.Application.Commands.AddProblemToContest;
 using VAlgo.Modules.Contests.Application.Commands.ArchiveContest;
 using VAlgo.Modules.Contests.Application.Commands.CreateContest;
+using VAlgo.Modules.Contests.Application.Commands.FreezeLeaderboard;
 using VAlgo.Modules.Contests.Application.Commands.JoinContest;
 using VAlgo.Modules.Contests.Application.Commands.LeaveContest;
 using VAlgo.Modules.Contests.Application.Commands.PublishContest;
+using VAlgo.Modules.Contests.Application.Commands.RegisterContest;
+using VAlgo.Modules.Contests.Application.Commands.RejudgeContest;
+using VAlgo.Modules.Contests.Application.Commands.RemoveParticipant;
 using VAlgo.Modules.Contests.Application.Commands.RemoveProblemFromContest;
 using VAlgo.Modules.Contests.Application.Commands.ReorderContestProblems;
 using VAlgo.Modules.Contests.Application.Commands.StartContest;
+using VAlgo.Modules.Contests.Application.Commands.StartVirtualContest;
+using VAlgo.Modules.Contests.Application.Commands.UnregisterContest;
 using VAlgo.Modules.Contests.Application.Commands.UpdateContestMaxParticipants;
 using VAlgo.Modules.Contests.Application.Commands.UpdateContestMetadata;
 using VAlgo.Modules.Contests.Application.Commands.UpdateContestProblemPoints;
@@ -44,11 +50,11 @@ namespace VAlgo.API.Controllers.Contests
             var command = new CreateContestCommand(
                 request.Title,
                 request.Description,
+                request.Code,
                 request.StartTime,
                 request.EndTime,
                 request.Visibility,
-                request.CreatedBy,
-                request.MaxParticipants
+                request.Type
             );
 
             var contestId = await _mediator.Send(command, cancellationToken);
@@ -251,9 +257,9 @@ namespace VAlgo.API.Controllers.Contests
 
         // POST api/contests/{contestId}/participants
         [HttpPost("{contestId:guid}/participants")]
-        public async Task<IActionResult> JoinContest([FromRoute] Guid contestId, [FromBody] JoinContestRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> JoinContest([FromRoute] Guid contestId, CancellationToken cancellationToken)
         {
-            var command = new JoinContestCommand(contestId, request.UserId);
+            var command = new JoinContestCommand(contestId);
 
             await _mediator.Send(command, cancellationToken);
 
@@ -261,10 +267,10 @@ namespace VAlgo.API.Controllers.Contests
         }
 
         // DELETE api/contests/{contestId}/participants/{userId}
-        [HttpDelete("{contestId:guid}/participants/{userId:guid}")]
-        public async Task<IActionResult> LeaveContest([FromRoute] Guid contestId, [FromRoute] Guid userId, CancellationToken cancellationToken)
+        [HttpDelete("{contestId:guid}/participants/me")]
+        public async Task<IActionResult> LeaveContest([FromRoute] Guid contestId, CancellationToken cancellationToken)
         {
-            var command = new LeaveContestCommand(contestId, userId);
+            var command = new LeaveContestCommand(contestId);
 
             await _mediator.Send(command, cancellationToken);
 
@@ -281,6 +287,56 @@ namespace VAlgo.API.Controllers.Contests
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(result);
+        }
+
+        [HttpPost("{contestId:guid}/register")]
+        public async Task<IActionResult> RegisterContest(Guid contestId, CancellationToken cancellationToken)
+        {
+            var command = new RegisterContestCommand(contestId);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPost("{contestId:guid}/unregister")]
+        public async Task<IActionResult> UnregisterContest(Guid contestId, CancellationToken cancellationToken)
+        {
+            var command = new UnregisterContestCommand(contestId);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPost("{contestId:guid}/virtual/start")]
+        public async Task<IActionResult> StartVirtualContest(Guid contestId, CancellationToken cancellationToken)
+        {
+            var command = new StartVirtualContestCommand(contestId);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPost("{contestId:guid}/freeze")]
+        public async Task<IActionResult> FreezeLeaderboard(Guid contestId)
+        {
+            var command = new FreezeLeaderboardCommand(contestId);
+            await _mediator.Send(command);
+            return Ok();
+        }
+
+        [HttpPost("{contestId:guid}/rejudge")]
+        public async Task<IActionResult> RejudgeContest(Guid contestId)
+        {
+            var command = new RejudgeContestCommand(contestId);
+            await _mediator.Send(command);
+            return Ok();
+        }
+
+        [HttpDelete("{contestId:guid}/participants/{userId:guid}")]
+        public async Task<IActionResult> RemoveParticipant(Guid contestId, Guid userId)
+        {
+            var command = new RemoveParticipantCommand(contestId, userId);
+
+            await _mediator.Send(command);
+
+            return Ok();
         }
     }
 }

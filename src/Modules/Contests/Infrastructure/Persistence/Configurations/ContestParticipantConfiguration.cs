@@ -38,13 +38,19 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Configurations
                 .HasColumnName("penalty")
                 .IsRequired();
 
-            builder.Property(x => x.Rank)
-                .HasColumnName("rank")
-                .IsRequired();
+            builder.Property(x => x.SubmissionCount)
+                .HasColumnName("submission_count");
 
-            builder.Property(x => x.LastSubmissionAt)
-                .HasColumnName("last_submission_at")
-                .IsRequired(false);
+            builder.Property(x => x.IsRegistered)
+                .HasColumnName("is_registered");
+
+            builder.Property(x => x.RegisteredAt)
+                .HasColumnName("registered_at");
+
+            builder.HasMany(x => x.ProblemStats)
+                .WithOne()
+                .HasForeignKey(x => x.ContestParticipantId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(x => x.ContestId);
 

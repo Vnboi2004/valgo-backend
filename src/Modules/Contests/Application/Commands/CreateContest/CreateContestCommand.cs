@@ -6,10 +6,10 @@ namespace VAlgo.Modules.Contests.Application.Commands.CreateContest
     public sealed record CreateContestCommand(
         string Title,
         string Description,
+        string Code,
         DateTime StartTime,
         DateTime EndTime,
         ContestVisibility Visibility,
-        Guid CreatedBy,
-        int? MaxParticipants
+        ContestType Type
     ) : IRequest<Guid>;
 }

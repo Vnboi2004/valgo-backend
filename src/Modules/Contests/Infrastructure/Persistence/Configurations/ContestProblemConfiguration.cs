@@ -43,6 +43,9 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(x => new { x.ContestId, x.Order })
                 .IsUnique();
+
+            builder.HasIndex(x => new { x.ContestId, x.ProblemId })
+                .IsUnique();
         }
     }
 }

@@ -28,6 +28,20 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<bool>("AllowPractice")
+                        .HasColumnType("boolean")
+                        .HasColumnName("allow_practice");
+
+                    b.Property<bool>("AllowVirtual")
+                        .HasColumnType("boolean")
+                        .HasColumnName("allow_virtual");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("code");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -46,9 +60,25 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("end_time");
 
+                    b.Property<DateTime?>("FreezeAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("freeze_at");
+
+                    b.Property<bool>("IsLeaderboardFrozen")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_leaderboard_frozen");
+
                     b.Property<int?>("MaxParticipants")
                         .HasColumnType("integer")
                         .HasColumnName("max_participants");
+
+                    b.Property<DateTime?>("RegistrationEndTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("registration_end_time");
+
+                    b.Property<DateTime?>("RegistrationStartTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("registration_start_time");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone")
@@ -63,6 +93,18 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("title");
+
+                    b.Property<int>("TotalSubmissions")
+                        .HasColumnType("integer")
+                        .HasColumnName("total_submissions");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<int>("Visibility")
                         .HasColumnType("integer")
@@ -89,25 +131,29 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("contest_id");
 
+                    b.Property<bool>("IsRegistered")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_registered");
+
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("joined_at");
-
-                    b.Property<DateTime?>("LastSubmissionAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_submission_at");
 
                     b.Property<int>("Penalty")
                         .HasColumnType("integer")
                         .HasColumnName("penalty");
 
-                    b.Property<int>("Rank")
-                        .HasColumnType("integer")
-                        .HasColumnName("rank");
+                    b.Property<DateTime?>("RegisteredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("registered_at");
 
                     b.Property<int>("Score")
                         .HasColumnType("integer")
                         .HasColumnName("score");
+
+                    b.Property<int>("SubmissionCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("submission_count");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -158,7 +204,130 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Migrations
                     b.HasIndex("ContestId", "Order")
                         .IsUnique();
 
+                    b.HasIndex("ContestId", "ProblemId")
+                        .IsUnique();
+
                     b.ToTable("contest_problems", (string)null);
+                });
+
+            modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Entities.ContestSubmission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ContestId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("contest_id");
+
+                    b.Property<Guid>("ProblemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("problem_id");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("Verdict")
+                        .HasColumnType("integer")
+                        .HasColumnName("verdict");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContestId");
+
+                    b.HasIndex("ContestId", "ProblemId");
+
+                    b.HasIndex("ContestId", "UserId");
+
+                    b.ToTable("contest_submissions", (string)null);
+                });
+
+            modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Entities.ParticipantProblemStat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("ContestParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("contest_participant_id");
+
+                    b.Property<bool>("IsSolved")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_solved");
+
+                    b.Property<Guid>("ProblemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("problem_id");
+
+                    b.Property<DateTime?>("SolvedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("solved_at");
+
+                    b.Property<Guid?>("VirtualContestSessionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("virtual_contest_session_id");
+
+                    b.Property<int>("WrongAttempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("wrong_attempts");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContestParticipantId", "ProblemId")
+                        .IsUnique()
+                        .HasFilter("\"contest_participant_id\" IS NOT NULL");
+
+                    b.HasIndex("VirtualContestSessionId", "ProblemId")
+                        .IsUnique()
+                        .HasFilter("\"virtual_contest_session_id\" IS NOT NULL");
+
+                    b.ToTable("participant_problem_stats", (string)null);
+                });
+
+            modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Entities.VirtualContestSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ContestId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("contest_id");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("end_time");
+
+                    b.Property<int>("Penalty")
+                        .HasColumnType("integer")
+                        .HasColumnName("penalty");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer")
+                        .HasColumnName("score");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_time");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContestId");
+
+                    b.HasIndex("ContestId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("virtual_contest_sessions", (string)null);
                 });
 
             modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Entities.ContestParticipant", b =>
@@ -179,11 +348,45 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Entities.ContestSubmission", b =>
+                {
+                    b.HasOne("VAlgo.Modules.Contests.Domain.Aggregates.Contest", null)
+                        .WithMany("Submissions")
+                        .HasForeignKey("ContestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Entities.ParticipantProblemStat", b =>
+                {
+                    b.HasOne("VAlgo.Modules.Contests.Domain.Entities.ContestParticipant", null)
+                        .WithMany("ProblemStats")
+                        .HasForeignKey("ContestParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("VAlgo.Modules.Contests.Domain.Entities.VirtualContestSession", null)
+                        .WithMany("ProblemStats")
+                        .HasForeignKey("VirtualContestSessionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Aggregates.Contest", b =>
                 {
                     b.Navigation("Participants");
 
                     b.Navigation("Problems");
+
+                    b.Navigation("Submissions");
+                });
+
+            modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Entities.ContestParticipant", b =>
+                {
+                    b.Navigation("ProblemStats");
+                });
+
+            modelBuilder.Entity("VAlgo.Modules.Contests.Domain.Entities.VirtualContestSession", b =>
+                {
+                    b.Navigation("ProblemStats");
                 });
 #pragma warning restore 612, 618
         }

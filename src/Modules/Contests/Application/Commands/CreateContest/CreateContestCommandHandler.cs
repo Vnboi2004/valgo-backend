@@ -1,17 +1,20 @@
 using MediatR;
 using VAlgo.Modules.Contests.Application.Interfaces;
 using VAlgo.Modules.Contests.Domain.Aggregates;
+using VAlgo.SharedKernel.Abstractions;
 
 namespace VAlgo.Modules.Contests.Application.Commands.CreateContest
 {
     public sealed class CreateContestCommandHandler : IRequestHandler<CreateContestCommand, Guid>
     {
         private readonly IContestRepository _contestRepository;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateContestCommandHandler(IContestRepository contestRepository, IUnitOfWork unitOfWork)
+        public CreateContestCommandHandler(IContestRepository contestRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
         {
             _contestRepository = contestRepository;
+            _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
         }
 
@@ -20,11 +23,12 @@ namespace VAlgo.Modules.Contests.Application.Commands.CreateContest
             var contest = Contest.Create(
                 request.Title,
                 request.Description,
+                request.Code,
                 request.StartTime,
                 request.EndTime,
                 request.Visibility,
-                request.CreatedBy,
-                request.MaxParticipants
+                request.Type,
+                _currentUserService.UserId
             );
 
             await _contestRepository.AddAsync(contest, cancellationToken);

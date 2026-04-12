@@ -1,5 +1,4 @@
 using VAlgo.Modules.Submissions.Domain.Entities;
-// using VAlgo.Modules.Submissions.Domain.Enums;
 using VAlgo.Modules.Submissions.Domain.Events;
 using VAlgo.Modules.Submissions.Domain.Exceptions;
 using VAlgo.Modules.Submissions.Domain.ValueObjects;

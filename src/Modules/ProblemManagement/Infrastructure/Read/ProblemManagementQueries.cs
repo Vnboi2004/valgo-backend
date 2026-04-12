@@ -46,8 +46,8 @@ namespace VAlgo.Modules.ProblemManagement.Infractructure.Read
         )
         {
             var query = _dbContext.Problems
-                .AsNoTracking()
-                .Where(p => p.Status == ProblemStatus.Published);
+                .AsNoTracking();
+            // .Where(p => p.Status == ProblemStatus.Published);
 
             // Keyword
             if (!string.IsNullOrWhiteSpace(filter.Keyword))

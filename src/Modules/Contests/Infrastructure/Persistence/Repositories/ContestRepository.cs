@@ -59,5 +59,30 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Repositories
 
             return new PagedResult<Contest>(items, totalCount, page, pageSize);
         }
+
+        public async Task<IReadOnlyList<Contest>> GetPublishedContestsToStartAsync(DateTime now, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Contests
+                .Where(x => x.Status == ContestStatus.Published && x.StartTime <= now)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<Contest>> GetRunningContestsToFinishAsync(DateTime now, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Contests
+                .Where(x => x.Status == ContestStatus.Running && x.EndTime <= now)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<Contest>> GetRunningContestsToFreezeAsync(DateTime now, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Contests
+                .Where(x =>
+                    x.Status == ContestStatus.Running &&
+                    x.FreezeAt != null &&
+                    x.FreezeAt <= now &&
+                    !x.IsLeaderboardFrozen)
+                .ToListAsync(cancellationToken);
+        }
     }
 }
