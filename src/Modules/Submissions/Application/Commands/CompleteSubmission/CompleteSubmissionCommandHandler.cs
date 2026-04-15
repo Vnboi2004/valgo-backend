@@ -32,6 +32,8 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission
             if (request.Verdict == Verdict.Node)
                 throw new InvalidOperationException("Verdict cannot be None when completing submission");
 
+            _logger.LogInformation("Start CompleteSubmission: {SubmissionId}", request.SubmissionId);
+
             var submissionId = SubmissionId.From(request.SubmissionId);
             var submission = await _submissionRepository.GetByIdAsync(submissionId, cancellationToken);
 
@@ -40,34 +42,44 @@ namespace VAlgo.Modules.Submissions.Application.Commands.CompleteSubmission
 
             var now = _clock.UtcNow;
 
-            foreach (var tc in request.TestCases)
+            try
             {
-                submission.AddTestCaseResult(
-                    submissionId,
-                    tc.Index,
-                    tc.Verdict,
-                    tc.TimeMs,
-                    tc.MemoryKb,
-                    tc.Output
+                _logger.LogInformation("Step 1: Add test cases");
+
+                foreach (var tc in request.TestCases)
+                {
+                    submission.AddTestCaseResult(
+                        submissionId,
+                        tc.Index,
+                        tc.Verdict,
+                        tc.TimeMs,
+                        tc.MemoryKb,
+                        tc.Output
+                    );
+                }
+
+                _logger.LogInformation("Step 2: Create summary");
+
+                var judgeSummary = JudgeSummary.Create(
+                    request.TotalTestCases,
+                    request.PassedTestCases,
+                    request.MaxTimeMs,
+                    request.MaxMemoryKb
                 );
+
+                _logger.LogInformation("Step 3: Complete submission");
+                submission.Complete(request.Verdict, judgeSummary, now);
+
+                _logger.LogInformation("Step 4: Save changes");
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                _logger.LogInformation("CompleteSubmission SUCCESS");
             }
-
-            _logger.LogInformation(
-                "REQUEST DEBUG: MaxTime={MaxTime}, MaxMemory={MaxMemory}",
-                request.MaxTimeMs,
-                request.MaxMemoryKb
-            );
-
-            var judgeSummary = JudgeSummary.Create(
-                request.TotalTestCases,
-                request.PassedTestCases,
-                request.MaxTimeMs,
-                request.MaxMemoryKb
-            );
-
-            submission.Complete(request.Verdict, judgeSummary, now);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "CompleteSubmission FAILED at step");
+                throw;
+            }
 
             return Unit.Value;
         }

@@ -5,7 +5,7 @@ using VAlgo.SharedKernel.Domain;
 namespace VAlgo.Modules.Contests.Application.Queries.GetContests
 {
     public sealed record GetContestsQuery(
-        ContestStatus? Status,
+        ContestPhase? Phase,
         ContestVisibility? Visibility,
         int Page,
         int PageSize

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VAlgo.Modules.Contests.Application.Interfaces;
+using VAlgo.Modules.Contests.Application.Queries.GetContests;
 using VAlgo.Modules.Contests.Domain.Aggregates;
 using VAlgo.Modules.Contests.Domain.Enums;
 using VAlgo.Modules.Contests.Domain.ValueObjects;
@@ -30,24 +31,56 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Repositories
             return await _dbContext.Contests
                 .Include(x => x.Problems)
                 .Include(x => x.Participants)
+                    .ThenInclude(p => p.ProblemStats)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
-        public async Task<PagedResult<Contest>> GetContestsAsync(
-            ContestStatus? status,
+        public async Task<PagedResult<ContestListItemDto>> GetContestsAsync(
+            ContestPhase? phase,
             ContestVisibility? visibility,
             int page,
             int pageSize,
+            bool isAdmin,
             CancellationToken cancellationToken = default
         )
         {
-            var query = _dbContext.Contests.AsQueryable();
+            var query = _dbContext.Contests.AsNoTracking().AsQueryable();
 
-            if (status.HasValue)
-                query = query.Where(x => x.Status == status.Value);
+            var now = DateTime.UtcNow;
+
+            if (!isAdmin)
+            {
+                query = query.Where(x => x.Status != ContestStatus.Draft && x.Status != ContestStatus.Archived);
+            }
 
             if (visibility.HasValue)
                 query = query.Where(x => x.Visibility == visibility.Value);
+
+            if (phase.HasValue)
+            {
+                switch (phase.Value)
+                {
+                    case ContestPhase.Upcoming:
+                        query = query.Where(x =>
+                            x.Status == ContestStatus.Published &&
+                            x.StartTime > now
+                        );
+                        break;
+
+                    case ContestPhase.Running:
+                        query = query.Where(x =>
+                            x.Status == ContestStatus.Running
+                        );
+                        break;
+
+                    case ContestPhase.Past:
+                        query = query.Where(x =>
+                            x.Status == ContestStatus.Finished ||
+                            x.Status == ContestStatus.Archived
+                        );
+                        break;
+                }
+            }
 
             var totalCount = await query.CountAsync(cancellationToken);
 
@@ -55,9 +88,19 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Repositories
                 .OrderByDescending(x => x.StartTime)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .Select(x => new ContestListItemDto
+                {
+                    Id = x.Id.Value,
+                    Title = x.Title,
+                    StartTime = x.StartTime,
+                    EndTime = x.EndTime,
+                    Status = x.Status,
+                    Visibility = x.Visibility,
+                    ParticipantCount = x.Participants.Count(p => p.ContestId == x.Id)
+                })
                 .ToListAsync(cancellationToken);
 
-            return new PagedResult<Contest>(items, totalCount, page, pageSize);
+            return new PagedResult<ContestListItemDto>(items, totalCount, page, pageSize);
         }
 
         public async Task<IReadOnlyList<Contest>> GetPublishedContestsToStartAsync(DateTime now, CancellationToken cancellationToken = default)

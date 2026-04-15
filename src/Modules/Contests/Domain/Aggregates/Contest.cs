@@ -88,8 +88,8 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
 
         public void AddProblem(Guid problemId, string code, int points)
         {
-            if (Status != ContestStatus.Draft)
-                throw new InvalidOperationException("Cannot modify problems after published.");
+            // if (Status != ContestStatus.Draft)
+            //     throw new InvalidOperationException("Cannot modify problems after published.");
 
             var order = _problems.Count + 1;
             _problems.Add(ContestProblem.Create(Id, problemId, code, order, points));
@@ -99,22 +99,18 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
         {
             var now = DateTime.UtcNow;
 
-            // 1. Check contest status
             if (Status != ContestStatus.Published)
                 throw new InvalidOperationException("Contest is not open for registration.");
 
-            // 2. Check registration time
             if (RegistrationStartTime.HasValue && now < RegistrationStartTime.Value)
                 throw new InvalidOperationException("Registration has not started.");
 
             if (RegistrationEndTime.HasValue && now > RegistrationEndTime.Value)
                 throw new InvalidOperationException("Registration has ended.");
 
-            // 3. Check max participants
             if (MaxParticipants.HasValue && _participants.Count >= MaxParticipants.Value)
                 throw new InvalidOperationException("Contest is full.");
 
-            // 4. Check existing participant
             var existing = _participants.FirstOrDefault(x => x.UserId == userId);
 
             if (existing != null)
@@ -125,6 +121,12 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
                 existing.MarkRegistered(now);
                 return;
             }
+
+            // QUAN TRỌNG: tạo participant mới
+            var participant = ContestParticipant.CreateEmpty(Id, userId);
+            participant.MarkRegistered(now);
+
+            _participants.Add(participant);
         }
 
         public void Unregister(Guid userId)
@@ -210,25 +212,21 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
 
         public void Join(Guid userId, string? code = null)
         {
-            if (Status == ContestStatus.Draft)
-                throw new InvalidOperationException("Contest not open");
+            if (Status != ContestStatus.Running)
+                throw new InvalidOperationException("Contest is not running");
 
-            if (MaxParticipants.HasValue && _participants.Count >= MaxParticipants)
-                throw new InvalidOperationException("Contest is full");
+            var participant = _participants.FirstOrDefault(x => x.UserId == userId);
 
-            if (Visibility == ContestVisibility.Private && Code != code)
-                throw new InvalidOperationException("Invalid contest code");
+            if (participant == null)
+                throw new InvalidOperationException("You must register first");
 
-            if (RegistrationStartTime.HasValue && DateTime.UtcNow < RegistrationStartTime)
-                throw new InvalidOperationException("Registration not started");
+            if (!participant.IsRegistered)
+                throw new InvalidOperationException("You must register before joining");
 
-            if (RegistrationEndTime.HasValue && DateTime.UtcNow > RegistrationEndTime)
-                throw new InvalidOperationException("Registration ended");
-
-            if (_participants.Any(x => x.UserId == userId))
+            if (participant.HasJoined)
                 throw new InvalidOperationException("Already joined");
 
-            _participants.Add(ContestParticipant.Create(Id, userId, DateTime.Now, _problems.Select(p => p.ProblemId)));
+            participant.Join(DateTime.UtcNow, _problems.Select(p => p.ProblemId));
         }
 
         public void ProcessSubmission(Guid userId, Guid problemId, ContestSubmissionVerdict verdict, DateTime submittedAt)
@@ -375,8 +373,8 @@ namespace VAlgo.Modules.Contests.Domain.Aggregates
 
         public void UpdateSchedule(DateTime startTime, DateTime endTime)
         {
-            if (Status != ContestStatus.Draft)
-                throw new InvalidOperationException("Cannot update schedule after publish.");
+            // if (Status != ContestStatus.Draft)
+            //     throw new InvalidOperationException("Cannot update schedule after publish.");
 
             if (startTime >= endTime)
                 throw new InvalidOperationException("Invalid contest time.");

@@ -44,6 +44,9 @@ namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Configurations
             builder.Property(x => x.IsRegistered)
                 .HasColumnName("is_registered");
 
+            builder.Property(x => x.HasJoined)
+                .HasColumnName("has_joined");
+
             builder.Property(x => x.RegisteredAt)
                 .HasColumnName("registered_at");
 

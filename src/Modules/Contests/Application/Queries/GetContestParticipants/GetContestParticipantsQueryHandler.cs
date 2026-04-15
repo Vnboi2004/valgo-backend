@@ -4,14 +4,14 @@ using VAlgo.Modules.Contests.Domain.ValueObjects;
 
 namespace VAlgo.Modules.Contests.Application.Queries.GetContestParticipants
 {
-    public sealed class GetContestParticipantsQueryHandler : IRequestHandler<GetContestParticipantsQuery, IReadOnlyList<ContestParticipantDto>>
+    public sealed class GetContestParticipantsQueryHandler : IRequestHandler<GetContestParticipantsQuery, ContestParticipantDto>
     {
         private readonly IContestRepository _contestRepository;
 
         public GetContestParticipantsQueryHandler(IContestRepository contestRepository)
             => _contestRepository = contestRepository;
 
-        public async Task<IReadOnlyList<ContestParticipantDto>> Handle(GetContestParticipantsQuery request, CancellationToken cancellationToken)
+        public async Task<ContestParticipantDto> Handle(GetContestParticipantsQuery request, CancellationToken cancellationToken)
         {
             var contestId = ContestId.From(request.ContestId);
 
@@ -20,16 +20,22 @@ namespace VAlgo.Modules.Contests.Application.Queries.GetContestParticipants
             if (contest == null)
                 throw new InvalidOperationException("Contest not found.");
 
-            return contest.Participants
+            var participants = contest.Participants
                 .OrderByDescending(x => x.Score)
                 .ThenBy(x => x.Penalty)
-                .Select(x => new ContestParticipantDto
+                .Select(x => new ContestParticipantItemDto
                 {
                     UserId = x.UserId,
-                    JoinedAt = x.JoinedAt,
-                    Score = x.Score,
-                    Penalty = x.Penalty
-                }).ToList();
+                    JoinedAt = x.JoinedAt
+                })
+                .ToList();
+
+
+            return new ContestParticipantDto
+            {
+                TotalCount = participants.Count,
+                Participants = participants
+            };
         }
     }
 }

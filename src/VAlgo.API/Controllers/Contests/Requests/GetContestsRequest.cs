@@ -3,9 +3,9 @@ using VAlgo.Modules.Contests.Domain.Enums;
 namespace VAlgo.API.Controllers.Contests.Requests
 {
     public sealed record GetContestsRequest(
-        ContestStatus? Status,
+        ContestPhase? Phase,
         ContestVisibility? Visibility,
-        int Page,
-        int PageSize
+        int Page = 1,
+        int PageSize = 20
     );
 }

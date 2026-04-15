@@ -4,5 +4,6 @@ namespace VAlgo.Modules.Contests.Application.Leaderboard
     {
         Task CacheTopAsync(Guid contestId, string json);
         Task<string?> GetCachedTopAsync(Guid contestId);
+        Task InvalidateAsync(Guid contestId);
     }
 }

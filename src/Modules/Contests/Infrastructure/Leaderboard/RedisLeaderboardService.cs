@@ -51,7 +51,7 @@ namespace VAlgo.Modules.Contests.Infrastructure.Leaderboard
 
                 var score = (int)(composite >> 32);
 
-                var penatly = (int)((score << 32) - composite);
+                var penatly = (int)(composite & 0xffffffff);
 
                 result.Add(new LeaderboardEntry(userId, score, penatly, 0)); // solvedProblems lấy từ db
             }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VAlgo.Modules.Contests.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using VAlgo.Modules.Contests.Infrastructure.Persistence;
 namespace VAlgo.Modules.Contests.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ContestsDbContext))]
-    partial class ContestsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260413095738_Contests_V3")]
+    partial class Contests_V3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -551,7 +551,7 @@ namespace VAlgo.Modules.ProblemManagement.Domain.Aggregates
                 .Select(lang => lang.Value)
                 .ToList();
 
-            if (missTemplates.Any())
+            if (!missTemplates.Any())
                 throw new InvalidOperationException("Missing code template.");
 
             Status = ProblemStatus.Published;

@@ -1,0 +1,8 @@
+namespace VAlgo.SharedKernel.Abstractions
+{
+    public interface IHasDomainEvents
+    {
+        IReadOnlyCollection<IDomainEvent> DomainEvents { get; }
+        void ClearDomainEvents();
+    }
+}

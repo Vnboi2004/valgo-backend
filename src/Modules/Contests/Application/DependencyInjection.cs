@@ -9,7 +9,7 @@ namespace VAlgo.Modules.Contests.Application
     {
         public static IServiceCollection AddContestsApplication(this IServiceCollection services)
         {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            //services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;

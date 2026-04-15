@@ -31,5 +31,11 @@ namespace VAlgo.Modules.Contests.Infrastructure.Leaderboard
             return value.HasValue ? value.ToString() : null;
         }
 
+        public async Task InvalidateAsync(Guid contestId)
+        {
+            var db = _redis.GetDatabase();
+
+            await db.KeyDeleteAsync(Key(contestId));
+        }
     }
 }

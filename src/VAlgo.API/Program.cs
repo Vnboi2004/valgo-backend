@@ -1,15 +1,18 @@
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using VAlgo.API.BackgroundServices;
 using VAlgo.API.Hubs;
 using VAlgo.API.Middleware;
 using VAlgo.API.Realtime;
 using VAlgo.API.Services;
 using VAlgo.BuildingBlocks.Sandbox;
 using VAlgo.Modules.Contests;
+using VAlgo.Modules.Contests.Application.Jobs;
 using VAlgo.Modules.Contests.Application.Realtime;
 using VAlgo.Modules.Discussions;
 using VAlgo.Modules.Identity;
@@ -109,6 +112,11 @@ builder.Services.AddIdentityModule(builder.Configuration);
 // Contests
 builder.Services.AddContestsModule(builder.Configuration);
 
+builder.Services.AddMediatR(
+    typeof(VAlgo.Modules.Submissions.Application.DependencyInjection).Assembly,
+    typeof(VAlgo.Modules.Contests.Application.DependencyInjection).Assembly
+);
+
 // Discussions
 builder.Services.AddDiscussionsModule(builder.Configuration);
 
@@ -142,6 +150,11 @@ builder.Services.AddScoped<IContestLeaderboardNotifier, SignalRContestLeaderboar
 builder.Services.AddScoped<IUserReadService, UserReadService>();
 builder.Services.AddScoped<IProblemReadToSubmissionService, ProblemReadToSubmissionService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+// Job
+builder.Services.AddScoped<AutoStartContestJob>();
+builder.Services.AddScoped<AutoFinishContestJob>();
+builder.Services.AddHostedService<ContestBackgroundService>();
 
 
 builder.Services.AddOpenApi();

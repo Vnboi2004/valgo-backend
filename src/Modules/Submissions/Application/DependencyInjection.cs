@@ -9,7 +9,7 @@ namespace VAlgo.Modules.Submissions.Application
     {
         public static IServiceCollection AddSubmissionApplication(this IServiceCollection services)
         {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            //services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;
